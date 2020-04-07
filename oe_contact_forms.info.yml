@@ -10,4 +10,3 @@ dependencies:
  -drupal:contact_storage
  -drupal:contact_storage_export
  -openeuropa:rdf_skos
- 

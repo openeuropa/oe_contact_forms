@@ -6,7 +6,7 @@ type: module
 core: 8.x
 
 dependencies:
- -drupal:contact
- -drupal:contact_storage
- -drupal:contact_storage_export
- -openeuropa:rdf_skos
+  - contact:contact
+  - contact_storage:contact_storage
+  - contact_storage_export:contact_storage_export
+  - rdf_skos:rdf_skos

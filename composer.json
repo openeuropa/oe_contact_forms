@@ -56,6 +56,9 @@
             "build/themes/contrib/{$name}": ["type:drupal-theme"]
         },
         "patches": {
+            "drupal/contact_storage": {
+                "Revisit permissions required to view contact messages": "https://www.drupal.org/files/issues/2020-04-07/revisit_permissions-2708809-56.patch"
+            },
             "drupal/contact_storage_export": {
                 "Contact Storage Export breaks on high availability architecture": "https://www.drupal.org/files/issues/2020-04-16/contact_storage_export-breaks-on-high-load-balancer-2996037-10.patch",
                 "Export fails on PHP 7.3": "https://www.drupal.org/files/issues/2020-04-14/php73-3049010-15.patch"

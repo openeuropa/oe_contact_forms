@@ -1,6 +1,13 @@
-name: OpenEuropa template
-description: OpenEuropa Drupal module template.
+name: OpenEuropa Contact Forms
+description: The OpenEuropa Contact Forms provides contact form configurations.
 package: OpenEuropa
 
 type: module
 core: 8.x
+
+dependencies:
+ -drupal:contact
+ -drupal:contact_storage
+ -drupal:contact_storage_export
+ -openeuropa:rdf_skos
+ 

@@ -1,6 +1,6 @@
 # OpenEuropa oe_contact_forms
 
-The OpenEuropa oe_contact_forms provides ...`[One Paragraph of project description goes here]`
+The OpenEuropa oe_contact_forms defines contact forms with a set of new configurations that allow customisations 
 
 ## Development setup
 

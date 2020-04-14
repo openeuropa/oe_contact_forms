@@ -1,6 +1,15 @@
-# OpenEuropa oe_contact_forms
+# OpenEuropa Contact Forms
 
-The OpenEuropa oe_contact_forms defines contact forms with a set of new configurations that allow customisations 
+The OpenEuropa Contact Forms project provides storage for Contact messages which are fully-fledged entities using Contact Storage and simple export operation automatically for messages from each created form.
+
+## Permissions
+
+Granular permissions are exposed via contributed modules for handling contact forms and message entities:
+
+- View contact messages
+- Update contact messages
+- Delete contact messages
+- Export contact form messages
 
 ## Development setup
 

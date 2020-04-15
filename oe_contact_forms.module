@@ -6,3 +6,110 @@
  */
 
 declare(strict_types = 1);
+
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\contact\Entity\ContactForm;
+use Drupal\contact\Entity\Message;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function oe_contact_forms_entity_type_alter(array &$entity_types) {
+  
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  /** @var \Drupal\Core\Entity\ContentEntityForm $form_object */
+  $form_object = $form_state->getFormObject();
+  /* @var \Drupal\contact\MessageInterface $contact_message */
+  $contact_message = $form_object->getEntity();
+  /* @var \Drupal\contact\Entity\ContactForm $contact_form */
+  $contact_form = ContactForm::load($contact_message->bundle());
+
+  if ($contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
+    $form['oe_country_residence']['#access'] = FALSE;
+    $form['oe_telephone']['#access'] = FALSE;
+    $form['oe_topic']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_type) {
+  if ($entity_type->id() == 'contact_message') {
+    $fields = [];
+
+    $fields['oe_country_residence'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Country of residence'))
+      ->setSetting('target_type', 'skos_concept')
+      ->setDisplayOptions('view', array(
+        'type' => 'string',
+        'weight' => -1,
+      ))
+      ->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => -1,
+      ]);
+
+    $fields['oe_telephone'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Phone'))
+      ->setSettings(array(
+        'default_value' => '',
+        'max_length' => 255,
+      ))
+      ->setDisplayOptions('view', array(
+        'type' => 'string',
+        'weight' => -1,
+      ))
+      ->setDisplayOptions('form', [
+        'type' => 'telephone',
+        'weight' => -1,
+      ]);
+
+    $fields['oe_topic'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(t('Topic'))
+      ->setDisplayOptions('form', [
+          'type' => 'options_select',
+          'weight' => -1,
+        ])
+      ->setDisplayOptions('view', array(
+        'type' => 'string',
+        'weight' => -1,
+      ))
+      ->setSetting('allowed_values_function', '_oe_contact_forms_topic_values')
+      ->setRequired(TRUE);
+
+    return $fields;
+  }
+}
+
+/**
+ * Set dynamic allowed values for the topic field.
+ *
+ * @param \Drupal\Core\Field\BaseFieldDefinition $definition
+ *   The base field definition.
+ * @param \Drupal\contact\Entity\Message|null $entity
+ *   The entity being created if applicable.
+ * @param bool $cacheable
+ *   Boolean indicating if the results are cacheable.
+ *
+ * @return array
+ *   An array of possible key and value options.
+ *
+ * @see options_allowed_values()
+ */
+function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message $entity = NULL, &$cacheable = TRUE): array {
+  /* @var \Drupal\contact\Entity\ContactForm $contact_form */
+  $contact_form = $entity->getContactForm();
+  $options = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
+
+  return $options;
+}

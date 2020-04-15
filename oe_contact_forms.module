@@ -9,6 +9,7 @@ declare(strict_types = 1);
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+<<<<<<< HEAD
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
@@ -358,6 +359,19 @@ function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form
 
   // Set trimmed values.
   $form_state->setValue('corporate_fields', $values);
+=======
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\contact\Entity\ContactForm;
+use Drupal\contact\Entity\Message;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function oe_contact_forms_entity_type_alter(array &$entity_types) {
+
+>>>>>>> OPENEUROPA-3042: Add basefields, hide on is_corporate_form.
 }
 
 /**
@@ -387,6 +401,7 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
   if ($entity_type->id() == 'contact_message') {
     $fields = [];
 
+<<<<<<< HEAD
     $fields['oe_country_residence'] = BaseFieldDefinition::create('skos_concept_entity_reference')
       ->setLabel(t('Country of residence'))
       ->setSetting('target_type', 'skos_concept')
@@ -416,16 +431,53 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
       ])
       ->setDisplayOptions('view', [
         'weight' => 0,
+=======
+    $fields['oe_country_residence'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Country of residence'))
+      ->setSetting('target_type', 'skos_concept')
+      ->setDisplayOptions('view', array(
+        'type' => 'string',
+        'weight' => -1,
+      ))
+      ->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => -1,
+      ]);
+
+    $fields['oe_telephone'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Phone'))
+      ->setSettings(array(
+        'default_value' => '',
+        'max_length' => 255,
+      ))
+      ->setDisplayOptions('view', array(
+        'type' => 'string',
+        'weight' => -1,
+      ))
+      ->setDisplayOptions('form', [
+        'type' => 'telephone',
+        'weight' => -1,
+>>>>>>> OPENEUROPA-3042: Add basefields, hide on is_corporate_form.
       ]);
 
     $fields['oe_topic'] = BaseFieldDefinition::create('list_string')
       ->setLabel(t('Topic'))
       ->setDisplayOptions('form', [
+<<<<<<< HEAD
         'type' => 'options_select',
       ])
       ->setDisplayOptions('view', [
         'weight' => 0,
       ])
+=======
+          'type' => 'options_select',
+          'weight' => -1,
+        ])
+      ->setDisplayOptions('view', array(
+        'type' => 'string',
+        'weight' => -1,
+      ))
+>>>>>>> OPENEUROPA-3042: Add basefields, hide on is_corporate_form.
       ->setSetting('allowed_values_function', '_oe_contact_forms_topic_values')
       ->setRequired(TRUE);
 
@@ -449,10 +501,16 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
  * @see options_allowed_values()
  */
 function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message $entity = NULL, &$cacheable = TRUE): array {
+<<<<<<< HEAD
   /** @var \Drupal\contact\Entity\ContactForm $contact_form */
   $contact_form = $entity->getContactForm();
   $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
   $options = array_column($topics, 'topic_name');
+=======
+  /* @var \Drupal\contact\Entity\ContactForm $contact_form */
+  $contact_form = $entity->getContactForm();
+  $options = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
+>>>>>>> OPENEUROPA-3042: Add basefields, hide on is_corporate_form.
 
   return $options;
 }

@@ -16,13 +16,6 @@ use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 
 /**
- * Implements hook_entity_type_alter().
- */
-function oe_contact_forms_entity_type_alter(array &$entity_types) {
-  
-}
-
-/**
  * Implements hook_form_FORM_ID_alter().
  */
 function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInterface $form_state, $form_id) {
@@ -47,15 +40,24 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
   if ($entity_type->id() == 'contact_message') {
     $fields = [];
 
-    $fields['oe_country_residence'] = BaseFieldDefinition::create('entity_reference')
+    $handler_settings = [
+      'target_bundles' => [],
+      'auto_create' => FALSE,
+      'concept_schemes' => [
+        'http://publications.europa.eu/resource/authority/country',
+      ],
+    ];
+
+    $fields['oe_country_residence'] = BaseFieldDefinition::create('skos_concept_entity_reference')
       ->setLabel(t('Country of residence'))
       ->setSetting('target_type', 'skos_concept')
+      ->setSetting('handler', 'default:skos_concept')
+      ->setSetting('handler_settings', $handler_settings)
       ->setDisplayOptions('view', array(
         'type' => 'string',
         'weight' => -1,
       ))
       ->setDisplayOptions('form', [
-        'type' => 'options_select',
         'weight' => -1,
       ]);
 

@@ -6,3 +6,84 @@
  */
 
 declare(strict_types = 1);
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_alter().
+ *
+ * @param array $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ * @param string $form_id
+ */
+function oe_contact_forms_form_alter(array &$form, FormStateInterface $form_state, string $form_id): void {
+  $allowed_form_ids = [
+    'contact_form_add_form',
+    'contact_form_edit_form',
+  ];
+
+  if (!in_array($form_id, $allowed_form_ids)) {
+    return;
+  }
+
+  $form['is_corporate_form'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Is corporate form'),
+    '#description' => t("Check this box if you'd like to make this a corporate form."),
+  ];
+  $form['topic_label'] = [
+    '#type' => 'textfield',
+    '#title' => t('Topic label'),
+    '#description' => t("Please specify the label for the Topics field. Leave empty for the default: 'Topic'."),
+  ];
+  $form['email_subject'] = [
+    '#type' => 'email',
+    '#title' => t('Email subject'),
+    '#description' => t("Please specify the subject of the email."),
+    '#states' => [
+      'required' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
+    ],
+  ];
+  $form['header'] = [
+    '#type' => 'textarea',
+    '#title' => t('Header'),
+    '#description' => t("Please specify the text to be displayed above the contact form for users that submit it."),
+  ];
+  $form['privacy_policy'] = [
+    '#type' => 'textarea',
+    '#title' => t('Privacy policy'),
+    '#description' => t("Please specify a privacy policy message to display on the form."),
+    '#states' => [
+      'required' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
+    ],
+  ];
+  $form['includes_fields_in_auto_reply'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Includes fields in auto-reply'),
+    '#description' => t("Check this box if you would like to include in the auto-reply also the values submitted by the user."),
+  ];
+  $form['allow_canonical_url'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Allow canonical URL'),
+    '#description' => t("Check this box if you would like this contact form to be exposed at its default canonical URL."),
+  ];
+  $form['expose_as_block'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Expose as block'),
+    '#description' => t("Check this box if you would like to expose this contact form as a block."),
+    '#default_value' => TRUE,
+  ];
+  $form['optional_fields'] = [
+    '#type' => 'checkboxes',
+    '#title' => t('Optional fields'),
+    '#options' => [
+      'oe_country_residence' => t('Country of residence'),
+      'oe_telephone' => t('Phone'),
+    ],
+    '#description' => t("Please specify which optional fields you'd like to include in the form."),
+  ];
+}

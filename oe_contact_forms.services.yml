@@ -2,3 +2,9 @@ services:
   oe_contact_forms.country_skos_setup:
     class: Drupal\oe_contact_forms\CountrySkosGraphSetup
     arguments: ['@config.factory']
+  oe_contact_forms.decorating_route_subscriber:
+    class: Drupal\oe_contact_forms\Routing\DecoratingRouteSubscriber
+    decorates: contact_storage.route_subscriber
+    arguments: ['@oe_contact_forms.decorating_route_subscriber.inner']
+    tags:
+      - { name: event_subscriber }

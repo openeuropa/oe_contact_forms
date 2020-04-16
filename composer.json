@@ -58,7 +58,7 @@
         },
         "patches": {
             "drupal/contact_storage_export": {
-                "Contact Storage Export breaks on high availability architecture": "https://www.drupal.org/files/issues/2019-07-10/contact_storage_export-breaks-on-high-load-balancer-2996037-8.patch",
+                "Contact Storage Export breaks on high availability architecture": "https://www.drupal.org/files/issues/2020-04-16/contact_storage_export-breaks-on-high-load-balancer-2996037-10.patch",
                 "Export fails on PHP 7.3": "https://www.drupal.org/files/issues/2020-04-14/php73-3049010-15.patch"
             }
         }

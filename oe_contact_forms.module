@@ -537,3 +537,14 @@ function oe_contact_forms_mail_alter(&$message) {
   // Change subject for corporate mail, copy and reply.
   $message['subject'] = $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject');
 }
+
+/**
+ * Implements hook_ENTITY_TYPE_access().
+ */
+function oe_contact_forms_contact_form_access(EntityInterface $entity, $operation, AccountInterface $account) {
+  // Deny access to corporate forms if user has not the permission.
+  $permission_name = 'access corporate contact form';
+  if ($operation === 'view' && $entity->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE) && $entity->access($permission_name) && !$account->hasPermission($permission_name)) {
+    return AccessResult::forbidden();
+  }
+}

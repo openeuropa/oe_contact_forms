@@ -395,6 +395,7 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
   if ($entity_type->id() == 'contact_message') {
     $fields = [];
 
+
     $fields['oe_country_residence'] = BaseFieldDefinition::create('skos_concept_entity_reference')
       ->setLabel(t('Country of residence'))
       ->setSetting('target_type', 'skos_concept')
@@ -419,14 +420,12 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
         'default_value' => '',
         'max_length' => 255,
       ))
-      ->setDisplayOptions('view', array(
-        'type' => 'string',
-        'weight' => -1,
-      ))
       ->setDisplayOptions('form', [
-        'type' => 'telephone',
         'weight' => -1,
-      ]);
+      ])
+      ->setDisplayOptions('view', array(
+        'weight' => -1,
+      ));
 
     $fields['oe_topic'] = BaseFieldDefinition::create('list_string')
       ->setLabel(t('Topic'))

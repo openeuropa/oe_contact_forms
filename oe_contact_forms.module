@@ -431,6 +431,7 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
       ->setLabel(t('Topic'))
       ->setDisplayOptions('form', [
         'type' => 'options_select',
+
       ])
       ->setDisplayOptions('view', [
         'weight' => 0,

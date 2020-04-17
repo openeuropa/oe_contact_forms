@@ -1,0 +1,12 @@
+contact.form.*.third_party.oe_contact_forms:
+  type: mapping
+  label: 'Contact form corporate fields'
+  mapping:
+    is_corporate_form:
+      type: boolean
+      label: 'Is corporate form'
+    topics:
+      type: sequence
+      label: 'Topics'
+      sequence:
+        type: string

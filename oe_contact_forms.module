@@ -9,12 +9,10 @@ declare(strict_types = 1);
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
-use \Drupal\contact\ContactFormInterface;
+use Drupal\contact\ContactFormInterface;
 
 /**
  * Implements hook_form_FORM_ID_alter() for contact_form_form().
@@ -51,10 +49,8 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
  *   The form.
  * @param Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
- *
- * @return null
  */
-function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, &$form, FormStateInterface $form_state): void {
+function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, array &$form, FormStateInterface $form_state): void {
   $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $form_state->getValue('is_corporate_form'));
 }
 
@@ -119,9 +115,9 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
     $fields['oe_topic'] = BaseFieldDefinition::create('list_string')
       ->setLabel(t('Topic'))
       ->setDisplayOptions('form', [
-          'type' => 'options_select',
-          'weight' => -1,
-        ])
+        'type' => 'options_select',
+        'weight' => -1,
+      ])
       ->setDisplayOptions('view', [
         'weight' => -1,
       ])

@@ -1,0 +1,4 @@
+services:
+  oe_contact_forms.country_skos_setup:
+    class: Drupal\oe_contact_forms\CountrySkosGraphSetup
+    arguments: ['@config.factory']

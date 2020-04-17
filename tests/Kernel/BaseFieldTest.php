@@ -38,6 +38,8 @@ class BaseFieldTest extends RdfKernelTestBase {
 
     $this->installEntitySchema('contact_message');
     $this->installConfig(['field', 'system']);
+    module_load_include('install', 'oe_contact_forms');
+    oe_contact_forms_install();
   }
 
   /**

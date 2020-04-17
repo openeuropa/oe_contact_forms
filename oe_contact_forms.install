@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * @file
+ * The OpenEuropa Contact Forms installation file.
+ */
+
+declare(strict_types = 1);
+
+/**
+ * Implements hook_install().
+ */
+function oe_contact_forms_install() {
+  // Configure the RDF SKOS graphs.
+  if (!\Drupal::service('config.installer')->isSyncing()) {
+    \Drupal::service('oe_contact_forms.country_skos_setup')->setup();
+  }
+}

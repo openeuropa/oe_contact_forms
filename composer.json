@@ -6,7 +6,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "drupal/core": "^8.7",
+        "drupal/core": "^8.7.10",
         "drupal/contact_storage": "1.0.0",
         "drupal/contact_storage_export": "^1.13",
         "easyrdf/easyrdf": "0.10.0-alpha.1 as 0.9.1",

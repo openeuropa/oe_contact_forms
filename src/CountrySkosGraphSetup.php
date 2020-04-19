@@ -19,7 +19,7 @@ class CountrySkosGraphSetup {
   protected $configFactory;
 
   /**
-   * PublicationsOfficeSkosGraphSetup constructor.
+   * CountrySkosGraphSetup constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config factory.
@@ -29,7 +29,7 @@ class CountrySkosGraphSetup {
   }
 
   /**
-   * Gets the graph information for the OP vocabularies.
+   * Gets the graph information for the Country vocabularies.
    *
    * @todo instead of hardcoding, use the content layer to determine these.
    */
@@ -44,7 +44,8 @@ class CountrySkosGraphSetup {
    */
   public function setup(): void {
     $graphs = $this->getGraphInfo();
-    $config = [];
+    $config = $this->configFactory->getEditable('rdf_skos.graphs')->get('entity_types');
+
     foreach ($graphs as $name => $graph) {
       $config['skos_concept_scheme'][] = [
         'name' => $name,

@@ -47,7 +47,7 @@ class BaseFieldTest extends RdfKernelTestBase {
     $contact_form_id = 'oe_contact_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', ['test']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', ['test']);
     $contact_form->save();
 
     $data = [
@@ -84,7 +84,7 @@ class BaseFieldTest extends RdfKernelTestBase {
     $contact_form_id = 'default_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', ['test']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', ['test']);
     $contact_form->save();
 
     $data = [

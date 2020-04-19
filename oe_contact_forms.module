@@ -47,12 +47,14 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       'callback' => '_oe_contact_forms_is_corporate_form_ajax_callback',
       'wrapper' => 'corporate-fields-wrapper',
     ],
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject'),
   ];
   $form['corporate_fields'] = [
     '#type' => 'container',
     '#attributes' => [
       'id' => ['corporate-fields-wrapper'],
     ],
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy'),
   ];
 
   if ($is_corporate_form) {
@@ -548,3 +550,16 @@ function oe_contact_forms_contact_form_access(EntityInterface $entity, $operatio
     return AccessResult::forbidden();
   }
 }
+
+//function addmoreCallback(array &$form, FormStateInterface $form_state): array {
+//  \Drupal::logger('my_module')->notice('addmore');
+//  return $form['topics_fieldset'];
+//}
+//
+//function addOneCallback(array &$form, FormStateInterface $form_state) {
+//  \Drupal::logger('my_module')->notice('addone');
+//  $topics_field = $form_state->get('num_topics');
+//  $add_button = $topics_field + 1;
+//  $form_state->set('num_topics', $add_button);
+//  $form_state->setRebuild();
+//}

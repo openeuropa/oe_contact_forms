@@ -1,0 +1,30 @@
+# Schema for the configuration files of the OE Contact Forms module.
+
+contact.form.*.third_party.oe_contact_forms:
+  type: mapping
+  label: 'OE Contact Forms settings'
+  mapping:
+    is_corporate_form:
+      type: boolean
+      label: 'Is corporate form'
+    topic_label:
+      type: string
+      label: 'Topic label'
+    email_subject:
+      type: string
+      label: 'Email subject'
+    header:
+      type: text
+      label: 'Header'
+    privacy_policy:
+      type: text
+      label: 'Privacy policy'
+    includes_fields_in_auto_reply:
+      type: boolean
+      label: 'Includes fields in auto-reply'
+    allow_canonical_url:
+      type: boolean
+      label: 'Allow canonical URL'
+    expose_as_block:
+      type: boolean
+      label: 'Expose as block'

@@ -466,3 +466,10 @@ function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message
 
   return $options;
 }
+ * Implements hook_entity_type_alter().
+ */
+function oe_contact_forms_entity_type_alter(array &$entity_types) {
+  /* @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
+  // Set the controller class for nodes to an alternate implementation
+  $entity_types['contact_message']->setFormClass('corporate_default', '\Drupal\oe_contact_forms\ContactMessageForm');
+}

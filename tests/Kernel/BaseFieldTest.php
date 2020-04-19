@@ -79,4 +79,64 @@ class BaseFieldTest extends RdfKernelTestBase {
     $this->assertEquals($data['oe_topic'], $message->get('oe_topic')->getValue()['0']['value']);
   }
 
+  /**
+   * Tests that topic field values are validated.
+   */
+  public function testTopicValidation(): void {
+    $contact_form_id = 'default_form';
+    $contact_form = ContactForm::create(['id' => $contact_form_id]);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', ['test']);
+    $contact_form->save();
+
+    $data = [
+      'id' => 1,
+      'contact_form' => $contact_form->id(),
+      'name' => 'example',
+      'mail' => 'admin@example.com',
+      'created' => '1487321550',
+      'ip_address' => '127.0.0.1',
+      'subject' => 'Test subject',
+      'message' => 'Test message',
+      // Add a unsupported value.
+      'oe_topic' => 1,
+    ];
+
+    $message = Message::create($data);
+    // Validate the field.
+    $violations = $message->oe_topic->validate();
+
+    $this->assertNotEmpty($violations);
+  }
+
+  /**
+   * Tests that topic fields are not available in default form.
+   */
+  public function testDefaultForm(): void {
+    $contact_form_id = 'default_form';
+    $contact_form = ContactForm::create(['id' => $contact_form_id]);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
+    $contact_form->save();
+
+    $data = [
+      'id' => 1,
+      'contact_form' => $contact_form->id(),
+      'name' => 'example',
+      'mail' => 'admin@example.com',
+      'created' => '1487321550',
+      'ip_address' => '127.0.0.1',
+      'subject' => 'Test subject',
+      'message' => 'Test message',
+    ];
+
+    $message = Message::create($data);
+    $message->save();
+
+    $form = \Drupal::service('entity.form_builder')->getForm($message, 'default');
+
+    $this->assertEquals(FALSE, $form['oe_country_residence']['#access'], 'Check that country is not available.');
+    $this->assertEquals(FALSE, $form['oe_telephone']['#access'], 'Check that telephone is not available.');
+    $this->assertEquals(FALSE, $form['oe_topic']['#access'], 'Check that topic is not available.');
+  }
+
 }

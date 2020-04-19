@@ -53,9 +53,8 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
 function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, array &$form, FormStateInterface $form_state): void {
   // Mock some topic values.
   $topic_names = ['Agriculture', 'Business and industry', 'Competition'];
-
   $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
-  $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email', $topic_emails);
+  $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', 'Topic label');
   $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $form_state->getValue('is_corporate_form'));
 }
 
@@ -154,4 +153,11 @@ function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message
   $options = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name', []);
 
   return $options;
+}
+ * Implements hook_entity_type_alter().
+ */
+function oe_contact_forms_entity_type_alter(array &$entity_types) {
+  /* @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
+  // Set the controller class for nodes to an alternate implementation
+  $entity_types['contact_message']->setFormClass('corporate_default', '\Drupal\oe_contact_forms\ContactMessageForm');
 }

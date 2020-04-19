@@ -466,6 +466,8 @@ function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message
 
   return $options;
 }
+
+/**
  * Implements hook_entity_type_alter().
  */
 function oe_contact_forms_entity_type_alter(array &$entity_types) {

@@ -15,7 +15,7 @@ class OeContactFormsController extends ContactStorageController {
   /**
    * {@inheritdoc}
    */
-  public function contactSitePage(ContactFormInterface $contact_form = NULL) {
+  public function contactSitePage(ContactFormInterface $contact_form = NULL): array {
     $config = $this->config('contact.settings');
     // If the requested contact form is corporate,
     // render it with the corporate form handler ("corporate_default"),

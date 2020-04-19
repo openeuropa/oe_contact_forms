@@ -16,11 +16,11 @@ class DecoratingRouteSubscriber extends RouteSubscriber {
   /**
    * {@inheritdoc}
    */
-  public function alterRoutes(RouteCollection $collection) {
+  public function alterRoutes(RouteCollection $collection): void {
     parent::alterRoutes($collection);
 
-    // Change the contact_form controller.
     if ($route = $collection->get('entity.contact_form.canonical')) {
+      // Change the contact_form controller.
       $route->setDefault('_controller', OeContactFormsController::class . '::contactSitePage');
     }
   }

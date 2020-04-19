@@ -28,30 +28,26 @@ services:
       - SCREEN_HEIGHT=800
 
 pipeline:
-  composer-install-lowest:
+  composer-install:
     group: prepare
+    image: fpfis/httpd-php-ci:${PHP_VERSION}
+    volumes:
+      - /cache:/cache
+    commands:
+      - composer install --ansi --no-suggest --no-progress
+
+  composer-update-lowest:
+    group: post-prepare
     image: fpfis/httpd-php-ci:${PHP_VERSION}
     volumes:
       - /cache:/cache
     commands:
       # @todo remove "composer install" step once the following issue is fixed.
       # @link https://webgate.ec.europa.eu/CITnet/jira/browse/OPENEUROPA-1234
-      - composer install --ansi --no-suggest --no-progress
       - composer update --prefer-lowest --prefer-stable --ansi --no-suggest --no-progress
     when:
       matrix:
         COMPOSER_BOUNDARY: lowest
-
-  composer-install-highest:
-    group: prepare
-    image: fpfis/httpd-php-ci:${PHP_VERSION}
-    volumes:
-      - /cache:/cache
-    commands:
-      - composer install --ansi --no-suggest --no-progress
-    when:
-      matrix:
-        COMPOSER_BOUNDARY: highest
 
   site-install:
     image: fpfis/httpd-php-ci:${PHP_VERSION}
@@ -60,7 +56,7 @@ pipeline:
 
   grumphp:
     group: test
-    image: fpfis/httpd-php-dev:${PHP_VERSION}
+    image: fpfis/httpd-php-ci:${PHP_VERSION}
     commands:
       - ./vendor/bin/grumphp run
 

@@ -5,8 +5,8 @@ contact.form.*.third_party.oe_contact_forms:
     is_corporate_form:
       type: boolean
       label: 'Is corporate form'
-    topics:
+    topic_name:
       type: sequence
-      label: 'Topics'
+      label: 'Topic name'
       sequence:
         type: string

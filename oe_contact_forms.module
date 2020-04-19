@@ -51,6 +51,11 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
  *   The form state.
  */
 function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, array &$form, FormStateInterface $form_state): void {
+  // Mock some topic values.
+  $topic_names = ['Agriculture', 'Business and industry', 'Competition'];
+
+  $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
+  $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email', $topic_emails);
   $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $form_state->getValue('is_corporate_form'));
 }
 
@@ -146,7 +151,7 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
 function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message $entity = NULL, &$cacheable = TRUE): array {
   /* @var \Drupal\contact\Entity\ContactForm $contact_form */
   $contact_form = $entity->getContactForm();
-  $options = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
+  $options = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name', []);
 
   return $options;
 }

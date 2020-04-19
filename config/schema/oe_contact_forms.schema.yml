@@ -10,3 +10,6 @@ contact.form.*.third_party.oe_contact_forms:
       label: 'Topic name'
       sequence:
         type: string
+    topic_label:
+      type: string
+      label: 'Topic label'

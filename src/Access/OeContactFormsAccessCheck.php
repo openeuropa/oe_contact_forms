@@ -20,8 +20,7 @@ class OeContactFormsAccessCheck implements AccessInterface {
     // Deny access if form is corporate and the 'Allow canonical URL' is FALSE.
     if (!empty($contact_form)
         && $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE)
-        // && $contact_form->getThirdPartySetting.
-        // ('oe_contact_forms', 'allow_canonical_url', FALSE).
+        && $contact_form->getThirdPartySetting('oe_contact_forms', 'allow_canonical_url', FALSE)
       ) {
       return AccessResult::forbidden();
     }

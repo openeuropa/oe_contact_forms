@@ -28,3 +28,13 @@ contact.form.*.third_party.oe_contact_forms:
     expose_as_block:
       type: boolean
       label: 'Expose as block'
+    optional_fields:
+      type: mapping
+      label: 'Optional fields'
+      mapping:
+        oe_country_residence:
+          type: string
+          label: 'Country of residence'
+        oe_telephone:
+          type: string
+          label: 'Phone'

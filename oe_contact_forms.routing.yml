@@ -1,0 +1,6 @@
+oe_contact_forms.ajax.addmore:
+  path: '/oe_contact_forms/addmore/{delta}'
+  defaults:
+    _controller: '\Drupal\oe_contact_forms\Controller\OeContactFormsController::addOneCallback'
+  requirements:
+    _permission: 'access content'

@@ -34,7 +34,8 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
 
   $num_topics = $form_state->get('num_topics');
   if ($num_topics === NULL) {
-    $form_state->set('num_topics', 1);
+    // DO NOT remove this line!
+    $topic_field = $form_state->set('num_topics', 1);
     $num_topics = 1;
   }
 
@@ -42,12 +43,23 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   $form['topics_fieldset'] = [
     '#type' => 'fieldset',
     '#title' => t('Topics'),
+    '#prefix' => '<div id="topics-fieldset-wrapper">',
+    '#suffix' => '</div>',
   ];
-  
+  $topic_names = [];
+  $topic_email_addresses = [];
+  if (NULL !== $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name')) {
+    $topic_names = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name');
+  }
+  if (NULL !== $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name')) {
+    $topic_email_addresses = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_email_address');
+  }
+
+  if (!empty($topic_names)) {
+    $num_topics = count($topic_names);
+  }
+
   for ($i = 0; $i < $num_topics; $i++) {
-    $form['topics_fieldset']['group'] = [
-      '#type' => 'fieldgroup',
-    ];
     $form['topics_fieldset']['group'][$i]['topic_name'] = [
       '#type' => 'textfield',
       '#title' => t('Topic name'),
@@ -56,6 +68,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
           ':input[name="is_corporate_form"]' => ['checked' => TRUE],
         ],
       ],
+      '#default_value' => isset($topic_names[$i]) ? $topic_names[$i] : '',
     ];
     $form['topics_fieldset']['group'][$i]['topic_email_address'] = [
       '#type' => 'textfield',
@@ -65,23 +78,21 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
           ':input[name="is_corporate_form"]' => ['checked' => TRUE],
         ],
       ],
+      '#default_value' => isset($topic_email_addresses[$i]) ? $topic_email_addresses[$i] : '',
     ];
   }
-  
-  $form['topics_fieldset']['ajax_target'] = [
-    '#markup' => '<div id="topics-fieldset-wrapper"></div>',
-  ];
 
   $form['topics_fieldset']['actions'] = [
     '#type' => 'actions',
   ];
   $form['topics_fieldset']['actions']['add_topic'] = [
-    '#type' => 'link',
-    '#title' => t('Add one more'),
-    '#attached' => ['library' => ['core/drupal.ajax']],
-    '#attributes' => ['class' => ['use-ajax']],
-    '#url' => Url::fromRoute('oe_contact_forms.ajax.addmore', ['delta' => $num_topics]),
-    '#limit_validation_errors' => [],
+    '#type' => 'submit',
+    '#value' => t('Add more'),
+    '#submit' => ['oe_contact_forms_add_one_callback'],
+    '#ajax' => [
+      'callback' => 'oe_contact_forms_add_more_callback',
+      'wrapper' => 'topics-fieldset-wrapper',
+    ],
   ];
 
   $form['topic_label'] = [
@@ -152,6 +163,23 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
 }
 
 /**
+ * Default ajax callback for Topics.
+ */
+function oe_contact_forms_add_more_callback(array &$form, FormStateInterface $form_state): array {
+  return $form['topics_fieldset'];
+}
+
+/**
+ * Add one more element to the form based on ajax.
+ */
+function oe_contact_forms_add_one_callback(array &$form, FormStateInterface $form_state): void {
+  $topic_field = $form_state->get('num_topics');
+  $add_button = $topic_field + 1;
+  $form_state->set('num_topics', $add_button);
+  $form_state->setRebuild();
+}
+
+/**
  * OE contact forms builder.
  *
  * @param string $entity_type
@@ -169,4 +197,14 @@ function oe_contact_forms_builder(string $entity_type, ContactForm $contact_form
   $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', $form_state->getValue('allow_canonical_url'));
   $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', $form_state->getValue('expose_as_block'));
   $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $form_state->getValue('optional_fields'));
+
+  $topics_fieldset = $form_state->getValue('topics_fieldset');
+  $topic_names = [];
+  $topic_email_addresses = [];
+  foreach ($topics_fieldset['group'] as $topic) {
+    $topic_names[] = $topic['topic_name'];
+    $topic_email_addresses[] = $topic['topic_email_address'];
+  }
+  $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
+  $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_email_addresses);
 }

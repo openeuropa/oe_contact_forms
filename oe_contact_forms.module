@@ -13,6 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 use Drupal\contact\ContactFormInterface;
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 
 /**
  * Implements hook_form_FORM_ID_alter() for contact_form_form().
@@ -386,6 +387,16 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
       $form[$field]['#access'] = FALSE;
     }
   }
+
+  $form['name']['#weight'] = 0;
+  $form['mail']['#weight'] = 1;
+  $form['subject']['#weight'] = 2;
+  $form['message']['#weight'] = 3;
+  $form['oe_topic']['#weight'] = 4;
+  $form['oe_country_residence']['#weight'] = 5;
+  $form['oe_telephone']['#weight'] = 6;
+  $form['copy']['#weight'] = 7;
+  $form['privacy_policy']['#weight'] = 8;
 }
 
 /**
@@ -474,4 +485,44 @@ function oe_contact_forms_entity_type_alter(array &$entity_types) {
   /* @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
   // Set the form handler class for messages to corporate implementation.
   $entity_types['contact_message']->setFormClass('corporate_default', '\Drupal\oe_contact_forms\ContactMessageForm');
+}
+
+/**
+ * Implements hook_entity_form_display_alter().
+ */
+function oe_contact_forms_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context) {
+  // Order the fields.
+  if ($context['entity_type'] == 'contact_message' && $context['form_mode'] == 'corporate_default') {
+    $form_display
+      ->setComponent('header', [
+        'weight' => -1,
+      ])
+      ->setComponent('name', [
+        'weight' => 0,
+      ])
+      ->setComponent('mail', [
+        'weight' => 1,
+      ])
+      ->setComponent('subject', [
+        'weight' => 2,
+      ])
+      ->setComponent('message', [
+        'weight' => 3,
+      ])
+      ->setComponent('oe_topic', [
+        'weight' => 4,
+      ])
+      ->setComponent('oe_country_residence', [
+        'weight' => 5,
+      ])
+      ->setComponent('oe_telephone', [
+        'weight' => 6,
+      ])
+      ->setComponent('copy', [
+        'weight' => 7,
+      ])
+      ->setComponent('privacy_policy', [
+        'weight' => 8,
+      ]);
+  }
 }

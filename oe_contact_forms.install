@@ -16,10 +16,3 @@ function oe_contact_forms_install() {
     \Drupal::service('oe_contact_forms.country_skos_setup')->setup();
   }
 }
-
-/**
- * Implements hook_uninstall().
- */
-function oe_contact_forms_uninstall() {
-  \Drupal::configFactory()->getEditable('core.entity_form_mode.contact_message.corporate_form')->delete();
-}

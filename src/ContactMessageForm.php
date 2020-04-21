@@ -57,4 +57,53 @@ class ContactMessageForm extends MessageForm {
     return $form;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function save(array $form, FormStateInterface $form_state): void {
+    $message = $this->entity;
+    $contact_form = $message->getContactForm();
+
+    // If the form is configured to include all the fields in the auto-reply,
+    // set the values after the auto-reply body,
+    // so they get included in the email as well.
+    $mail_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'mail');
+    $reply = $contact_form->getReply();
+    $reply .= "\n" . \Drupal::service('renderer')->render($mail_view);
+    $contact_form->setReply($reply);
+
+    // Set on the ContactMessage the configured subject.
+    $email_subject = $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject', FALSE);
+
+    if (!empty($email_subject)) {
+      $subject = $message->getSubject();
+      $message->setSubject($email_subject . ' - ' . $subject);
+    }
+
+    // Set the email recipient(s) based on the selected topic.
+    $recipients = $contact_form->getRecipients();
+    $topic_email_address = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_email_address', FALSE);
+    $selected_topics = $form_state->getValue('oe_topic')['0']['value'];
+
+    if (isset($topic_email_address[$selected_topics])) {
+      $topic_recipients = explode(',', $topic_email_address[$selected_topics]);
+      $recipients = array_merge($recipients, $topic_recipients);
+      $contact_form->setRecipients($recipients);
+    }
+
+    // Send the emails.
+    parent::save($form, $form_state);
+
+    // Apart from the confirmation message also include the following.
+    // Privacy notice.
+    $privacy_policy = $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', '');
+
+    if (!empty($privacy_policy)) {
+      $this->messenger()->addMessage($privacy_policy);
+    }
+    // The values of the submitted fields.
+    $full_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'full');
+    $this->messenger()->addMessage($full_view);
+  }
+
 }

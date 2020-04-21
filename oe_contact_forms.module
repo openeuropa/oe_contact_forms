@@ -9,7 +9,6 @@ declare(strict_types = 1);
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\contact\Entity\ContactForm;
-use Drupal\Core\Url;
 
 /**
  * Implements hook_form_FORM_ID_alter() for contact_form_form().
@@ -48,6 +47,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   ];
   $topic_names = [];
   $topic_email_addresses = [];
+
   if (NULL !== $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name')) {
     $topic_names = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name');
   }
@@ -55,9 +55,10 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     $topic_email_addresses = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_email_address');
   }
 
-  if (!empty($topic_names)) {
-    $num_topics = count($topic_names);
-  }
+  // todo: It breaks the ajax.
+//  if (!empty($topic_names)) {
+//    $num_topics = count($topic_names);
+//  }
 
   for ($i = 0; $i < $num_topics; $i++) {
     $form['topics_fieldset']['group'][$i]['topic_name'] = [

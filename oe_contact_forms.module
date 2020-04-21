@@ -387,16 +387,6 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
       $form[$field]['#access'] = FALSE;
     }
   }
-
-  $form['name']['#weight'] = 0;
-  $form['mail']['#weight'] = 1;
-  $form['subject']['#weight'] = 2;
-  $form['message']['#weight'] = 3;
-  $form['oe_topic']['#weight'] = 4;
-  $form['oe_country_residence']['#weight'] = 5;
-  $form['oe_telephone']['#weight'] = 6;
-  $form['copy']['#weight'] = 7;
-  $form['privacy_policy']['#weight'] = 8;
 }
 
 /**
@@ -405,7 +395,6 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
 function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_type) {
   if ($entity_type->id() == 'contact_message') {
     $fields = [];
-
 
     $fields['oe_country_residence'] = BaseFieldDefinition::create('skos_concept_entity_reference')
       ->setLabel(t('Country of residence'))

@@ -1,6 +1,6 @@
 # OpenEuropa Contact Forms
 
-The OpenEuropa Contact Forms project provides storage for Contact messages which are fully-fledged entities using Contact Storage and simple export operation automatically for messages from each created form.
+The OpenEuropa Contact Forms project provides storage for Contact messages in the form of fully-fledged entities using Contact Storage. This messages can then be automatically exported for each available Contact form.
 
 ## Permissions
 

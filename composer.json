@@ -1,6 +1,6 @@
 {
     "name": "openeuropa/oe_contact_forms",
-    "description": "OpenEuropa Drupal module template.",
+    "description": "OpenEuropa Contact Forms module.",
     "type": "drupal-module",
     "license": "EUPL-1.2",
     "minimum-stability": "dev",

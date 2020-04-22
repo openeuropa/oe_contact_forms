@@ -2,7 +2,7 @@
 
 /**
  * @file
- * OpenEuropa module.
+ * OpenEuropa Contact Forms module.
  */
 
 declare(strict_types = 1);

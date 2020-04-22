@@ -51,10 +51,25 @@ class MessageFormTest extends WebDriverTestBase {
 
   /**
    * Tests for corporate forms behaviour.
+   *
+   * Testing of corporate fields is already done
+   * in Drupal\Tests\oe_contact_forms\Kernel\BaseFieldTest,
+   * so here we test corporate form behaviour.
+   * The behaviour consists or adding privacy policy,
+   * setting fields in a specific order,
+   * hidding/showing optional fields,
+   * printing header value set in form config,
+   * setting topic field label defined in config,
+   * changing the email subject,
+   * adding email recipients as selected in topic field,
+   * adding field values in confirmation message,
+   * adding privacy text in confirmation message,
+   * adding field values in autoreply mail.
    */
   public function testCorporateForm(): void {
     $contact_form_id = 'oe_contact_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
+    $contact_form->setReply('this is a autoreply');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
     $topic_names = ['Agriculture', 'Business and industry'];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
@@ -125,7 +140,7 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Load captured emails to check.
     $captured_emails = $this->drupalGetMails();
-    $this->assertTrue(count($captured_emails) > 0);
+    $this->assertTrue(count($captured_emails) === 2);
 
     // Assert email subject.
     $this->assertTrue(strpos($captured_emails[0]['subject'], $email_subject) !== FALSE);
@@ -137,6 +152,44 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test subject') !== FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') !== FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], $topic_names[1]) !== FALSE);
+  }
+
+  /**
+   * Tests default form is not changed.
+   *
+   * Absence of corporate fields is already tested
+   * in Drupal\Tests\oe_contact_forms\Kernel\BaseFieldTest,
+   * so here we test that default form behaviour is not affected.
+   */
+  public function testDefaultFormNotChanged(): void {
+    $contact_form_id = 'default_form';
+    $contact_form = ContactForm::create(['id' => $contact_form_id]);
+    $contact_form->setRecipients(['test@test.com']);
+    $contact_form->setReply('this is a autoreply');
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
+    $contact_form->save();
+
+    // Access canonical url.
+    $this->drupalGet('contact/' . $contact_form_id);
+
+    // Submit the form.
+    $page = $this->getSession()->getPage();
+    $page->fillField('subject[0][value]', 'Test subject');
+    $page->fillField('message[0][value]', 'Test message');
+    $page->findButton('Send message')->click();
+
+    // Assert no confirmation message.
+    $this->assertSession()->elementNotExists('css', '.messages--status');
+
+    // Load captured emails to check.
+    $captured_emails = $this->drupalGetMails();
+    $this->assertTrue(count($captured_emails) === 2);
+
+    // Make sure we have an autoreply.
+    $this->assertTrue($captured_emails[1]['id'] === 'contact_page_autoreply');
+    // Assert fields in autoreply.
+    $this->assertTrue(strpos($captured_emails[1]['body'], 'Test subject') === FALSE);
+    $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') === FALSE);
   }
 
 }

@@ -4,7 +4,7 @@ The OpenEuropa Contact Forms project provides storage for Contact messages in th
 
 ## Permissions
 
-Granular permissions are exposed via contributed modules for handling contact forms and message entities:
+Granular permissions are exposed via contributed modules for handling contact forms and contact message entities:
 
 - View contact messages
 - Update contact messages

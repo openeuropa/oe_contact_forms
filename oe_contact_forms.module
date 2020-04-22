@@ -64,6 +64,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
     $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', 'Email Subject');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', '<h2>This is a test</h2><p>Lorem ipsum</p>');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', 'Lorem ipsum sint dolor');
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
   }
 }

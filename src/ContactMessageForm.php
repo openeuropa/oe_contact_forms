@@ -67,10 +67,14 @@ class ContactMessageForm extends MessageForm {
     // If the form is configured to include all the fields in the auto-reply,
     // set the values after the auto-reply body,
     // so they get included in the email as well.
-    $mail_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'mail');
     $reply = $contact_form->getReply();
-    $reply .= "\n" . \Drupal::service('renderer')->render($mail_view);
-    $contact_form->setReply($reply);
+    $includes_fields_in_auto_reply = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', FALSE);
+
+    if (!empty($reply) && $includes_fields_in_auto_reply === TRUE) {
+      $mail_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'mail');
+      $reply .= "\n" . \Drupal::service('renderer')->render($mail_view);
+      $contact_form->setReply($reply);
+    }
 
     // Set on the ContactMessage the configured subject.
     $email_subject = $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject', FALSE);

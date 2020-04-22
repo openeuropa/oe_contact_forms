@@ -56,9 +56,9 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
 
   if ($is_corporate_form === TRUE) {
     // Mock some topic values.
-    $topic_names = ['Agriculture', 'Business and industry', 'Competition'];
+    $topic_names = ['Agriculture', 'Business and industry'];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
-    $topic_emails = ['agri@test.com', 'business@test.com', 'competition@test.com'];
+    $topic_emails = ['agri@test.com', 'business@test.com'];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_emails);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', 'Topic label');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', 'Email Subject');

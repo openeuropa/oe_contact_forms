@@ -164,6 +164,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   ];
 
   $form['#entity_builders'][] = '_oe_contact_forms_contact_form_builder';
+  $form['#validate'][] = '_oe_contact_forms_email_validate';
 }
 
 /**
@@ -217,4 +218,33 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
 
   $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
   $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_email_addresses);
+}
+
+/**
+ * Validate topics email addresses if set.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form_state):void {
+  $topics_fieldset = $form_state->getValue('topics_fieldset');
+  $email_validator = \Drupal::service('email.validator');
+
+  foreach ($topics_fieldset['group'] as $delta => &$topic) {
+    if (empty($topic['topic_email_address'])) {
+      continue;
+    }
+    // Validate each email separately.
+    $recipients = explode(',', $topic['topic_email_address']);
+
+    foreach ($recipients as &$recipient) {
+      $recipient = trim($recipient);
+
+      if (!$email_validator->isValid($recipient)) {
+        $form_state->setErrorByName("topics_fieldset][group][$delta][topic_email_address", t('%recipient is an invalid email address.', ['%recipient' => $recipient]));
+      }
+    }
+  }
 }

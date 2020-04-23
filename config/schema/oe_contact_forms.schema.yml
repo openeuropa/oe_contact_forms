@@ -52,4 +52,4 @@ contact.form.*.third_party.oe_contact_forms:
       type: sequence
       label: 'Topic email address(es)'
       sequence:
-        type: string
+        type: email

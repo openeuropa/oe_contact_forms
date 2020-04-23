@@ -44,6 +44,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     '#title' => t('Topics'),
     '#prefix' => '<div id="topics-fieldset-wrapper">',
     '#suffix' => '</div>',
+    '#description' => t("Please select the topics and the associated email addresses the users can choose when submitting the form. For multiple email addresses, please separate them with a comma.")
   ];
   $topic_names = [];
   $topic_email_addresses = [];
@@ -58,7 +59,9 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   // todo: It breaks the ajax.
 //  if (!empty($topic_names)) {
 //    $num_topics = count($topic_names);
+//    $form_state->set('num_topics', $num_topics);
 //  }
+
 
   for ($i = 0; $i < $num_topics; $i++) {
     $form['topics_fieldset']['group'][$i]['topic_name'] = [

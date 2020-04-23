@@ -45,6 +45,7 @@ contact.form.*.third_party.oe_contact_forms:
     topic_name:
       type: sequence
       label: 'Topic name'
+      translatable: true
       sequence:
         type: string
     topic_email_address:

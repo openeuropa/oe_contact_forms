@@ -10,7 +10,7 @@ Corporate forms provide new configurable fields, out of the box:
 - Phone (Optional)
 - Topic (Optional)
 
-OE Contact forms exposes new permissions which restricts access to contact_form entities based on operation and corporate status, see [Permissions](#permissions).
+OE Contact forms exposes new permissions which restrict access to contact_form entities based on operation and corporate status, see [Permissions](#permissions).
 
 Corporate forms can be configured to denies access to canonical url (if the "Allow canonical URL" is set to FALSE) allowing only entry point to be the url alias if needed.
 

@@ -8,11 +8,11 @@ contact.form.*.third_party.oe_contact_forms:
       type: boolean
       label: 'Is corporate form'
     topic_label:
-      type: string
+      type: label
       label: 'Topic label'
       translatable: true
     email_subject:
-      type: string
+      type: label
       label: 'Email subject'
       translatable: true
     header:
@@ -47,7 +47,7 @@ contact.form.*.third_party.oe_contact_forms:
       label: 'Topic name'
       translatable: true
       sequence:
-        type: string
+        type: label
     topic_email_address:
       type: sequence
       label: 'Topic email address(es)'

@@ -56,6 +56,9 @@
             "build/themes/contrib/{$name}": ["type:drupal-theme"]
         },
         "patches": {
+            "drupal/core": {
+              "https://www.drupal.org/project/drupal/issues/1091852": "https://www.drupal.org/files/issues/2019-11-19/1091852-104.patch"
+            },
             "drupal/contact_storage": {
                 "https://www.drupal.org/project/contact_storage/issues/2708809": "https://www.drupal.org/files/issues/2020-04-07/revisit_permissions-2708809-56.patch"
             },

@@ -16,7 +16,7 @@ Corporate forms can be configured to denies access to canonical url (if the "All
 
 The display of corporate forms is controlled and provide a configurable header text, a privacy policy required checkbox and text, and above mentioned fields (country and phone if set, topic label and options are configurable).
 
-Corporate forms have a tailored behaviour, once the mandatory fields are filled out and the form is submitted, the confirmation message will include the privacy policy test and the submitted field values. The email sent will have the subject altered (configurable) and email recipients added in conformity with the topic chosen (multiple recipients can be configured). If auto-reply is configured the email body of the auto-reply will include the submitted field values.
+Corporate forms have a tailored behaviour, once the mandatory fields are filled out and the form is submitted, the confirmation message will include the privacy policy text and the submitted field values. The email sent will have the subject altered (configurable) and email recipients added in conformity with the topic chosen (multiple recipients can be configured). If auto-reply is configured the email body of the auto-reply will include the submitted field values.
 Corporate forms can be configured to be exposed as blocks.
 
 The OpenEuropa Contact Forms project provides storage for Contact messages in the form of fully-fledged entities using Contact Storage. The messages can then be automatically exported for each available Contact form.

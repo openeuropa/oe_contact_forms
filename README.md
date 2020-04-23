@@ -1,11 +1,30 @@
 # OpenEuropa Contact Forms
 
+This is a Drupal module that contains the European Commission corporate forms.
+
+OE Contact forms are an extension to drupal core contact forms, by providing corporate specific configuration on the contact form creation page.
+
+Corporate forms provide new configurable fields, out of the box:
+
+- Country of residence - Skos reference to the Country vocabulary
+- Phone
+- Topic
+
+OE Contact forms exposes new permissions which restricts access to contact_form entities based on operation and corporate status, see [Permissions](#requirements).
+Corporate forms can be configured to denies access to canonical url (if the "Allow canonical URL" is set to FALSE) allowing only entry point to be the url alias if needed.
+
+The display of corporate forms is controlled and provide a configurable header text, a privacy policy required checkbox and text, above mentioned fields (country and phone if set, topic label and options are configurable).
+
+Corporate forms have a tailored behaviour, once the mandatory fields are filled out and the form is submitted, the confirmation message will include the privacy policy test and the submitted field values. The email sent will have to subject altered (configurable) and email recipients added in conformity with the topic chosen (multiple recipients can be configured). If auto-reply is configured the email body of the auto-reply will include the submitted field values.
+Corporate forms can be configured to be exposed as blocks.
+
 The OpenEuropa Contact Forms project provides storage for Contact messages in the form of fully-fledged entities using Contact Storage. This messages can then be automatically exported for each available Contact form.
 
 ## Permissions
 
 Granular permissions are exposed via contributed modules for handling contact forms and contact message entities:
 
+- Access corporate contact form
 - View contact messages
 - Update contact messages
 - Delete contact messages

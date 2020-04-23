@@ -37,7 +37,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     '#title' => t('Topics'),
     '#prefix' => '<div id="topics-fieldset-wrapper">',
     '#suffix' => '</div>',
-    '#description' => t("Please select the topics and the associated email addresses the users can choose when submitting the form. For multiple email addresses, please separate them with a comma.")
+    '#description' => t("Please select the topics and the associated email addresses the users can choose when submitting the form. For multiple email addresses, please separate them with a comma."),
   ];
   $topic_names = [];
   $topic_email_addresses = [];
@@ -62,7 +62,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     $num_topics = $n;
   }
 
-  $form_state->set('num_topics', $num_topics);  
+  $form_state->set('num_topics', $num_topics);
 
   for ($i = 0; $i < $num_topics; $i++) {
     $form['topics_fieldset']['group'][$i]['topic_name'] = [
@@ -163,8 +163,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'optional_fields'),
   ];
 
-  $form['#entity_builders'][] = 'oe_contact_forms_builder';
-
+  $form['#entity_builders'][] = '_oe_contact_forms_contact_form_builder';
 }
 
 /**
@@ -185,14 +184,18 @@ function oe_contact_forms_add_one_callback(array &$form, FormStateInterface $for
 }
 
 /**
- * OE contact forms builder.
+ * Entity builder for the contact form edit form with third party options.
  *
  * @param string $entity_type
- * @param \Drupal\contact\Entity\ContactForm $contact_form
+ *   The contact form entity.
+ * @param \Drupal\contact\ContactFormInterface $contact_form
+ *   The contact form entity.
  * @param array $form
- * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
  */
-function oe_contact_forms_builder(string $entity_type, ContactForm $contact_form, array &$form, FormStateInterface $form_state): void {
+function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, array &$form, FormStateInterface $form_state): void {
   $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $form_state->getValue('is_corporate_form'));
   $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $form_state->getValue('topic_label'));
   $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $form_state->getValue('email_subject'));
@@ -206,10 +209,12 @@ function oe_contact_forms_builder(string $entity_type, ContactForm $contact_form
   $topics_fieldset = $form_state->getValue('topics_fieldset');
   $topic_names = [];
   $topic_email_addresses = [];
+
   foreach ($topics_fieldset['group'] as $topic) {
     $topic_names[] = $topic['topic_name'];
     $topic_email_addresses[] = $topic['topic_email_address'];
   }
+
   $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
   $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_email_addresses);
 }

@@ -1,5 +1,7 @@
 # OpenEuropa Contact Forms
 
+This is a Drupal module that is an extension to drupal core contact forms and defines the European Commission corporate forms.
+
 The OpenEuropa Contact Forms project provides storage for Contact messages in the form of fully-fledged entities using Contact Storage. This messages can then be automatically exported for each available Contact form.
 
 ## Permissions

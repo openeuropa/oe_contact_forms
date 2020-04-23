@@ -239,12 +239,17 @@ function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form
     // Validate each email separately.
     $recipients = explode(',', $topic['topic_email_address']);
 
-    foreach ($recipients as &$recipient) {
+    foreach ($recipients as $key => &$recipient) {
       $recipient = trim($recipient);
 
       if (!$email_validator->isValid($recipient)) {
         $form_state->setErrorByName("topics_fieldset][group][$delta][topic_email_address", t('%recipient is an invalid email address.', ['%recipient' => $recipient]));
       }
     }
+    
+    $topic['topic_email_address'] = implode(',', $recipients);
   }
+
+  // Set trimmed values.
+  $form_state->setValue('topics_fieldset', $topics_fieldset);
 }

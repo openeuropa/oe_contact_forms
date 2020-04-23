@@ -361,13 +361,6 @@ function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form
 }
 
 /**
- * Implements hook_entity_type_alter().
- */
-function oe_contact_forms_entity_type_alter(array &$entity_types) {
-  
-}
-
-/**
  * Implements hook_form_FORM_ID_alter().
  */
 function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInterface $form_state, $form_id) {

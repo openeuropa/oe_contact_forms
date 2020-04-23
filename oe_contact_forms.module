@@ -51,7 +51,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   if (NULL !== $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name')) {
     $topic_names = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name');
   }
-  if (NULL !== $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name')) {
+  if (NULL !== $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_email_address')) {
     $topic_email_addresses = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_email_address');
   }
 

@@ -4,26 +4,21 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_contact_forms\Kernel;
 
-use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\rdf_entity\Kernel\RdfKernelTestBase;
 
 /**
- * Base class for Kernel tests that test translation functionality.
+ * Base test class for contact form kernel tests.
  */
-class ContactFormsKernelTestBase extends KernelTestBase {
+class ContactFormTestBase extends RdfKernelTestBase {
 
   /**
    * {@inheritdoc}
    */
   public static $modules = [
-    'user',
-    'system',
-    'field',
     'options',
-    'views',
     'telephone',
     'contact',
     'contact_storage',
-    'rdf_entity',
     'rdf_skos',
     'oe_contact_forms',
   ];
@@ -33,11 +28,7 @@ class ContactFormsKernelTestBase extends KernelTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
-
     $this->installEntitySchema('contact_message');
-    $this->installConfig(['field', 'system']);
-    module_load_include('install', 'oe_contact_forms');
-    oe_contact_forms_install();
   }
 
 }

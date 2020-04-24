@@ -7,7 +7,6 @@
 
 declare(strict_types = 1);
 
-use Drupal\contact\MessageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Form\FormStateInterface;
@@ -15,6 +14,8 @@ use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 use Drupal\contact\ContactFormInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Implements hook_form_FORM_ID_alter() for contact_form_form().
@@ -47,14 +48,12 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       'callback' => '_oe_contact_forms_is_corporate_form_ajax_callback',
       'wrapper' => 'corporate-fields-wrapper',
     ],
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject'),
   ];
   $form['corporate_fields'] = [
     '#type' => 'container',
     '#attributes' => [
       'id' => ['corporate-fields-wrapper'],
     ],
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy'),
   ];
 
   if ($is_corporate_form) {
@@ -251,7 +250,6 @@ function _oe_contact_forms_remove_callback(array &$form, FormStateInterface $for
   $form_state->setRebuild();
 }
 
-
 /**
  * Ajax callback: Return markup for 'corporate_fields'.
  *
@@ -375,6 +373,7 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
   $contact_message = $form_object->getEntity();
   /** @var \Drupal\contact\Entity\ContactForm $contact_form */
   $contact_form = ContactForm::load($contact_message->bundle());
+
   // We only want corporate fields on corporate forms.
   if (!$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
     $fields = ['oe_country_residence', 'oe_telephone', 'oe_topic'];
@@ -395,24 +394,22 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
   if ($entity_type->id() == 'contact_message') {
     $fields = [];
 
-    $handler_settings = [
-      'target_bundles' => NULL,
-      'auto_create' => FALSE,
-      'concept_schemes' => [
-        'http://publications.europa.eu/resource/authority/country',
-      ],
-    ];
-
     $fields['oe_country_residence'] = BaseFieldDefinition::create('skos_concept_entity_reference')
       ->setLabel(t('Country of residence'))
       ->setSetting('target_type', 'skos_concept')
       ->setSetting('handler', 'default:skos_concept')
-      ->setSetting('handler_settings', $handler_settings)
+      ->setSetting('handler_settings', [
+        'target_bundles' => NULL,
+        'auto_create' => FALSE,
+        'concept_schemes' => [
+          'http://publications.europa.eu/resource/authority/country',
+        ],
+      ])
       ->setDisplayOptions('form', [
-        'weight' => -1,
+        'type' => 'skos_concept_entity_reference_autocomplete',
       ])
       ->setDisplayOptions('view', [
-        'weight' => -1,
+        'weight' => 0,
       ]);
 
     $fields['oe_telephone'] = BaseFieldDefinition::create('telephone')
@@ -422,20 +419,19 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
         'max_length' => 255,
       ])
       ->setDisplayOptions('form', [
-        'weight' => -1,
+        'type' => 'tel',
       ])
       ->setDisplayOptions('view', [
-        'weight' => -1,
+        'weight' => 0,
       ]);
 
     $fields['oe_topic'] = BaseFieldDefinition::create('list_string')
       ->setLabel(t('Topic'))
       ->setDisplayOptions('form', [
         'type' => 'options_select',
-        'weight' => -1,
       ])
       ->setDisplayOptions('view', [
-        'weight' => -1,
+        'weight' => 0,
       ])
       ->setSetting('allowed_values_function', '_oe_contact_forms_topic_values')
       ->setRequired(TRUE);
@@ -545,25 +541,28 @@ function oe_contact_forms_mail_alter(&$message) {
 }
 
 /**
- * Implements hook_ENTITY_TYPE_access().
+ * Implements hook_ENTITY_TYPE_create_access().
  */
-function oe_contact_forms_contact_form_access(EntityInterface $entity, $operation, AccountInterface $account) {
-  // Deny access to corporate forms if user has not the permission.
-  $permission_name = 'access corporate contact form';
-  if ($operation === 'view' && $entity->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE) && $entity->access($permission_name) && !$account->hasPermission($permission_name)) {
-    return AccessResult::forbidden();
+function oe_contact_forms_contact_message_create_access(AccountInterface $account, array $context, $entity_bundle) {
+  if (!$entity_bundle) {
+    return AccessResult::neutral();
   }
-}
 
-//function addmoreCallback(array &$form, FormStateInterface $form_state): array {
-//  \Drupal::logger('my_module')->notice('addmore');
-//  return $form['topics_fieldset'];
-//}
-//
-//function addOneCallback(array &$form, FormStateInterface $form_state) {
-//  \Drupal::logger('my_module')->notice('addone');
-//  $topics_field = $form_state->get('num_topics');
-//  $add_button = $topics_field + 1;
-//  $form_state->set('num_topics', $add_button);
-//  $form_state->setRebuild();
-//}
+  /** @var \Drupal\contact\Entity\ContactForm $contact_form */
+  $contact_form = ContactForm::load($entity_bundle);
+
+  if (!$contact_form) {
+    return AccessResult::neutral();
+  }
+
+  // Leave default contact forms untouched.
+  if (!$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
+    return AccessResult::neutral()->addCacheableDependency($contact_form);
+  }
+
+  if ($account->hasPermission('access corporate contact form')) {
+    return AccessResult::allowed()->cachePerPermissions()->addCacheTags($contact_form->getCacheTags());
+  }
+
+  return AccessResult::forbidden()->cachePerPermissions();
+}

@@ -1,10 +1,12 @@
 # OpenEuropa Contact Forms
 
+This is a Drupal module that is an extension to drupal core contact forms and defines the European Commission corporate forms.
+
 The OpenEuropa Contact Forms project provides storage for Contact messages in the form of fully-fledged entities using Contact Storage. This messages can then be automatically exported for each available Contact form.
 
 ## Usage
 
-Corporate contact form behaviour can be enabled on the contact form add/edit page, allowing form fields, confirmation message and email values to be defined.
+Corporate contact form behaviour can be enabled on the contact form add/edit page, allowing form fields, confirmation message and email values to be defined. 
 
 ## Permissions
 
@@ -48,17 +50,17 @@ The development site web root should be available in the `build` directory.
 
 ### Using Docker Compose
 
-Alternatively, you can build a development site using [Docker](https://www.docker.com/get-docker) and
+Alternatively, you can build a development site using [Docker](https://www.docker.com/get-docker) and 
 [Docker Compose](https://docs.docker.com/compose/) with the provided configuration.
 
-Docker provides the necessary services and tools such as a web server and a database server to get the site running,
+Docker provides the necessary services and tools such as a web server and a database server to get the site running, 
 regardless of your local host configuration.
 
 #### Configuration
 
 By default, Docker Compose reads two files, a `docker-compose.yml` and an optional `docker-compose.override.yml` file.
 By convention, the `docker-compose.yml` contains your base configuration and it's provided by default.
-The override file, as its name implies, can contain configuration overrides for existing services or entirely new
+The override file, as its name implies, can contain configuration overrides for existing services or entirely new 
 services.
 If a service is defined in both files, Docker Compose merges the configurations.
 

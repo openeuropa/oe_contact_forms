@@ -54,6 +54,7 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
     $contact_form->setReply('this is a autoreply');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', TRUE);
     $topic_label = 'Topic label';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $topic_label);
     $email_subject = 'Email Subject';

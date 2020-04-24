@@ -22,6 +22,8 @@ class ContactFormRouteSubscriber extends RouteSubscriber {
     if ($route = $collection->get('entity.contact_form.canonical')) {
       // Change the contact_form controller.
       $route->setDefault('_controller', CorporateContactFormController::class . '::contactSitePage');
+      // Add access check.
+      $route->setRequirements(['_oe_contact_forms_access_check' => 'TRUE']);
     }
   }
 

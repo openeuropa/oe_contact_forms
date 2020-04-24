@@ -1,8 +1,7 @@
 # Schema for the configuration files of the OE Contact Forms module.
-
 contact.form.*.third_party.oe_contact_forms:
   type: mapping
-  label: 'OE Contact Forms settings'
+  label: 'Contact form corporate fields'
   mapping:
     is_corporate_form:
       type: boolean

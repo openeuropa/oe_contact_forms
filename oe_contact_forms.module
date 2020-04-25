@@ -39,16 +39,9 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     '#suffix' => '</div>',
     '#description' => t("Please select the topics and the associated email addresses the users can choose when submitting the form. For multiple email addresses, please separate them with a comma."),
   ];
-  $topic_names = [];
-  $topic_email_addresses = [];
 
-  if (NULL !== $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name')) {
-    $topic_names = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name');
-  }
-  if (NULL !== $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_email_address')) {
-    $topic_email_addresses = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_email_address');
-  }
-
+  $topic_names = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name', []);
+  $topic_email_addresses = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_email_address', []);
   $num_topics = $form_state->get('num_topics');
   $n = count($topic_names);
 
@@ -92,14 +85,22 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   ];
   $form['topics_fieldset']['actions']['add_topic'] = [
     '#type' => 'submit',
-    '#value' => t('Add more'),
+    '#value' => t('Add topic'),
     '#submit' => ['oe_contact_forms_add_one_callback'],
     '#ajax' => [
       'callback' => 'oe_contact_forms_add_more_callback',
       'wrapper' => 'topics-fieldset-wrapper',
     ],
   ];
-
+  $form['topics_fieldset']['actions']['remove_topic'] = [
+    '#type' => 'submit',
+    '#value' => t('Remove topic'),
+    '#submit' => ['oe_contact_forms_remove_callback'],
+    '#ajax' => [
+      'callback' => 'oe_contact_forms_add_more_callback',
+      'wrapper' => 'topics-fieldset-wrapper',
+    ],
+  ];
   $form['topic_label'] = [
     '#type' => 'textfield',
     '#title' => t('Topic label'),
@@ -169,6 +170,11 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
 
 /**
  * Default ajax callback for Topics.
+ * 
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
  */
 function oe_contact_forms_add_more_callback(array &$form, FormStateInterface $form_state): array {
   return $form['topics_fieldset'];
@@ -176,11 +182,35 @@ function oe_contact_forms_add_more_callback(array &$form, FormStateInterface $fo
 
 /**
  * Add one more element to the form based on ajax.
+ * 
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
  */
 function oe_contact_forms_add_one_callback(array &$form, FormStateInterface $form_state): void {
-  $topic_field = $form_state->get('num_topics');
-  $add_button = $topic_field + 1;
-  $form_state->set('num_topics', $add_button);
+  $num_topics = $form_state->get('num_topics');
+  $num_topics++;
+  $form_state->set('num_topics', $num_topics);
+  $form_state->setRebuild();
+}
+
+/**
+ * Add one more element to the form based on ajax.
+ * 
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function oe_contact_forms_remove_callback(array &$form, FormStateInterface $form_state): void {
+  $num_topics = $form_state->get('num_topics');
+
+  if ($num_topics > 1) {
+    $num_topics--;
+  }
+
+  $form_state->set('num_topics', $num_topics);
   $form_state->setRebuild();
 }
 

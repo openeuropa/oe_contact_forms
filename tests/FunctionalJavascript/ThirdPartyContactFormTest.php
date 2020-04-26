@@ -49,7 +49,7 @@ class ThirdPartyContactFormTest extends WebDriverTestBase {
   public function testAddForm(): void {
     $this->drupalGet(Url::fromRoute('contact.form_add'));
     $page = $this->getSession()->getPage();
-    $page->fillField('Label', 'My form label');
+    $page->fillField('Label', 'My form');
     $page->fillField('Recipients', 'test@test.com');
     $page->fillField('Topic name', 'my topic name');
     $page->fillField('Topic email address(es)', 'example@example.com');

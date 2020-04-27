@@ -282,16 +282,16 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
     $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', $form_state->getValue('allow_canonical_url'));
     $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', $form_state->getValue('expose_as_block'));
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $form_state->getValue('optional_fields'));
-  
+
     $topics_fieldset = $form_state->getValue('topics_fieldset');
     $topic_names = [];
     $topic_email_addresses = [];
-  
+
     foreach ($topics_fieldset['group'] as $topic) {
       $topic_names[] = $topic['topic_name'];
       $topic_email_addresses[] = $topic['topic_email_address'];
     }
-  
+
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_email_addresses);
   }

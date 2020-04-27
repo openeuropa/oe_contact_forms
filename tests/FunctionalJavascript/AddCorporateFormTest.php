@@ -51,6 +51,7 @@ class AddCorporateFormTest extends WebDriverTestBase {
 
     /** @var \Behat\Mink\WebAssert $assert */
     $assert = $this->assertSession();
+    /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
 
     // Assert new form fields are hidden at first.

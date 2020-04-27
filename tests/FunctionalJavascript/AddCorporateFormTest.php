@@ -4,21 +4,15 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 
-use Drupal\Core\Url;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
  * Test Thirdparty settings on contact forms.
  */
-class ThirdPartyContactFormTest extends WebDriverTestBase {
+class AddCorporateFormTest extends WebDriverTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'seven';
-
-  /**
-   * An test user with permission to submit contact forms.
+   * An test user with permission to create contact forms.
    *
    * @var \Drupal\user\UserInterface
    */
@@ -29,7 +23,6 @@ class ThirdPartyContactFormTest extends WebDriverTestBase {
    */
   public static $modules = [
     'user',
-    'system',
     'oe_contact_forms',
   ];
 
@@ -41,17 +34,20 @@ class ThirdPartyContactFormTest extends WebDriverTestBase {
 
     // Create and login test user.
     $this->testuser = $this->drupalCreateUser([
-      'view the administration theme',
       'administer contact forms',
     ]);
     $this->drupalLogin($this->testuser);
   }
 
   /**
-   * Tests the contact add form.
+   * Tests the corporate field requirements.
+   *
+   * First we test requirements for state dependent fields,
+   * then we test the ajax add and remove,
+   * finally we submit and see if values are saved.
    */
-  public function testAddForm(): void {
-    $this->drupalGet(Url::fromRoute('contact.form_add'));
+  public function testAddCorporateForm(): void {
+    $this->drupalGet('admin/structure/contact/add');
 
     /** @var \Behat\Mink\WebAssert $assert */
     $assert = $this->assertSession();
@@ -118,25 +114,86 @@ class ThirdPartyContactFormTest extends WebDriverTestBase {
 
     // Add contact required values.
     $page->fillField('label', 'Corporate form');
-    $assert->waitForElementVisible('css', '.admin-link .link', 1);
-    $this->createScreenshot('/var/www/html/AAA.png');
-    $edit = $page->find('css', '.admin-link .link');
-    $this->assertNotEmpty($edit);
-    $this->assertTrue($edit->isVisible());
-    $edit->click();
-    $page->fillField('id', 'oe_corporate_form');
     $page->fillField('recipients', 'test@example.com');
+    // Overcome machine name not accessible.
+    $this->getSession()->executeScript('jQuery("#edit-id").val("oe_corporate_form");');
 
     // Test ajax.
     $topic_name->setValue('First option');
     $topic_email_address->setValue('first@email.com');
+
+    // Test add topic group.
     $add_topic = $page->find('css', 'input[value="Add topic"]');
     $this->assertNotEmpty($add_topic);
     $add_topic->click();
     $assert->assertWaitOnAjaxRequest();
-    $this->createScreenshot('/var/www/html/AAA.png');
-    // $page->pressButton('Add more');
-    // $page->pressButton('Save');
+    $topic_name2 = $page->findField('topics_fieldset[group][1][topic_name]');
+    $this->assertNotEmpty($topic_name2);
+    $topic_email_address2 = $page->findField('topics_fieldset[group][1][topic_email_address]');
+    $this->assertNotEmpty($topic_email_address2);
+
+    // Test remove topic group.
+    $remove_topic = $page->find('css', 'input[value="Remove topic"]');
+    $this->assertNotEmpty($remove_topic);
+    $remove_topic->click();
+    $assert->assertWaitOnAjaxRequest();
+    $topic_name2 = $page->findField('topics_fieldset[group][1][topic_name]');
+    $this->assertEmpty($topic_name2);
+    $topic_email_address2 = $page->findField('topics_fieldset[group][1][topic_email_address]');
+    $this->assertEmpty($topic_email_address2);
+
+    // Add remaining field values and submit form.
+    $topic_label->setValue('Topic label');
+    $email_subject->setValue('Email subject');
+    $header->setValue('Header text');
+    $privacy_policy->setValue('Privacy text');
+    $includes_fields_in_auto_reply->check();
+    $allow_canonical_url->check();
+    // For expose_as_block default is true so we test false.
+    $expose_as_block->uncheck();
+    $oe_country_residence->check();
+    $oe_telephone->check();
+    $page->pressButton('Save');
+    $assert->pageTextContains('Contact form Corporate form has been added.');
+
+    // Amazing, now assert the values are saved.
+    $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
+    $is_corporate_form = $page->findField('is_corporate_form');
+    $this->assertNotEmpty($is_corporate_form);
+    $this->assertTrue($is_corporate_form->isChecked());
+    $topic_name = $page->findField('topics_fieldset[group][0][topic_name]');
+    $this->assertNotEmpty($topic_name);
+    $this->assertEquals('First option', $topic_name->getValue());
+    $topic_email_address = $page->findField('topics_fieldset[group][0][topic_email_address]');
+    $this->assertNotEmpty($topic_email_address);
+    $this->assertEquals('first@email.com', $topic_email_address->getValue());
+    $topic_label = $page->findField('topic_label');
+    $this->assertNotEmpty($topic_label);
+    $this->assertEquals('Topic label', $topic_label->getValue());
+    $email_subject = $page->findField('email_subject');
+    $this->assertNotEmpty($email_subject);
+    $this->assertEquals('Email subject', $email_subject->getValue());
+    $header = $page->findField('header');
+    $this->assertNotEmpty($header);
+    $this->assertEquals('Header text', $header->getValue());
+    $privacy_policy = $page->findField('privacy_policy');
+    $this->assertNotEmpty($privacy_policy);
+    $this->assertEquals('Privacy text', $privacy_policy->getValue());
+    $includes_fields_in_auto_reply = $page->findField('includes_fields_in_auto_reply');
+    $this->assertNotEmpty($includes_fields_in_auto_reply);
+    $this->assertTrue($includes_fields_in_auto_reply->isChecked());
+    $allow_canonical_url = $page->findField('allow_canonical_url');
+    $this->assertNotEmpty($allow_canonical_url);
+    $this->assertTrue($allow_canonical_url->isChecked());
+    $expose_as_block = $page->findField('expose_as_block');
+    $this->assertNotEmpty($expose_as_block);
+    $this->assertFalse($expose_as_block->isChecked());
+    $oe_country_residence = $page->findField('optional_fields[oe_country_residence]');
+    $this->assertNotEmpty($oe_country_residence);
+    $this->assertTrue($oe_country_residence->isChecked());
+    $oe_telephone = $page->findField('optional_fields[oe_telephone]');
+    $this->assertNotEmpty($oe_telephone);
+    $this->assertTrue($oe_telephone->isChecked());
   }
 
 }

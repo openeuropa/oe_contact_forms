@@ -28,13 +28,18 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     '#type' => 'checkbox',
     '#title' => t('Is corporate form'),
     '#description' => t("Check this box if you'd like to make this a corporate form."),
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form'),
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE),
   ];
 
   $form['#tree'] = TRUE;
   $form['topics_fieldset'] = [
     '#type' => 'fieldset',
     '#title' => t('Topics'),
+    '#states' => [
+      'visible' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
+    ],
     '#prefix' => '<div id="topics-fieldset-wrapper">',
     '#suffix' => '</div>',
     '#description' => t("Please select the topics and the associated email addresses the users can choose when submitting the form. For multiple email addresses, please separate them with a comma."),
@@ -105,7 +110,12 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     '#type' => 'textfield',
     '#title' => t('Topic label'),
     '#description' => t("Please specify the label for the Topics field. Leave empty for the default: 'Topic'."),
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_label'),
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_label', ''),
+    '#states' => [
+      'visible' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
+    ],
   ];
   $form['email_subject'] = [
     '#type' => 'textfield',
@@ -115,14 +125,22 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       'required' => [
         ':input[name="is_corporate_form"]' => ['checked' => TRUE],
       ],
+      'visible' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
     ],
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject'),
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject', ''),
   ];
   $form['header'] = [
     '#type' => 'textarea',
     '#title' => t('Header'),
     '#description' => t("Please specify the text to be displayed above the contact form for users that submit it."),
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'header'),
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'header', ''),
+    '#states' => [
+      'visible' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
+    ],
   ];
   $form['privacy_policy'] = [
     '#type' => 'textarea',
@@ -132,26 +150,45 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       'required' => [
         ':input[name="is_corporate_form"]' => ['checked' => TRUE],
       ],
+      'visible' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
     ],
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy'),
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', ''),
   ];
   $form['includes_fields_in_auto_reply'] = [
     '#type' => 'checkbox',
     '#title' => t('Includes fields in auto-reply'),
     '#description' => t("Check this box if you would like to include in the auto-reply also the values submitted by the user."),
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply'),
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', FALSE),
+    '#states' => [
+      'visible' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+        ':input[name="reply[value]"]' => ['filled' => TRUE],
+      ],
+    ],
   ];
   $form['allow_canonical_url'] = [
     '#type' => 'checkbox',
     '#title' => t('Allow canonical URL'),
     '#description' => t("Check this box if you would like this contact form to be exposed at its default canonical URL."),
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'allow_canonical_url'),
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'allow_canonical_url', FALSE),
+    '#states' => [
+      'visible' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
+    ],
   ];
   $form['expose_as_block'] = [
     '#type' => 'checkbox',
     '#title' => t('Expose as block'),
     '#description' => t("Check this box if you would like to expose this contact form as a block."),
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'expose_as_block'),
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'expose_as_block', TRUE),
+    '#states' => [
+      'visible' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
+    ],
   ];
   $form['optional_fields'] = [
     '#type' => 'checkboxes',
@@ -161,7 +198,12 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       'oe_telephone' => t('Phone'),
     ],
     '#description' => t("Please specify which optional fields you'd like to include in the form."),
-    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'optional_fields'),
+    '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'optional_fields', []),
+    '#states' => [
+      'visible' => [
+        ':input[name="is_corporate_form"]' => ['checked' => TRUE],
+      ],
+    ],
   ];
 
   $form['#entity_builders'][] = '_oe_contact_forms_contact_form_builder';

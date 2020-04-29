@@ -24,9 +24,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
 
   /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $form_object->getEntity();
-  $is_corporate_form = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
-  $is_corporate_form_state = $form_state->getValue('is_corporate_form');
-  $is_corporate_form = ($is_corporate_form_state === NULL) ? $is_corporate_form : (boolean) $is_corporate_form_state;
+  $is_corporate_form = (boolean) ($form_state->getValue('is_corporate_form') ?? $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE));
 
   // Adding checkbox with ajax callback that managed addionals fields.
   $form['is_corporate_form'] = [
@@ -35,7 +33,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     '#description' => t("Check this box if you'd like to make this a corporate form."),
     '#default_value' => $is_corporate_form,
     '#ajax' => [
-      'callback' => '_oe_contact_forms_is_corporate_form_callback',
+      'callback' => '_oe_contact_forms_is_corporate_form_ajax_callback',
       'wrapper' => 'corporate-fields-wrapper',
     ],
   ];
@@ -46,7 +44,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     ],
   ];
 
-  if ($is_corporate_form === TRUE) {
+  if ($is_corporate_form) {
     $form['corporate_fields']['topics_fieldset'] = [
       '#type' => 'fieldset',
       '#title' => t('Topics'),
@@ -172,38 +170,6 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   $form['actions']['submit']['#submit'][] = '_oe_contact_forms_contact_form_submit';
 }
 
-function _oe_contact_forms_contact_form_submit(array &$form, FormStateInterface $form_state) {
-  /** @var \Drupal\contact\ContactFormInterface $contact_form */
-  $contact_form = $form_state->getFormObject()->getEntity();
-
-  $is_corporate_form = (boolean) $form_state->getValue('is_corporate_form');
-  $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
-
-  if ($is_corporate_form === TRUE) {
-    $values = $form_state->getValue('corporate_fields');
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $values['topic_label']);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $values['email_subject']);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $values['header']);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $values['privacy_policy']);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', $values['includes_fields_in_auto_reply']);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', $values['allow_canonical_url']);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', $values['expose_as_block']);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $values['optional_fields']);
-
-    $topics_fieldset = $values['topics_fieldset'];
-    $topic_names = [];
-    $topic_email_addresses = [];
-
-    foreach ($topics_fieldset['group'] as $topic) {
-      $topic_names[] = $topic['topic_name'];
-      $topic_email_addresses[] = $topic['topic_email_address'];
-    }
-
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_email_addresses);
-  }
-}
-
 /**
  * Default ajax callback for Topics.
  *
@@ -251,14 +217,16 @@ function _oe_contact_forms_remove_callback(array &$form, FormStateInterface $for
 }
 
 /**
- * Add one more element to the $form according 'is_corporate_form' value.
+ * Ajax callback: Return markup for 'corporate_fields'.
+ * 
+ * According 'is_corporate_form' value.
  *
  * @param array $form
  *   The form.
  * @param Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
  */
-function _oe_contact_forms_is_corporate_form_callback(array &$form, FormStateInterface $form_state): array {
+function _oe_contact_forms_is_corporate_form_ajax_callback(array &$form, FormStateInterface $form_state): array {
   return $form['corporate_fields'];
 }
 
@@ -275,10 +243,48 @@ function _oe_contact_forms_is_corporate_form_callback(array &$form, FormStateInt
  *   The form state.
  */
 function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, array &$form, FormStateInterface $form_state): void {
-  $is_corporate_form = (boolean) $form_state->getValue('is_corporate_form');
+  if ((boolean) $form_state->getValue('is_corporate_form')) {
+    $topic_names = [];
+    $topic_email_addresses = [];
 
-  if ($is_corporate_form === TRUE) {
+    foreach ($form_state->getValue('corporate_fields')['topics_fieldset']['group'] as $topic) {
+      $topic_names[] = $topic['topic_name'];
+      $topic_email_addresses[] = $topic['topic_email_address'];
+    }
+
+    if (!empty($topic_names)) {
+      $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
+      $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_email_addresses);
+    }
+  }
+}
+
+/**
+ * Submit callback for 'contact_form' entity: Manage custom fields data.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _oe_contact_forms_contact_form_submit(array &$form, FormStateInterface $form_state) {
+  /** @var \Drupal\contact\ContactFormInterface $contact_form */
+  $contact_form = $form_state->getFormObject()->getEntity();
+
+  $is_corporate_form = (boolean) $form_state->getValue('is_corporate_form');
+  $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
+
+  if ($is_corporate_form) {
     $values = $form_state->getValue('corporate_fields');
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $values['topic_label']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $values['email_subject']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $values['header']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $values['privacy_policy']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', $values['includes_fields_in_auto_reply']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', $values['allow_canonical_url']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', $values['expose_as_block']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $values['optional_fields']);
+
     $topics_fieldset = $values['topics_fieldset'];
     $topic_names = [];
     $topic_email_addresses = [];
@@ -288,10 +294,10 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
       $topic_email_addresses[] = $topic['topic_email_address'];
     }
 
-    if (!empty($topic_names)) {
-      $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
-      $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_email_addresses);
-    }
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_email_addresses);
+    // Save the changes.
+    $contact_form->save();
   }
 }
 

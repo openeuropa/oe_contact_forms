@@ -12,7 +12,7 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 class AddCorporateFormTest extends WebDriverTestBase {
 
   /**
-   * An test user with permission to create contact forms.
+   * A test user with permission to create contact forms.
    *
    * @var \Drupal\user\UserInterface
    */
@@ -68,20 +68,17 @@ class AddCorporateFormTest extends WebDriverTestBase {
       'optional_fields[oe_telephone]' => TRUE,
     ];
 
+    $is_corporate_form = $page->findField('is_corporate_form');
+    // Assert elements are not visible.
+    $this->assertEmpty($is_corporate_form);
     foreach ($fields as $field_name => $value) {
-      // Assert new form fields are hidden at first.
-      $elements[$field_name] = $page->findField($field_name);
-      $this->assertNotEmpty($elements[$field_name]);
       $this->assertFalse($elements[$field_name]->isVisible());
     }
-
-    // Assert elements are now visible.
-    $is_corporate_form = $page->findField('is_corporate_form');
-    $this->assertNotEmpty($is_corporate_form);
+    // Ajax call.
     $is_corporate_form->click();
-
+    // Assert elements are now visible.
+    $this->assertNotEmpty($is_corporate_form);
     foreach ($fields as $field_name => $value) {
-      // Assert new form fields are hidden at first.
       $this->assertTrue($elements[$field_name]->isVisible());
     }
 

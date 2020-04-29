@@ -10,19 +10,15 @@ contact.form.*.third_party.oe_contact_forms:
     topic_label:
       type: label
       label: 'Topic label'
-      translatable: true
     email_subject:
       type: label
       label: 'Email subject'
-      translatable: true
     header:
       type: text
       label: 'Header'
-      translatable: true
     privacy_policy:
       type: text
       label: 'Privacy policy'
-      translatable: true
     includes_fields_in_auto_reply:
       type: boolean
       label: 'Includes fields in auto-reply'
@@ -45,7 +41,6 @@ contact.form.*.third_party.oe_contact_forms:
     topic_name:
       type: sequence
       label: 'Topic name'
-      translatable: true
       sequence:
         type: label
     topic_email_address:

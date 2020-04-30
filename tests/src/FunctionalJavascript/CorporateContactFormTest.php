@@ -46,7 +46,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     parent::setUp();
 
     // Create and login test user with permission to create contact forms.
-    /** @var \Drupal\user\UserInterface */
+    /** @var \Drupal\user\UserInterface $testuser */
     $testuser = $this->drupalCreateUser([
       'administer contact forms',
     ]);

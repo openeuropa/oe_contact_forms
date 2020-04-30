@@ -39,8 +39,8 @@ contact.form.*.third_party.oe_contact_forms:
           type: string
           label: 'Phone'
     topics:
-      type: mapping
-      mapping:
+      type: serial
+      serial:
         topic_name:
           type: label
           label: 'Topic name'

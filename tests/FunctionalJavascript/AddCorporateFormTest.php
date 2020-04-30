@@ -19,6 +19,26 @@ class AddCorporateFormTest extends WebDriverTestBase {
   protected $testuser;
 
   /**
+   * Corporate fields to test against.
+   *
+   * @var array
+   */
+  protected $fields = [
+    'corporate_fields[topics_fieldset][group][0][topic_name]' => 'Topic name',
+    'corporate_fields[topics_fieldset][group][0][topic_email_address]' => 'topic@emailaddress.com',
+    'corporate_fields[topic_label]' => 'Topic label',
+    'corporate_fields[email_subject]' => 'Email subject',
+    'corporate_fields[header]' => 'Header text',
+    'corporate_fields[privacy_policy]' => 'Privacy text',
+    'corporate_fields[includes_fields_in_auto_reply]' => TRUE,
+    'corporate_fields[allow_canonical_url]' => TRUE,
+    // For expose_as_block default is true so we test false.
+    'corporate_fields[expose_as_block]' => FALSE,
+    'corporate_fields[optional_fields][oe_country_residence]' => TRUE,
+    'corporate_fields[optional_fields][oe_telephone]' => TRUE,
+  ];
+
+  /**
    * {@inheritdoc}
    */
   protected static $modules = [
@@ -43,100 +63,43 @@ class AddCorporateFormTest extends WebDriverTestBase {
    * Tests the corporate contact form.
    */
   public function testCorporateContactForm(): void {
-    $this->drupalGet('admin/structure/contact/add');
-
     /** @var \Behat\Mink\WebAssert $assert */
     $assert = $this->assertSession();
     /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
-    $elements = [];
-    $fields = [
-      'topics_fieldset[group][0][topic_name]' => 'Topic name',
-      'topics_fieldset[group][0][topic_email_address]' => 'topic@emailaddress.com',
-      'topic_label' => 'Topic label',
-      'email_subject' => 'Email subject',
-      'header' => 'Header text',
-      'privacy_policy' => 'Privacy text',
-      'allow_canonical_url' => TRUE,
-      // For expose_as_block default is true so we test false.
-      'expose_as_block' => FALSE,
-      'optional_fields[oe_country_residence]' => TRUE,
-      'optional_fields[oe_telephone]' => TRUE,
-    ];
 
+    $this->drupalGet('admin/structure/contact/add');
+
+    // Assert corporate fields are not present before is_corporate_form click.
     $is_corporate_form = $page->findField('is_corporate_form');
-    // Assert elements are not visible.
-    $this->assertEmpty($is_corporate_form);
-    foreach ($fields as $field_name => $value) {
-      $this->assertFalse($elements[$field_name]->isVisible());
-    }
-    // Ajax call.
-    $is_corporate_form->click();
-    // Assert elements are now visible.
     $this->assertNotEmpty($is_corporate_form);
-    foreach ($fields as $field_name => $value) {
-      $this->assertTrue($elements[$field_name]->isVisible());
-    }
+    $this->assertFieldsAreMissing();
 
-    // Assert includes_fields_in_auto_reply is still false,
-    // this element also depends on core auto-reply field.
-    $includes_fields_in_auto_reply = $page->findField('includes_fields_in_auto_reply');
-    $this->assertNotEmpty($includes_fields_in_auto_reply);
-    $this->assertFalse($includes_fields_in_auto_reply->isVisible());
-    $page->fillField('reply[value]', 'Test reply text');
-    $this->assertTrue($includes_fields_in_auto_reply->isVisible());
+    // Ajax call to load corporate fields.
+    $is_corporate_form->click();
+    $assert->assertWaitOnAjaxRequest();
+
+    // Assert fields are now visible.
+    $this->assertFieldsAreVisible();
 
     // Assert expose_as_block is checked by default.
-    $this->assertTrue($elements['expose_as_block']->isChecked());
+    $element = $page->findField('corporate_fields[expose_as_block]');
+    $this->assertNotEmpty($element);
+    $this->assertTrue($element->isChecked());
 
     // Add contact required values.
-    $page->fillField('label', 'Corporate form');
-    $page->fillField('recipients', 'test@example.com');
-    // Overcome machine name not accessible.
-    $this->getSession()->executeScript('jQuery("#edit-id").val("oe_corporate_form");');
+    $this->fillCoreContactFields();
 
-    // Test ajax.
-    $elements['topics_fieldset[group][0][topic_name]']->setValue($fields['topics_fieldset[group][0][topic_name]']);
-    $elements['topics_fieldset[group][0][topic_email_address]']->setValue($fields['topics_fieldset[group][0][topic_email_address]']);
-
-    // Test add topic group.
-    $add_topic = $page->find('css', 'input[value="Add topic"]');
-    $this->assertNotEmpty($add_topic);
-    $add_topic->click();
-    $assert->assertWaitOnAjaxRequest();
-    $topic_name2 = $page->findField('topics_fieldset[group][1][topic_name]');
-    $this->assertNotEmpty($topic_name2);
-    $topic_email_address2 = $page->findField('topics_fieldset[group][1][topic_email_address]');
-    $this->assertNotEmpty($topic_email_address2);
+    // Test topic ajax.
+    $this->assertTopicAddAjax();
 
     // Test remove topic group.
-    $remove_topic = $page->find('css', 'input[value="Remove topic"]');
-    $this->assertNotEmpty($remove_topic);
-    $remove_topic->click();
-    $assert->assertWaitOnAjaxRequest();
-    $topic_name2 = $page->findField('topics_fieldset[group][1][topic_name]');
-    $this->assertEmpty($topic_name2);
-    $topic_email_address2 = $page->findField('topics_fieldset[group][1][topic_email_address]');
-    $this->assertEmpty($topic_email_address2);
+    $this->assertTopicRemoveAjax();
 
     // Add remaining field values and submit form.
-    foreach ($fields as $field_name => $value) {
-      if ($value === TRUE) {
-        $elements[$field_name]->check();
-      }
-      elseif ($value === FALSE) {
-        $elements[$field_name]->uncheck();
-      }
-      else {
-        $elements[$field_name]->setValue($value);
-      }
-    }
-
-    // Yes for autoreply.
-    $includes_fields_in_auto_reply->check();
-
+    $this->fillCorporateFields();
     $page->pressButton('Save');
-    $assert->pageTextContains('Contact form Corporate form has been added.');
+    $assert->pageTextContains('Contact form Test form has been added.');
 
     // Assert the values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
@@ -144,10 +107,170 @@ class AddCorporateFormTest extends WebDriverTestBase {
     $this->assertNotEmpty($is_corporate_form);
     $this->assertTrue($is_corporate_form->isChecked());
 
-    foreach ($fields as $field_name => $value) {
+    // Make sure the saved values are the ones expected.
+    $this->checkCorporateFieldsOnPage();
+    $this->checkCorporateFieldsInStorage();
+  }
+
+  /**
+   * Tests the corporate contact form.
+   */
+  public function testNoCorporateValues(): void {
+    /** @var \Behat\Mink\WebAssert $assert */
+    $assert = $this->assertSession();
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
+    $this->drupalGet('admin/structure/contact/add');
+
+    // Assert corporate fields are not present.
+    $is_corporate_form = $page->findField('is_corporate_form');
+    $this->assertNotEmpty($is_corporate_form);
+    $this->assertFieldsAreMissing($page);
+
+    // Add contact required values.
+    $this->fillCoreContactFields($page);
+
+    $page->pressButton('Save');
+    $assert->pageTextContains('Contact form Test form has been added.');
+
+    // Assert the values are saved.
+    $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
+    $this->assertFieldsAreMissing($page);
+  }
+
+  /**
+   * Helper to assert field presence.
+   */
+  protected function assertfieldsAreVisible(): void {
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
+    foreach ($this->fields as $field_name => $value) {
+      $element = $page->findField($field_name);
+      $this->assertNotEmpty($element);
+      $this->assertTrue($element->isVisible());
+    }
+  }
+
+  /**
+   * Helper to assert fields are missing.
+   */
+  protected function assertFieldsAreMissing(): void {
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
+    foreach ($this->fields as $field_name => $value) {
+      $element = $page->findField($field_name);
+      $this->assertEmpty($element);
+    }
+  }
+
+  /**
+   * Loop through corporate fields and set test values.
+   */
+  protected function fillCoreContactFields(): void {
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
+    $page->fillField('label', 'Test form');
+    $page->fillField('recipients', 'test@example.com');
+    // Overcome machine name not accessible.
+    $this->getSession()->executeScript('jQuery("#edit-id").val("oe_corporate_form");');
+  }
+
+  /**
+   * Trigger topic add ajax and assert new fields.
+   */
+  protected function assertTopicAddAjax(): void {
+    /** @var \Behat\Mink\WebAssert $assert */
+    $assert = $this->assertSession();
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
+    $topic_name_key = "corporate_fields[topics_fieldset][group][0][topic_name]";
+    $topic_email_key = "corporate_fields[topics_fieldset][group][0][topic_email_address]";
+
+    $page->fillField($topic_name_key, $this->fields[$topic_name_key]);
+    $page->fillField($topic_email_key, $this->fields[$topic_email_key]);
+
+    // Test add topic group.
+    $add_topic = $page->find('css', 'input[value="Add topic"]');
+    $this->assertNotEmpty($add_topic);
+    $add_topic->click();
+    $assert->assertWaitOnAjaxRequest();
+
+    $topic_name_key = "corporate_fields[topics_fieldset][group][1][topic_name]";
+    $topic_email_key = "corporate_fields[topics_fieldset][group][1][topic_email_address]";
+
+    $element = $page->findField($topic_name_key);
+    $this->assertNotEmpty($element);
+    $element = $page->findField($topic_email_key);
+    $this->assertNotEmpty($element);
+  }
+
+  /**
+   * Trigger topic remove ajax and assert no new fields.
+   */
+  protected function assertTopicRemoveAjax(): void {
+    /** @var \Behat\Mink\WebAssert $assert */
+    $assert = $this->assertSession();
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
+    $topic_name_key = "corporate_fields[topics_fieldset][group][1][topic_name]";
+    $topic_email_key = "corporate_fields[topics_fieldset][group][1][topic_email_address]";
+
+    $element = $page->findField($topic_name_key);
+    $this->assertNotEmpty($element);
+    $element = $page->findField($topic_email_key);
+    $this->assertNotEmpty($element);
+
+    $remove_topic = $page->find('css', 'input[value="Remove topic"]');
+    $this->assertNotEmpty($remove_topic);
+    $remove_topic->click();
+    $assert->assertWaitOnAjaxRequest();
+
+    $element = $page->findField($topic_name_key);
+    $this->assertEmpty($element);
+    $element = $page->findField($topic_email_key);
+    $this->assertEmpty($element);
+  }
+
+  /**
+   * Add test values to corporate fields.
+   */
+  protected function fillCorporateFields(): void {
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
+    foreach ($this->fields as $field_name => $value) {
+      $element = $page->findField($field_name);
+
+      if ($value === TRUE) {
+        $element->check();
+      }
+      elseif ($value === FALSE) {
+        $element->uncheck();
+      }
+      else {
+        $element->setValue($value);
+      }
+    }
+  }
+
+  /**
+   * Check that the values saved are the ones expected.
+   */
+  protected function checkCorporateFieldsOnPage(): void {
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
+    foreach ($this->fields as $field_name => $value) {
       $element = $page->findField($field_name);
       $this->assertNotEmpty($element);
 
+      // Assert value on page.
       if ($value === TRUE) {
         $this->assertTrue($element->isChecked());
       }
@@ -158,10 +281,35 @@ class AddCorporateFormTest extends WebDriverTestBase {
         $this->assertEquals($value, $element->getValue());
       }
     }
+  }
 
-    $includes_fields_in_auto_reply = $page->findField('includes_fields_in_auto_reply');
-    $this->assertNotEmpty($includes_fields_in_auto_reply);
-    $this->assertTrue($includes_fields_in_auto_reply->isChecked());
+  /**
+   * Check that the values saved in storage are the ones expected.
+   */
+  protected function checkCorporateFieldsInStorage(): void {
+    /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $entity_storage */
+    $entity_storage = \Drupal::entityTypeManager()->getStorage('contact_form');
+    /** @var \Drupal\contact\ContactFormInterface $contact_form */
+    $contact_form = $entity_storage->load('oe_corporate_form');
+    $this->assertNotEmpty($contact_form);
+
+    $expected_values = [
+      'is_corporate_form' => TRUE,
+      'topic_label' => 'Topic label',
+      'email_subject' => 'Email subject',
+      'header' => 'Header text',
+      'privacy_policy' => 'Privacy text',
+      'includes_fields_in_auto_reply' => TRUE,
+      'allow_canonical_url' => TRUE,
+      'expose_as_block' => FALSE,
+      'optional_fields' => ['oe_country_residence' => 'oe_country_residence', 'oe_telephone' => 'oe_telephone'],
+      'topics' => [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']],
+    ];
+
+    foreach ($expected_values as $key => $expected) {
+      $value = $contact_form->getThirdPartySetting('oe_contact_forms', $key);
+      $this->assertEquals($expected, $value);
+    }
   }
 
 }

@@ -263,7 +263,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
     if (empty($contact_form->getRecipients())) {
       $contact_form->setRecipients([]);
     }
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $form_state->getValue('corporate_fields')['topics_fieldset']['group']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', []);
   }
 }
 

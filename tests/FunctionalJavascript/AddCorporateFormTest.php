@@ -41,10 +41,6 @@ class AddCorporateFormTest extends WebDriverTestBase {
 
   /**
    * Tests the corporate field requirements.
-   *
-   * First we test requirements for state dependent fields,
-   * then we test the ajax add and remove,
-   * finally we submit and see if values are saved.
    */
   public function testAddCorporateForm(): void {
     $this->drupalGet('admin/structure/contact/add');

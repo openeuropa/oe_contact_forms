@@ -40,7 +40,7 @@ class AddCorporateFormTest extends WebDriverTestBase {
   }
 
   /**
-   * Tests the corporate field requirements.
+   * Tests the corporate contact form.
    */
   public function testAddCorporateForm(): void {
     $this->drupalGet('admin/structure/contact/add');

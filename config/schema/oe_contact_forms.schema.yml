@@ -38,13 +38,12 @@ contact.form.*.third_party.oe_contact_forms:
         oe_telephone:
           type: string
           label: 'Phone'
-    topic_name:
-      type: sequence
-      label: 'Topic name'
-      sequence:
-        type: label
-    topic_email_address:
-      type: sequence
-      label: 'Topic email address(es)'
-      sequence:
-        type: email
+    topics:
+      type: mapping
+      mapping:
+        topic_name:
+          type: label
+          label: 'Topic name'
+        topic_email_address:
+          type: email
+          label: 'Topic email address(es)'

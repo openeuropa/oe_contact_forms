@@ -13,7 +13,7 @@ use Drupal\contact\ContactFormInterface;
 /**
  * Implements hook_form_FORM_ID_alter() for contact_form_form().
  */
-function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterface $form_state) {
+function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterface $form_state): void {
   /** @var \Drupal\contact\ContactFormEditForm $form_object */
   $form_object = $form_state->getFormObject();
 
@@ -183,13 +183,15 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
  *   The form.
  * @param Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
+ *
+ * @return array
  */
 function _oe_contact_forms_add_more_callback(array &$form, FormStateInterface $form_state): array {
   return $form['corporate_fields']['topics_fieldset'];
 }
 
 /**
- * Add one more element to the form based on ajax.
+ * Add element to the form based on ajax.
  *
  * @param array $form
  *   The form.
@@ -204,7 +206,7 @@ function _oe_contact_forms_add_one_callback(array &$form, FormStateInterface $fo
 }
 
 /**
- * Add one more element to the form based on ajax.
+ * Remove element from the form based on ajax.
  *
  * @param array $form
  *   The form.
@@ -231,6 +233,8 @@ function _oe_contact_forms_remove_callback(array &$form, FormStateInterface $for
  *   The form.
  * @param Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
+ *
+ * @return array
  */
 function _oe_contact_forms_is_corporate_form_ajax_callback(array &$form, FormStateInterface $form_state): array {
   return $form['corporate_fields'];
@@ -272,8 +276,10 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
  *   The form.
  * @param Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
+ *
+ * @throws \Drupal\Core\Entity\EntityStorageException
  */
-function _oe_contact_forms_contact_form_submit(array &$form, FormStateInterface $form_state) {
+function _oe_contact_forms_contact_form_submit(array &$form, FormStateInterface $form_state): void {
   /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $form_state->getFormObject()->getEntity();
 
@@ -315,7 +321,7 @@ function _oe_contact_forms_contact_form_submit(array &$form, FormStateInterface 
  * @param Drupal\Core\Form\FormStateInterface $form_state
  *   The form state.
  */
-function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form_state):void {
+function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form_state): void {
   $values = $form_state->getValue('corporate_fields');
   $topics_fieldset = &$values['topics_fieldset'];
   $email_validator = \Drupal::service('email.validator');

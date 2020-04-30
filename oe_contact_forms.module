@@ -82,13 +82,13 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
         '#type' => 'textfield',
         '#title' => t('Topic name'),
         '#required' => TRUE,
-        '#default_value' => isset($topic_name) ? $topic_name : '',
+        '#default_value' => $topic_name ?? '',
       ];
       $form['corporate_fields']['topics_fieldset']['group'][$i]['topic_email_address'] = [
         '#type' => 'textfield',
         '#title' => t('Topic email address(es)'),
         '#required' => TRUE,
-        '#default_value' => isset($topic_email_address) ? $topic_email_address : '',
+        '#default_value' => $topic_email_address ?? '',
       ];
     }
 

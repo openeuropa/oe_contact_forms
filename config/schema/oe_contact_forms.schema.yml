@@ -39,11 +39,13 @@ contact.form.*.third_party.oe_contact_forms:
           type: string
           label: 'Phone'
     topics:
-      type: serial
-      serial:
-        topic_name:
-          type: label
-          label: 'Topic name'
-        topic_email_address:
-          type: email
-          label: 'Topic email address(es)'
+      type: sequence
+      sequence:
+        type: mapping
+        mapping:
+          topic_name:
+            type: label
+            label: 'Topic name'
+          topic_email_address:
+            type: email
+            label: 'Topic email address(es)'

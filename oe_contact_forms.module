@@ -100,7 +100,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
         'callback' => '_oe_contact_forms_add_more_callback',
         'wrapper' => 'topics-fieldset-wrapper',
       ],
-      '#limit_validation_errors' => []
+      '#limit_validation_errors' => [],
     ];
     $form['corporate_fields']['topics_fieldset']['actions']['remove_topic'] = [
       '#type' => 'submit',
@@ -185,6 +185,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
  *   The form state.
  *
  * @return array
+ *   Topics fieldset.
  */
 function _oe_contact_forms_add_more_callback(array &$form, FormStateInterface $form_state): array {
   return $form['corporate_fields']['topics_fieldset'];
@@ -235,6 +236,7 @@ function _oe_contact_forms_remove_callback(array &$form, FormStateInterface $for
  *   The form state.
  *
  * @return array
+ *   Corporate fields.
  */
 function _oe_contact_forms_is_corporate_form_ajax_callback(array &$form, FormStateInterface $form_state): array {
   return $form['corporate_fields'];

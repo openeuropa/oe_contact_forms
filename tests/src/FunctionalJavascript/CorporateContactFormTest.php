@@ -12,13 +12,6 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 class CorporateContactFormTest extends WebDriverTestBase {
 
   /**
-   * A test user with permission to create contact forms.
-   *
-   * @var \Drupal\user\UserInterface
-   */
-  protected $testuser;
-
-  /**
    * Corporate fields to test against.
    *
    * @var array
@@ -52,11 +45,12 @@ class CorporateContactFormTest extends WebDriverTestBase {
   protected function setUp() {
     parent::setUp();
 
-    // Create and login test user.
-    $this->testuser = $this->drupalCreateUser([
+    // Create and login test user with permission to create contact forms.
+    /** @var \Drupal\user\UserInterface */
+    $testuser = $this->drupalCreateUser([
       'administer contact forms',
     ]);
-    $this->drupalLogin($this->testuser);
+    $this->drupalLogin($testuser);
   }
 
   /**

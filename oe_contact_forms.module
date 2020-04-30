@@ -25,7 +25,8 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $form_object->getEntity();
   $is_corporate_form = (boolean) ($form_state->getValue('is_corporate_form') ?? $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE));
-  if ($form_state->get('corporate_form')) {
+  $el = $form_state->getTriggeringElement();
+  if (!empty($el['#submit'])) {
     $is_corporate_form = TRUE;
   }
 
@@ -48,7 +49,6 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   ];
 
   if ($is_corporate_form) {
-    $form_state->set('corporate_form', TRUE);
     $form['corporate_fields']['topics_fieldset'] = [
       '#type' => 'fieldset',
       '#title' => t('Topics'),
@@ -100,7 +100,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
         'callback' => '_oe_contact_forms_add_more_callback',
         'wrapper' => 'topics-fieldset-wrapper',
       ],
-      '#limit_validation_errors' => [],
+      '#limit_validation_errors' => []
     ];
     $form['corporate_fields']['topics_fieldset']['actions']['remove_topic'] = [
       '#type' => 'submit',
@@ -121,6 +121,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     $form['corporate_fields']['email_subject'] = [
       '#type' => 'textfield',
       '#title' => t('Email subject'),
+      '#required' => TRUE,
       '#description' => t("Please specify the subject of the email."),
       '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject', ''),
     ];
@@ -133,6 +134,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     $form['corporate_fields']['privacy_policy'] = [
       '#type' => 'textarea',
       '#title' => t('Privacy policy'),
+      '#required' => TRUE,
       '#description' => t("Please specify a privacy policy message to display on the form."),
       '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', ''),
     ];

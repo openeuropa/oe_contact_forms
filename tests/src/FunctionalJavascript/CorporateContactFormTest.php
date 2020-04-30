@@ -7,7 +7,7 @@ namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
- * Test Thirdparty settings on contact forms.
+ * Tests the corporate contact forms.
  */
 class CorporateContactFormTest extends WebDriverTestBase {
 

@@ -9,7 +9,7 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 /**
  * Test Thirdparty settings on contact forms.
  */
-class AddCorporateFormTest extends WebDriverTestBase {
+class CorporateContactFormTest extends WebDriverTestBase {
 
   /**
    * A test user with permission to create contact forms.

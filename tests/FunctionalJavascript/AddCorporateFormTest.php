@@ -142,7 +142,7 @@ class AddCorporateFormTest extends WebDriverTestBase {
     $page->pressButton('Save');
     $assert->pageTextContains('Contact form Corporate form has been added.');
 
-    // Amazing, now assert the values are saved.
+    // Assert the values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
     $is_corporate_form = $page->findField('is_corporate_form');
     $this->assertNotEmpty($is_corporate_form);

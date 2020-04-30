@@ -21,7 +21,7 @@ class AddCorporateFormTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'user',
     'oe_contact_forms',
   ];

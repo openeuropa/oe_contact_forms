@@ -44,7 +44,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Drupal\\Tests\\oe_contact_forms\\": "./tests/"
+            "Drupal\\Tests\\oe_contact_forms\\": "./tests/src/"
         }
     },
     "extra": {

@@ -42,7 +42,7 @@ class AddCorporateFormTest extends WebDriverTestBase {
   /**
    * Tests the corporate contact form.
    */
-  public function testAddCorporateForm(): void {
+  public function testCorporateContactForm(): void {
     $this->drupalGet('admin/structure/contact/add');
 
     /** @var \Behat\Mink\WebAssert $assert */

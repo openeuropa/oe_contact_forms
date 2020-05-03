@@ -122,6 +122,17 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertNotEmpty($is_corporate_form);
     $this->assertFieldsAreMissing($page);
 
+    // Ajax call to load corporate fields.
+    $is_corporate_form->click();
+    $assert->assertWaitOnAjaxRequest();
+
+    // Click again to remove them.
+    $is_corporate_form->click();
+    $assert->assertWaitOnAjaxRequest();
+
+    // Check nothing changed.
+    $this->assertFieldsAreMissing($page);
+
     // Add contact required values.
     $this->fillCoreContactFields($page);
 

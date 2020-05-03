@@ -266,9 +266,9 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', []);
   }
 
-  // Prevent invalid arguments passed in Drupal\contact\ContactFormEditForm->form() line 96.
+  // Prevent invalid arguments in Drupal\contact\ContactFormEditForm::form()L96.
   $recipients = $contact_form->getRecipients();
-  
+
   if (gettype($recipients) !== 'array') {
     $contact_form->setRecipients((array) $recipients);
   }

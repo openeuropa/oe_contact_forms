@@ -449,7 +449,8 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
 function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message $entity = NULL, &$cacheable = TRUE): array {
   /* @var \Drupal\contact\Entity\ContactForm $contact_form */
   $contact_form = $entity->getContactForm();
-  $options = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_name', []);
+  $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
+  $options = array_column($topics, 'topic_name');
 
   return $options;
 }

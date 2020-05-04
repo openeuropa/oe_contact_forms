@@ -60,7 +60,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
     $num_topics = $form_state->get('num_topics');
     $n = count($topics);
-    $limit_validation_errors = [];
+    $topics_limit_validation_errors = [];
 
     // No values added yet.
     if ($num_topics === NULL && $n === 0) {
@@ -78,14 +78,14 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       if (isset($topics[$i])) {
         $topic_name = $topics[$i]['topic_name'];
         $topic_email_address = $topics[$i]['topic_email_address'];
-        $limit_validation_errors[] = [
+        $topics_limit_validation_errors[] = [
           'corporate_fields',
           'topics_fieldset',
           'group',
           $i,
           'topic_name',
         ];
-        $limit_validation_errors[] = [
+        $topics_limit_validation_errors[] = [
           'corporate_fields',
           'topics_fieldset',
           'group',
@@ -118,7 +118,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
         'callback' => '_oe_contact_forms_add_more_callback',
         'wrapper' => 'topics-fieldset-wrapper',
       ],
-      '#limit_validation_errors' => $limit_validation_errors,
+      '#limit_validation_errors' => $topics_limit_validation_errors,
     ];
     $form['corporate_fields']['topics_fieldset']['actions']['remove_topic'] = [
       '#type' => 'submit',

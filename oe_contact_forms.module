@@ -25,8 +25,9 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $form_object->getEntity();
   $is_corporate_form = (boolean) ($form_state->getValue('is_corporate_form') ?? $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE));
-  $element = $form_state->getTriggeringElement();
-  if (!empty($element['#submit'])) {
+  $triggered_element = $form_state->getTriggeringElement();
+
+  if (!empty($triggered_element['#submit'])) {
     $is_corporate_form = TRUE;
   }
 
@@ -275,11 +276,13 @@ function _oe_contact_forms_is_corporate_form_ajax_callback(array &$form, FormSta
 function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, array &$form, FormStateInterface $form_state): void {
   if ((boolean) $form_state->getValue('is_corporate_form')) {
     // Prevent duplicated topic values on "Add topic" ajax.
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', []);
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'topics');
   }
 
-  // Prevent invalid arguments in Drupal\contact\ContactFormEditForm::form()L96.
+  // When ajax is triggered the form is rebuilt with empty recipients,
+  // causing invalid arguments in Drupal\contact\ContactFormEditForm::form()L96.
   $recipients = $contact_form->getRecipients();
+
   if (!is_array($recipients)) {
     $contact_form->setRecipients((array) $recipients);
   }

@@ -85,10 +85,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->fillCoreContactFields();
 
     // Test topic ajax.
-    $this->assertTopicAddAjax();
-
-    // Test remove topic group.
-    $this->assertTopicRemoveAjax();
+    $this->assertTopicAjax();
 
     // Add remaining field values and submit form.
     $this->fillCorporateFields();
@@ -100,6 +97,9 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $is_corporate_form = $page->findField('is_corporate_form');
     $this->assertNotEmpty($is_corporate_form);
     $this->assertTrue($is_corporate_form->isChecked());
+
+    // Test topic ajax.
+    $this->assertTopicAjax();
 
     // Make sure the saved values are the ones expected.
     $this->checkCorporateFieldsOnPage();
@@ -120,7 +120,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Assert corporate fields are not present.
     $is_corporate_form = $page->findField('is_corporate_form');
     $this->assertNotEmpty($is_corporate_form);
-    $this->assertFieldsAreMissing($page);
+    $this->assertFieldsAreMissing();
 
     // Ajax call to load corporate fields.
     $is_corporate_form->click();
@@ -131,7 +131,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $assert->assertWaitOnAjaxRequest();
 
     // Check nothing changed.
-    $this->assertFieldsAreMissing($page);
+    $this->assertFieldsAreMissing();
 
     // Add contact required values.
     $this->fillCoreContactFields($page);
@@ -141,7 +141,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     // Assert the values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
-    $this->assertFieldsAreMissing($page);
+    $this->assertFieldsAreMissing();
+    $this->checkCorporateFieldsNotInStorage();
   }
 
   /**
@@ -172,7 +173,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
   }
 
   /**
-   * Loop through corporate fields and set test values.
+   * Set mandatory core contact fields.
    */
   protected function fillCoreContactFields(): void {
     /** @var \Behat\Mink\Element\DocumentElement $page */
@@ -180,14 +181,14 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     $page->fillField('label', 'Test form');
     $page->fillField('recipients', 'test@example.com');
-    // Overcome machine name not accessible.
+    // Overcome machine name not being accessible.
     $this->getSession()->executeScript('jQuery("#edit-id").val("oe_corporate_form");');
   }
 
   /**
    * Trigger topic add ajax and assert new fields.
    */
-  protected function assertTopicAddAjax(): void {
+  protected function assertTopicAjax(): void {
     /** @var \Behat\Mink\WebAssert $assert */
     $assert = $this->assertSession();
     /** @var \Behat\Mink\Element\DocumentElement $page */
@@ -204,24 +205,6 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertNotEmpty($add_topic);
     $add_topic->click();
     $assert->assertWaitOnAjaxRequest();
-
-    $topic_name_key = "corporate_fields[topics_fieldset][group][1][topic_name]";
-    $topic_email_key = "corporate_fields[topics_fieldset][group][1][topic_email_address]";
-
-    $element = $page->findField($topic_name_key);
-    $this->assertNotEmpty($element);
-    $element = $page->findField($topic_email_key);
-    $this->assertNotEmpty($element);
-  }
-
-  /**
-   * Trigger topic remove ajax and assert no new fields.
-   */
-  protected function assertTopicRemoveAjax(): void {
-    /** @var \Behat\Mink\WebAssert $assert */
-    $assert = $this->assertSession();
-    /** @var \Behat\Mink\Element\DocumentElement $page */
-    $page = $this->getSession()->getPage();
 
     $topic_name_key = "corporate_fields[topics_fieldset][group][1][topic_name]";
     $topic_email_key = "corporate_fields[topics_fieldset][group][1][topic_email_address]";
@@ -309,6 +292,35 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'expose_as_block' => FALSE,
       'optional_fields' => ['oe_country_residence' => 'oe_country_residence', 'oe_telephone' => 'oe_telephone'],
       'topics' => [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']],
+    ];
+
+    foreach ($expected_values as $key => $expected) {
+      $value = $contact_form->getThirdPartySetting('oe_contact_forms', $key);
+      $this->assertEquals($expected, $value);
+    }
+  }
+
+  /**
+   * Check that the values saved in storage are the ones expected.
+   */
+  protected function checkCorporateFieldsNotInStorage(): void {
+    /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $entity_storage */
+    $entity_storage = \Drupal::entityTypeManager()->getStorage('contact_form');
+    /** @var \Drupal\contact\ContactFormInterface $contact_form */
+    $contact_form = $entity_storage->load('oe_corporate_form');
+    $this->assertNotEmpty($contact_form);
+
+    $expected_values = [
+      'is_corporate_form' => NULL,
+      'topic_label' => NULL,
+      'email_subject' => NULL,
+      'header' => NULL,
+      'privacy_policy' => NULL,
+      'includes_fields_in_auto_reply' => NULL,
+      'allow_canonical_url' => NULL,
+      'expose_as_block' => NULL,
+      'optional_fields' => NULL,
+      'topics' => NULL,
     ];
 
     foreach ($expected_values as $key => $expected) {

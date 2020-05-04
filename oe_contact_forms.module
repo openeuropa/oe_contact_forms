@@ -280,8 +280,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
 
   // Prevent invalid arguments in Drupal\contact\ContactFormEditForm::form()L96.
   $recipients = $contact_form->getRecipients();
-
-  if (gettype($recipients) !== 'array') {
+  if (!is_array($recipients)) {
     $contact_form->setRecipients((array) $recipients);
   }
 }

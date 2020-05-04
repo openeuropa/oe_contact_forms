@@ -78,8 +78,20 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       if (isset($topics[$i])) {
         $topic_name = $topics[$i]['topic_name'];
         $topic_email_address = $topics[$i]['topic_email_address'];
-        $limit_validation_errors[] = ['corporate_fields', 'topics_fieldset', 'group', $i, 'topic_name'];
-        $limit_validation_errors[] = ['corporate_fields', 'topics_fieldset', 'group', $i, 'topic_email_address'];
+        $limit_validation_errors[] = [
+          'corporate_fields',
+          'topics_fieldset',
+          'group',
+          $i,
+          'topic_name'
+        ];
+        $limit_validation_errors[] = [
+          'corporate_fields',
+          'topics_fieldset',
+          'group',
+          $i,
+          'topic_email_address'
+        ];
       }
       $form['corporate_fields']['topics_fieldset']['group'][$i]['topic_name'] = [
         '#type' => 'textfield',

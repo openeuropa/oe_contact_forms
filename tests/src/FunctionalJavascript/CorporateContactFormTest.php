@@ -67,7 +67,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Assert corporate fields are not present before is_corporate_form click.
     $is_corporate_form = $page->findField('is_corporate_form');
     $this->assertNotEmpty($is_corporate_form);
-    $this->assertFieldsAreMissing();
+    $this->assertFieldsPresence(FALSE);
 
     // Ajax call to load corporate fields.
     $is_corporate_form->click();
@@ -120,7 +120,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Assert corporate fields are not present.
     $is_corporate_form = $page->findField('is_corporate_form');
     $this->assertNotEmpty($is_corporate_form);
-    $this->assertFieldsAreMissing();
+    $this->assertFieldsPresence(FALSE);
 
     // Ajax call to load corporate fields.
     $is_corporate_form->click();
@@ -130,8 +130,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $is_corporate_form->click();
     $assert->assertWaitOnAjaxRequest();
 
-    // Check nothing changed.
-    $this->assertFieldsAreMissing();
+    // Check that fields are now created.
+    $this->assertFieldsPresence(TRUE);
 
     // Add contact required values.
     $this->fillCoreContactFields($page);
@@ -141,34 +141,28 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     // Assert the values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
-    $this->assertFieldsAreMissing();
+    $this->assertFieldsPresence(FALSE);
     $this->checkCorporateFieldsNotInStorage();
   }
 
   /**
-   * Helper to assert field presence.
-   */
-  protected function assertfieldsAreVisible(): void {
-    /** @var \Behat\Mink\Element\DocumentElement $page */
-    $page = $this->getSession()->getPage();
-
-    foreach ($this->fields as $field_name => $value) {
-      $element = $page->findField($field_name);
-      $this->assertNotEmpty($element);
-      $this->assertTrue($element->isVisible());
-    }
-  }
-
-  /**
    * Helper to assert fields are missing.
+   *
+   * @var boolean $presence
    */
-  protected function assertFieldsAreMissing(): void {
+  protected function assertFieldsPresence($presence): void {
     /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
 
     foreach ($this->fields as $field_name => $value) {
       $element = $page->findField($field_name);
-      $this->assertEmpty($element);
+      if ($presence) {
+        $this->assertNotEmpty($element);
+        $this->assertTrue($element->isVisible());
+      }
+      else {
+        $this->assertEmpty($element);
+      }
     }
   }
 

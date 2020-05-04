@@ -25,8 +25,8 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $form_object->getEntity();
   $is_corporate_form = (boolean) ($form_state->getValue('is_corporate_form') ?? $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE));
-  $el = $form_state->getTriggeringElement();
-  if (!empty($el['#submit'])) {
+  $element = $form_state->getTriggeringElement();
+  if (!empty($element['#submit'])) {
     $is_corporate_form = TRUE;
   }
 

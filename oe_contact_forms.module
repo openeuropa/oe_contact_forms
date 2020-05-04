@@ -276,7 +276,7 @@ function _oe_contact_forms_is_corporate_form_ajax_callback(array &$form, FormSta
 function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, array &$form, FormStateInterface $form_state): void {
   if ((boolean) $form_state->getValue('is_corporate_form')) {
     // Prevent duplicated topic values on "Add topic" ajax.
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'topics');
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', []);
   }
 
   // When ajax is triggered the form is rebuilt with empty recipients,

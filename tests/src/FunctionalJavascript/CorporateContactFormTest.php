@@ -74,7 +74,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $assert->assertWaitOnAjaxRequest();
 
     // Assert fields are now visible.
-    $this->assertFieldsAreVisible();
+    $this->assertFieldsPresence(TRUE);
 
     // Assert expose_as_block is checked by default.
     $element = $page->findField('corporate_fields[expose_as_block]');
@@ -126,12 +126,15 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $is_corporate_form->click();
     $assert->assertWaitOnAjaxRequest();
 
+    // Check that fields are now created.
+    $this->assertFieldsPresence(TRUE);
+
     // Click again to remove them.
     $is_corporate_form->click();
     $assert->assertWaitOnAjaxRequest();
 
     // Check that fields are now created.
-    $this->assertFieldsPresence(TRUE);
+    $this->assertFieldsPresence(FALSE);
 
     // Add contact required values.
     $this->fillCoreContactFields($page);
@@ -208,6 +211,38 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $element = $page->findField($topic_email_key);
     $this->assertNotEmpty($element);
 
+    // Assert fields are required.
+    $page->fillField($topic_name_key, '');
+    $page->fillField($topic_email_key, '');
+    $add_topic->click();
+    $assert->assertWaitOnAjaxRequest();
+    $assert->fieldExists($topic_name_key)->hasClass('error');
+    $assert->fieldExists($topic_email_key)->hasClass('error');
+    $assert->pageTextContains('Topic name field is required.');
+    $assert->pageTextContains('Topic email address(es) field is required.');
+
+    // Assert email validaiton.
+    $page->fillField($topic_email_key, 'not an email');
+    $add_topic->click();
+    $assert->assertWaitOnAjaxRequest();
+    $assert->fieldExists($topic_email_key)->hasClass('error');
+    $assert->pageTextContains('is an invalid email address.');
+
+    // Add valid second row of values.
+    $page->fillField($topic_name_key, 'Another name');
+    $page->fillField($topic_email_key, 'another@emailaddress.com');
+    $add_topic->click();
+    $assert->assertWaitOnAjaxRequest();
+
+    $topic_name_key = "corporate_fields[topics_fieldset][group][2][topic_name]";
+    $topic_email_key = "corporate_fields[topics_fieldset][group][2][topic_email_address]";
+
+    $element = $page->findField($topic_name_key);
+    $this->assertNotEmpty($element);
+    $element = $page->findField($topic_email_key);
+    $this->assertNotEmpty($element);
+
+    // Test remove topic group.
     $remove_topic = $page->find('css', 'input[value="Remove topic"]');
     $this->assertNotEmpty($remove_topic);
     $remove_topic->click();
@@ -285,7 +320,10 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'allow_canonical_url' => TRUE,
       'expose_as_block' => FALSE,
       'optional_fields' => ['oe_country_residence' => 'oe_country_residence', 'oe_telephone' => 'oe_telephone'],
-      'topics' => [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']],
+      'topics' => [
+        ['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com'],
+        ['topic_name' => 'Another name', 'topic_email_address' => 'another@emailaddress.com'],
+      ],
     ];
 
     foreach ($expected_values as $key => $expected) {
@@ -314,7 +352,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'allow_canonical_url' => NULL,
       'expose_as_block' => NULL,
       'optional_fields' => NULL,
-      'topics' => NULL,
+      'topics' => [],
     ];
 
     foreach ($expected_values as $key => $expected) {

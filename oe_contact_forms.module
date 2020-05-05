@@ -280,7 +280,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
   if (!is_array($recipients)) {
     $contact_form->setRecipients((array) $recipients);
   }
-  
+
   $is_corporate_form = (boolean) $form_state->getValue('is_corporate_form');
   $values = $form_state->getValue('corporate_fields');
   $triggered_element = $form_state->getTriggeringElement();

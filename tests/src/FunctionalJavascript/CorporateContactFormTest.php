@@ -17,8 +17,6 @@ class CorporateContactFormTest extends WebDriverTestBase {
    * @var array
    */
   protected $fields = [
-    'corporate_fields[topics_fieldset][group][0][topic_name]' => 'Topic name',
-    'corporate_fields[topics_fieldset][group][0][topic_email_address]' => 'topic@emailaddress.com',
     'corporate_fields[topic_label]' => 'Topic label',
     'corporate_fields[email_subject]' => 'Email subject',
     'corporate_fields[header]' => 'Header text',
@@ -98,12 +96,23 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertNotEmpty($is_corporate_form);
     $this->assertTrue($is_corporate_form->isChecked());
 
-    // Test topic ajax.
-    $this->assertTopicAjax();
-
     // Make sure the saved values are the ones expected.
     $this->checkCorporateFieldsOnPage();
     $this->checkCorporateFieldsInStorage();
+
+    // Add more topic values, retest ajax.
+    $this->assertTopicAjax(1);
+
+    // Go through the edit process.
+    $page->pressButton('Save');
+    $assert->pageTextContains('Contact form Test form has been updated.');
+
+    // Assert the values are saved.
+    $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
+
+    // Make sure the saved values are the ones expected.
+    $this->checkCorporateFieldsOnPage(2);
+    $this->checkCorporateFieldsInStorage(2);
   }
 
   /**
@@ -185,17 +194,17 @@ class CorporateContactFormTest extends WebDriverTestBase {
   /**
    * Trigger topic add ajax and assert new fields.
    */
-  protected function assertTopicAjax(): void {
+  protected function assertTopicAjax($delta = 0): void {
     /** @var \Behat\Mink\WebAssert $assert */
     $assert = $this->assertSession();
     /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
 
-    $topic_name_key = "corporate_fields[topics_fieldset][group][0][topic_name]";
-    $topic_email_key = "corporate_fields[topics_fieldset][group][0][topic_email_address]";
+    $topic_name_key = "corporate_fields[topics_fieldset][group][$delta][topic_name]";
+    $topic_email_key = "corporate_fields[topics_fieldset][group][$delta][topic_email_address]";
 
-    $page->fillField($topic_name_key, $this->fields[$topic_name_key]);
-    $page->fillField($topic_email_key, $this->fields[$topic_email_key]);
+    $page->fillField($topic_name_key, 'topic-' . $delta);
+    $page->fillField($topic_email_key, $delta . '-topic@email.com');
 
     // Test add topic group.
     $add_topic = $page->find('css', 'input[value="Add topic"]');
@@ -203,8 +212,9 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $add_topic->click();
     $assert->assertWaitOnAjaxRequest();
 
-    $topic_name_key = "corporate_fields[topics_fieldset][group][1][topic_name]";
-    $topic_email_key = "corporate_fields[topics_fieldset][group][1][topic_email_address]";
+    $delta++;
+    $topic_name_key = "corporate_fields[topics_fieldset][group][$delta][topic_name]";
+    $topic_email_key = "corporate_fields[topics_fieldset][group][$delta][topic_email_address]";
 
     $element = $page->findField($topic_name_key);
     $this->assertNotEmpty($element);
@@ -229,13 +239,14 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $assert->pageTextContains('is an invalid email address.');
 
     // Add valid second row of values.
-    $page->fillField($topic_name_key, 'Another name');
-    $page->fillField($topic_email_key, 'another@emailaddress.com');
+    $page->fillField($topic_name_key, 'topic-' . $delta);
+    $page->fillField($topic_email_key, $delta . '-topic@email.com');
     $add_topic->click();
     $assert->assertWaitOnAjaxRequest();
 
-    $topic_name_key = "corporate_fields[topics_fieldset][group][2][topic_name]";
-    $topic_email_key = "corporate_fields[topics_fieldset][group][2][topic_email_address]";
+    $delta++;
+    $topic_name_key = "corporate_fields[topics_fieldset][group][$delta][topic_name]";
+    $topic_email_key = "corporate_fields[topics_fieldset][group][$delta][topic_email_address]";
 
     $element = $page->findField($topic_name_key);
     $this->assertNotEmpty($element);
@@ -279,9 +290,15 @@ class CorporateContactFormTest extends WebDriverTestBase {
   /**
    * Check that the values saved are the ones expected.
    */
-  protected function checkCorporateFieldsOnPage(): void {
+  protected function checkCorporateFieldsOnPage($max_delta = 1): void {
     /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
+
+    // Dynamically add topic fields.
+    for ($i = 0; $i <= $max_delta; $i++) {
+      $this->fields["corporate_fields[topics_fieldset][group][$i][topic_name]"] = 'topic-' . $i;
+      $this->fields["corporate_fields[topics_fieldset][group][$i][topic_email_address]"] = $i . '-topic@email.com';
+    }
 
     foreach ($this->fields as $field_name => $value) {
       $element = $page->findField($field_name);
@@ -303,7 +320,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
   /**
    * Check that the values saved in storage are the ones expected.
    */
-  protected function checkCorporateFieldsInStorage(): void {
+  protected function checkCorporateFieldsInStorage($max_delta = 1): void {
     /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $entity_storage */
     $entity_storage = \Drupal::entityTypeManager()->getStorage('contact_form');
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
@@ -320,11 +337,13 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'allow_canonical_url' => TRUE,
       'expose_as_block' => FALSE,
       'optional_fields' => ['oe_country_residence' => 'oe_country_residence', 'oe_telephone' => 'oe_telephone'],
-      'topics' => [
-        ['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com'],
-        ['topic_name' => 'Another name', 'topic_email_address' => 'another@emailaddress.com'],
-      ],
+      'topics' => [],
     ];
+
+    // Dynamically add topic fields.
+    for ($i = 0; $i <= $max_delta; $i++) {
+      $expected_values['topics'][] = ['topic_name' => 'topic-' . $i, 'topic_email_address' => $i . '-topic@email.com'];
+    }
 
     foreach ($expected_values as $key => $expected) {
       $value = $contact_form->getThirdPartySetting('oe_contact_forms', $key);

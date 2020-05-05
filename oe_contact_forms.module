@@ -192,7 +192,6 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   }
 
   $form['#entity_builders'][] = '_oe_contact_forms_contact_form_builder';
-  $form['actions']['submit']['#submit'][] = '_oe_contact_forms_contact_form_submit';
 }
 
 /**
@@ -274,11 +273,6 @@ function _oe_contact_forms_is_corporate_form_ajax_callback(array &$form, FormSta
  *   The form state.
  */
 function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, array &$form, FormStateInterface $form_state): void {
-  if ((boolean) $form_state->getValue('is_corporate_form')) {
-    // Prevent duplicated topic values on "Add topic" ajax.
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', []);
-  }
-
   // When ajax is triggered the form is rebuilt with empty recipients,
   // causing invalid arguments in Drupal\contact\ContactFormEditForm::form()L96.
   $recipients = $contact_form->getRecipients();
@@ -286,27 +280,18 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
   if (!is_array($recipients)) {
     $contact_form->setRecipients((array) $recipients);
   }
-}
-
-/**
- * Submit callback for 'contact_form' entity: Manage custom fields data.
- *
- * @param array $form
- *   The form.
- * @param Drupal\Core\Form\FormStateInterface $form_state
- *   The form state.
- *
- * @throws \Drupal\Core\Entity\EntityStorageException
- */
-function _oe_contact_forms_contact_form_submit(array &$form, FormStateInterface $form_state): void {
-  /** @var \Drupal\contact\ContactFormInterface $contact_form */
-  $contact_form = $form_state->getFormObject()->getEntity();
-
+  
   $is_corporate_form = (boolean) $form_state->getValue('is_corporate_form');
-  $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
+  $values = $form_state->getValue('corporate_fields');
+  $triggered_element = $form_state->getTriggeringElement();
 
-  if ($is_corporate_form) {
-    $values = $form_state->getValue('corporate_fields');
+  if (!empty($triggered_element['#submit']) && in_array('_oe_contact_forms_add_one_callback', $triggered_element['#submit'])) {
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'topics');
+    $is_corporate_form = FALSE;
+  }
+
+  if ($is_corporate_form && !empty($values)) {
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $values['topic_label']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $values['email_subject']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $values['header']);
@@ -316,8 +301,6 @@ function _oe_contact_forms_contact_form_submit(array &$form, FormStateInterface 
     $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', $values['expose_as_block']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $values['optional_fields']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $values['topics_fieldset']['group']);
-    // Save the changes.
-    $contact_form->save();
   }
 }
 

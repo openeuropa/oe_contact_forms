@@ -137,7 +137,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertFieldsPresence(FALSE);
 
     // Add contact required values.
-    $this->fillCoreContactFields($page);
+    $this->fillCoreContactFields();
 
     $page->pressButton('Save');
     $assert->pageTextContains('Contact form Test form has been added.');
@@ -352,7 +352,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'allow_canonical_url' => NULL,
       'expose_as_block' => NULL,
       'optional_fields' => NULL,
-      'topics' => [],
+      'topics' => NULL,
     ];
 
     foreach ($expected_values as $key => $expected) {

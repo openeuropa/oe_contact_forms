@@ -65,14 +65,14 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Assert corporate fields are not present before is_corporate_form click.
     $is_corporate_form = $page->findField('is_corporate_form');
     $this->assertNotEmpty($is_corporate_form);
-    $this->assertFieldsVisible(FALSE);
+    $this->assertFieldsPresence(FALSE);
 
     // Ajax call to load corporate fields.
     $is_corporate_form->click();
     $assert->assertWaitOnAjaxRequest();
 
     // Assert fields are now visible.
-    $this->assertFieldsVisible(TRUE);
+    $this->assertFieldsPresence(TRUE);
 
     // Assert expose_as_block is checked by default.
     $element = $page->findField('corporate_fields[expose_as_block]');
@@ -116,7 +116,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
   }
 
   /**
-   * Tests the corporate contact form.
+   * Test corporate values are not set on default form.
    */
   public function testNoCorporateValues(): void {
     /** @var \Behat\Mink\WebAssert $assert */
@@ -129,21 +129,21 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Assert corporate fields are not present.
     $is_corporate_form = $page->findField('is_corporate_form');
     $this->assertNotEmpty($is_corporate_form);
-    $this->assertFieldsVisible(FALSE);
+    $this->assertFieldsPresence(FALSE);
 
     // Ajax call to load corporate fields.
     $is_corporate_form->click();
     $assert->assertWaitOnAjaxRequest();
 
     // Check that fields are now created.
-    $this->assertFieldsVisible(TRUE);
+    $this->assertFieldsPresence(TRUE);
 
     // Click again to remove them.
     $is_corporate_form->click();
     $assert->assertWaitOnAjaxRequest();
 
-    // Check that fields are now created.
-    $this->assertFieldsVisible(FALSE);
+    // Check that fields are now removed.
+    $this->assertFieldsPresence(FALSE);
 
     // Add contact required values.
     $this->fillCoreContactFields();
@@ -153,7 +153,64 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     // Assert the values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
-    $this->assertFieldsVisible(FALSE);
+    $this->assertFieldsPresence(FALSE);
+    $this->checkCorporateFieldsNotInStorage();
+  }
+
+  /**
+   * Test transition from corporate to default form.
+   */
+  public function testCorporateDefaultTransition(): void {
+    /** @var \Behat\Mink\WebAssert $assert */
+    $assert = $this->assertSession();
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
+    $this->drupalGet('admin/structure/contact/add');
+
+    // Ajax call to load corporate fields.
+    $is_corporate_form = $page->findField('is_corporate_form');
+    $this->assertNotEmpty($is_corporate_form);
+    $is_corporate_form->click();
+    $assert->assertWaitOnAjaxRequest();
+
+    // Assert fields are now visible.
+    $this->assertFieldsPresence(TRUE);
+
+    // Add contact required values.
+    $this->fillCoreContactFields();
+
+    // Test topic ajax.
+    $this->assertTopicAjax();
+
+    // Add remaining field values and submit form.
+    $this->fillCorporateFields();
+    $page->pressButton('Save');
+    $assert->pageTextContains('Contact form Test form has been added.');
+
+    // Assert the values are saved.
+    $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
+    $is_corporate_form = $page->findField('is_corporate_form');
+    $this->assertNotEmpty($is_corporate_form);
+    $this->assertTrue($is_corporate_form->isChecked());
+
+    // Make sure the saved values are the ones expected.
+    $this->checkCorporateFieldsOnPage();
+    $this->checkCorporateFieldsInStorage();
+
+    // Now we transition to default form.
+    $is_corporate_form->click();
+    $assert->assertWaitOnAjaxRequest();
+
+    // Assert fields are now removed.
+    $this->assertFieldsPresence(FALSE);
+
+    $page->pressButton('Save');
+    $assert->pageTextContains('Contact form Test form has been updated.');
+
+    // Assert no corporate values are saved.
+    $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
+    $this->assertFieldsPresence(FALSE);
     $this->checkCorporateFieldsNotInStorage();
   }
 
@@ -162,7 +219,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
    *
    * @var boolean $presence
    */
-  protected function assertFieldsVisible($presence): void {
+  protected function assertFieldsPresence($presence): void {
     /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
 
@@ -193,9 +250,6 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
   /**
    * Trigger topic add ajax and assert new fields.
-   *
-   * @param int $delta
-   *   The group index.
    */
   protected function assertTopicAjax($delta = 0): void {
     /** @var \Behat\Mink\WebAssert $assert */
@@ -266,16 +320,6 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertEmpty($element);
     $element = $page->findField($topic_email_key);
     $this->assertEmpty($element);
-
-    // Assert previous two are still there.
-    $delta--;
-    $topic_name_key = "corporate_fields[topics_fieldset][group][$delta][topic_name]";
-    $topic_email_key = "corporate_fields[topics_fieldset][group][$delta][topic_email_address]";
-
-    $element = $page->findField($topic_name_key);
-    $this->assertNotEmpty($element);
-    $element = $page->findField($topic_email_key);
-    $this->assertNotEmpty($element);
   }
 
   /**
@@ -302,9 +346,6 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
   /**
    * Check that the values saved are the ones expected.
-   *
-   * @param int $max_delta
-   *   The max topic group index.
    */
   protected function checkCorporateFieldsOnPage($max_delta = 1): void {
     /** @var \Behat\Mink\Element\DocumentElement $page */
@@ -335,9 +376,6 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
   /**
    * Check that the values saved in storage are the ones expected.
-   *
-   * @param int $max_delta
-   *   The max topic group index.
    */
   protected function checkCorporateFieldsInStorage($max_delta = 1): void {
     /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $entity_storage */
@@ -381,7 +419,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertNotEmpty($contact_form);
 
     $expected_values = [
-      'is_corporate_form' => NULL,
+      'is_corporate_form' => FALSE,
       'topic_label' => NULL,
       'email_subject' => NULL,
       'header' => NULL,

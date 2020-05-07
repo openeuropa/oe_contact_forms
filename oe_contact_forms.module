@@ -286,12 +286,12 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
   $triggered_element = $form_state->getTriggeringElement();
 
   if (!empty($triggered_element['#submit']) && in_array('_oe_contact_forms_add_one_callback', $triggered_element['#submit'])) {
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'topics');
     $is_corporate_form = FALSE;
   }
 
+  $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
+
   if ($is_corporate_form && !empty($values)) {
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $values['topic_label']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $values['email_subject']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $values['header']);
@@ -301,6 +301,17 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
     $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', $values['expose_as_block']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $values['optional_fields']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $values['topics_fieldset']['group']);
+  }
+  else {
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'topic_label');
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'email_subject');
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'header');
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'privacy_policy');
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply');
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'allow_canonical_url');
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'expose_as_block');
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'optional_fields');
+    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'topics');
   }
 }
 

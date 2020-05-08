@@ -303,15 +303,21 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $values['topics_fieldset']['group']);
   }
   else {
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'topic_label');
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'email_subject');
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'header');
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'privacy_policy');
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply');
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'allow_canonical_url');
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'expose_as_block');
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'optional_fields');
-    $contact_form->unsetThirdPartySetting('oe_contact_forms', 'topics');
+    $fields = [
+      'topic_label',
+      'email_subject',
+      'header',
+      'privacy_policy',
+      'includes_fields_in_auto_reply',
+      'allow_canonical_url',
+      'expose_as_block',
+      'optional_fields',
+      'topics',
+    ];
+
+    foreach ($fields as $field) {
+      $contact_form->unsetThirdPartySetting('oe_contact_forms', $field); 
+    }
   }
 }
 

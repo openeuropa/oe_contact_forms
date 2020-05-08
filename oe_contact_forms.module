@@ -316,7 +316,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
     ];
 
     foreach ($fields as $field) {
-      $contact_form->unsetThirdPartySetting('oe_contact_forms', $field); 
+      $contact_form->unsetThirdPartySetting('oe_contact_forms', $field);
     }
   }
 }

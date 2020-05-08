@@ -29,21 +29,12 @@ class CountrySkosGraphSetup {
   }
 
   /**
-   * Gets the graph information for the Country vocabularies.
-   *
-   * @todo instead of hardcoding, use the content layer to determine these.
-   */
-  protected function getGraphInfo(): array {
-    return [
-      'country' => 'http://publications.europa.eu/resource/authority/country',
-    ];
-  }
-
-  /**
    * Sets up the graphs.
    */
   public function setup(): void {
-    $graphs = $this->getGraphInfo();
+    $graphs = [
+      'country' => 'http://publications.europa.eu/resource/authority/country',
+    ];
     $config = $this->configFactory->getEditable('rdf_skos.graphs')->get('entity_types');
 
     foreach ($graphs as $name => $graph) {

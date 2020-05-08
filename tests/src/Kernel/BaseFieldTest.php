@@ -48,11 +48,20 @@ class BaseFieldTest extends RdfKernelTestBase {
       'contact_form' => $contact_form->id(),
       'name' => 'example',
       'mail' => 'admin@example.com',
-      'created' => '1487321550',
+      'created' => time(),
       'ip_address' => '127.0.0.1',
       'subject' => 'Test subject',
       'message' => 'Test message',
+      // Add an unsupported value.
+      'oe_topic' => 1,
     ];
+
+    $message = Message::create($data);
+    // Validate the field.
+    $violations = $message->oe_topic->validate();
+    $this->assertNotEmpty($violations);
+
+    // Set correct values.
     $data['oe_country_residence'] = 'http://publications.europa.eu/resource/authority/country/BEL';
     $data['oe_telephone'] = '0123456';
     $data['oe_topic'] = 0;
@@ -60,6 +69,7 @@ class BaseFieldTest extends RdfKernelTestBase {
     $message = Message::create($data);
     $message->save();
 
+    /** @var \Drupal\Core\Entity\Sql\SqlContentEntityStorage $entity_type_manager */
     $entity_type_manager = \Drupal::entityTypeManager()->getStorage('contact_message');
     $entity_type_manager->resetCache();
     /** @var \Drupal\contact\Entity\Message $message */
@@ -68,36 +78,6 @@ class BaseFieldTest extends RdfKernelTestBase {
     $this->assertEquals($data['oe_country_residence'], $message->get('oe_country_residence')->getValue()['0']['target_id']);
     $this->assertEquals($data['oe_telephone'], $message->get('oe_telephone')->getValue()['0']['value']);
     $this->assertEquals($data['oe_topic'], $message->get('oe_topic')->getValue()['0']['value']);
-  }
-
-  /**
-   * Tests that topic field values are validated.
-   */
-  public function testTopicValidation(): void {
-    $contact_form_id = 'default_form';
-    $contact_form = ContactForm::create(['id' => $contact_form_id]);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']]);
-    $contact_form->save();
-
-    $data = [
-      'id' => 1,
-      'contact_form' => $contact_form->id(),
-      'name' => 'example',
-      'mail' => 'admin@example.com',
-      'created' => '1487321550',
-      'ip_address' => '127.0.0.1',
-      'subject' => 'Test subject',
-      'message' => 'Test message',
-      // Add a unsupported value.
-      'oe_topic' => 1,
-    ];
-
-    $message = Message::create($data);
-    // Validate the field.
-    $violations = $message->oe_topic->validate();
-
-    $this->assertNotEmpty($violations);
   }
 
   /**

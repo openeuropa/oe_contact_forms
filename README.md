@@ -22,6 +22,8 @@ Granular permissions are exposed via contributed modules for handling contact fo
 ### Requirements
 
 * [Virtuoso 7 (Triplestore database)](https://github.com/openlink/virtuoso-opensource)
+* [Docker](https://www.docker.com/get-docker)
+* [Docker Compose](https://docs.docker.com/compose/)
 
 You can build the development site by running the following steps:
 
@@ -53,11 +55,6 @@ Alternatively, you can build a development site using [Docker](https://www.docke
 
 Docker provides the necessary services and tools such as a web server and a database server to get the site running, 
 regardless of your local host configuration.
-
-#### Requirements:
-
-- [Docker](https://www.docker.com/get-docker)
-- [Docker Compose](https://docs.docker.com/compose/)
 
 #### Configuration
 

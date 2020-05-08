@@ -6,3 +6,352 @@
  */
 
 declare(strict_types = 1);
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\contact\ContactFormInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter() for contact_form_form().
+ */
+function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterface $form_state): void {
+  /** @var \Drupal\contact\ContactFormEditForm $form_object */
+  $form_object = $form_state->getFormObject();
+
+  if (!in_array($operation = $form_object->getOperation(), ['edit', 'add'], TRUE)) {
+    // Only alter the edit and add forms.
+    return;
+  }
+
+  /** @var \Drupal\contact\ContactFormInterface $contact_form */
+  $contact_form = $form_object->getEntity();
+  $is_corporate_form = (boolean) ($form_state->getValue('is_corporate_form') ?? $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE));
+  $triggered_element = $form_state->getTriggeringElement();
+
+  if (!empty($triggered_element['#submit'])) {
+    $is_corporate_form = TRUE;
+  }
+
+  // Adding checkbox with ajax callback that managed addionals fields.
+  $form['is_corporate_form'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Is corporate form'),
+    '#description' => t("Check this box if you'd like to make this a corporate form."),
+    '#default_value' => $is_corporate_form,
+    '#ajax' => [
+      'callback' => '_oe_contact_forms_is_corporate_form_ajax_callback',
+      'wrapper' => 'corporate-fields-wrapper',
+    ],
+  ];
+  $form['corporate_fields'] = [
+    '#type' => 'container',
+    '#attributes' => [
+      'id' => ['corporate-fields-wrapper'],
+    ],
+  ];
+
+  if ($is_corporate_form) {
+    $form['corporate_fields']['topics_fieldset'] = [
+      '#type' => 'fieldset',
+      '#title' => t('Topics'),
+      '#prefix' => '<div id="topics-fieldset-wrapper">',
+      '#suffix' => '</div>',
+      '#description' => t("Please select the topics and the associated email addresses the users can choose when submitting the form. For multiple email addresses, please separate them with a comma."),
+    ];
+
+    $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
+    $num_topics = $form_state->get('num_topics');
+    $n = count($topics);
+    $topics_limit_validation_errors = [];
+
+    // No values added yet.
+    if ($num_topics === NULL && $n === 0) {
+      $num_topics = 1;
+    }
+
+    // Any saved values.
+    if ($num_topics === NULL && $n > 0) {
+      $num_topics = $n;
+    }
+
+    $form_state->set('num_topics', $num_topics);
+
+    for ($i = 0; $i < $num_topics; $i++) {
+      if (isset($topics[$i])) {
+        $topic_name = $topics[$i]['topic_name'];
+        $topic_email_address = $topics[$i]['topic_email_address'];
+      }
+      $topics_limit_validation_errors[] = [
+        'corporate_fields',
+        'topics_fieldset',
+        'group',
+        $i,
+        'topic_name',
+      ];
+      $topics_limit_validation_errors[] = [
+        'corporate_fields',
+        'topics_fieldset',
+        'group',
+        $i,
+        'topic_email_address',
+      ];
+      $form['corporate_fields']['topics_fieldset']['group'][$i]['topic_name'] = [
+        '#type' => 'textfield',
+        '#title' => t('Topic name'),
+        '#required' => TRUE,
+        '#default_value' => $topic_name ?? '',
+      ];
+      $form['corporate_fields']['topics_fieldset']['group'][$i]['topic_email_address'] = [
+        '#type' => 'textfield',
+        '#title' => t('Topic email address(es)'),
+        '#required' => TRUE,
+        '#default_value' => $topic_email_address ?? '',
+      ];
+    }
+
+    $form['corporate_fields']['topics_fieldset']['actions'] = [
+      '#type' => 'actions',
+    ];
+    $form['corporate_fields']['topics_fieldset']['actions']['add_topic'] = [
+      '#type' => 'submit',
+      '#value' => t('Add topic'),
+      '#submit' => ['_oe_contact_forms_add_one_callback'],
+      '#ajax' => [
+        'callback' => '_oe_contact_forms_add_more_callback',
+        'wrapper' => 'topics-fieldset-wrapper',
+      ],
+      '#limit_validation_errors' => $topics_limit_validation_errors,
+    ];
+    $form['corporate_fields']['topics_fieldset']['actions']['remove_topic'] = [
+      '#type' => 'submit',
+      '#value' => t('Remove topic'),
+      '#submit' => ['_oe_contact_forms_remove_callback'],
+      '#ajax' => [
+        'callback' => '_oe_contact_forms_add_more_callback',
+        'wrapper' => 'topics-fieldset-wrapper',
+      ],
+      '#limit_validation_errors' => [],
+    ];
+    $form['corporate_fields']['topic_label'] = [
+      '#type' => 'textfield',
+      '#title' => t('Topic label'),
+      '#description' => t("Please specify the label for the Topics field. Leave empty for the default: 'Topic'."),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_label', ''),
+    ];
+    $form['corporate_fields']['email_subject'] = [
+      '#type' => 'textfield',
+      '#title' => t('Email subject'),
+      '#required' => TRUE,
+      '#description' => t("Please specify the subject of the email."),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject', ''),
+    ];
+    $form['corporate_fields']['header'] = [
+      '#type' => 'textarea',
+      '#title' => t('Header'),
+      '#description' => t("Please specify the text to be displayed above the contact form for users that submit it."),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'header', ''),
+    ];
+    $form['corporate_fields']['privacy_policy'] = [
+      '#type' => 'textarea',
+      '#title' => t('Privacy policy'),
+      '#required' => TRUE,
+      '#description' => t("Please specify a privacy policy message to display on the form."),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', ''),
+    ];
+    $form['corporate_fields']['includes_fields_in_auto_reply'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Includes fields in auto-reply'),
+      '#description' => t("Check this box if you would like to include in the auto-reply also the values submitted by the user."),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', FALSE),
+    ];
+    $form['corporate_fields']['allow_canonical_url'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Allow canonical URL'),
+      '#description' => t("Check this box if you would like this contact form to be exposed at its default canonical URL."),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'allow_canonical_url', FALSE),
+    ];
+    $form['corporate_fields']['expose_as_block'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Expose as block'),
+      '#description' => t("Check this box if you would like to expose this contact form as a block."),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'expose_as_block', TRUE),
+    ];
+    $form['corporate_fields']['optional_fields'] = [
+      '#type' => 'checkboxes',
+      '#title' => t('Optional fields'),
+      '#options' => [
+        'oe_country_residence' => t('Country of residence'),
+        'oe_telephone' => t('Phone'),
+      ],
+      '#description' => t("Please specify which optional fields you'd like to include in the form."),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'optional_fields', []),
+    ];
+
+    // To not flatten the data in $form_state.
+    $form['#tree'] = TRUE;
+    $form['#validate'][] = '_oe_contact_forms_email_validate';
+  }
+
+  $form['#entity_builders'][] = '_oe_contact_forms_contact_form_builder';
+}
+
+/**
+ * Default ajax callback for Topics.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ *
+ * @return array
+ *   Topics fieldset.
+ */
+function _oe_contact_forms_add_more_callback(array &$form, FormStateInterface $form_state): array {
+  return $form['corporate_fields']['topics_fieldset'];
+}
+
+/**
+ * Add element to the form based on ajax.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _oe_contact_forms_add_one_callback(array &$form, FormStateInterface $form_state): void {
+  $num_topics = $form_state->get('num_topics');
+  $num_topics++;
+  $form_state->set('num_topics', $num_topics);
+  $form_state->setRebuild();
+}
+
+/**
+ * Remove element from the form based on ajax.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _oe_contact_forms_remove_callback(array &$form, FormStateInterface $form_state): void {
+  $num_topics = $form_state->get('num_topics');
+
+  if ($num_topics > 1) {
+    $num_topics--;
+  }
+
+  $form_state->set('num_topics', $num_topics);
+  $form_state->setRebuild();
+}
+
+/**
+ * Ajax callback: Return markup for 'corporate_fields'.
+ *
+ * According 'is_corporate_form' value.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ *
+ * @return array
+ *   Corporate fields.
+ */
+function _oe_contact_forms_is_corporate_form_ajax_callback(array &$form, FormStateInterface $form_state): array {
+  return $form['corporate_fields'];
+}
+
+/**
+ * Entity builder for the contact form edit form with third party options.
+ *
+ * @param string $entity_type
+ *   The contact form entity.
+ * @param \Drupal\contact\ContactFormInterface $contact_form
+ *   The contact form entity.
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterface $contact_form, array &$form, FormStateInterface $form_state): void {
+  // When ajax is triggered the form is rebuilt with empty recipients,
+  // causing invalid arguments in Drupal\contact\ContactFormEditForm::form()L96.
+  $recipients = $contact_form->getRecipients();
+
+  if (!is_array($recipients)) {
+    $contact_form->setRecipients((array) $recipients);
+  }
+
+  $is_corporate_form = (boolean) $form_state->getValue('is_corporate_form');
+  $values = $form_state->getValue('corporate_fields');
+  $triggered_element = $form_state->getTriggeringElement();
+
+  if (!empty($triggered_element['#submit']) && in_array('_oe_contact_forms_add_one_callback', $triggered_element['#submit'])) {
+    $is_corporate_form = FALSE;
+  }
+
+  $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
+
+  if ($is_corporate_form && !empty($values)) {
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $values['topic_label']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $values['email_subject']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $values['header']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $values['privacy_policy']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', $values['includes_fields_in_auto_reply']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', $values['allow_canonical_url']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', $values['expose_as_block']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $values['optional_fields']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $values['topics_fieldset']['group']);
+  }
+  else {
+    $fields = [
+      'topic_label',
+      'email_subject',
+      'header',
+      'privacy_policy',
+      'includes_fields_in_auto_reply',
+      'allow_canonical_url',
+      'expose_as_block',
+      'optional_fields',
+      'topics',
+    ];
+
+    foreach ($fields as $field) {
+      $contact_form->unsetThirdPartySetting('oe_contact_forms', $field);
+    }
+  }
+}
+
+/**
+ * Validate topics email addresses if set.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form_state): void {
+  $values = $form_state->getValue('corporate_fields');
+  $topics_fieldset = &$values['topics_fieldset'];
+  $email_validator = \Drupal::service('email.validator');
+
+  foreach ($topics_fieldset['group'] as $delta => &$topic) {
+    if (empty($topic['topic_email_address'])) {
+      continue;
+    }
+    // Validate each email separately.
+    $recipients = explode(',', $topic['topic_email_address']);
+
+    foreach ($recipients as $key => &$recipient) {
+      $recipient = trim($recipient);
+
+      if (!$email_validator->isValid($recipient)) {
+        $form_state->setErrorByName("corporate_fields][topics_fieldset][group][$delta][topic_email_address", t('%recipient is an invalid email address.', ['%recipient' => $recipient]));
+      }
+    }
+
+    $topic['topic_email_address'] = implode(',', $recipients);
+  }
+
+  // Set trimmed values.
+  $form_state->setValue('corporate_fields', $values);
+}

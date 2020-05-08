@@ -12,6 +12,16 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
 
+  selenium:
+    image: selenium/standalone-chrome:3.141.59-oxygen
+    pull: true
+    shm_size: 2g
+    environment:
+      - DISPLAY=:99
+      - SE_OPTS=-debug
+      - SCREEN_WIDTH=1280
+      - SCREEN_HEIGHT=800
+
 pipeline:
   composer-install:
     group: prepare

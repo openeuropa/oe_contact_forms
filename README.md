@@ -4,6 +4,10 @@ This is a Drupal module that is an extension to drupal core contact forms and de
 
 The OpenEuropa Contact Forms project provides storage for Contact messages in the form of fully-fledged entities using Contact Storage. This messages can then be automatically exported for each available Contact form.
 
+## Usage
+
+Corporate contact form behaviour can be enabled on the contact form add/edit page, allowing form fields, confirmation message and email values to be defined. 
+
 ## Permissions
 
 Granular permissions are exposed via contributed modules for handling contact forms and contact message entities:

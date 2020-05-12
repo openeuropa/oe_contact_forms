@@ -67,6 +67,9 @@ class BaseFieldTest extends RdfKernelTestBase {
     $data['oe_topic'] = 0;
 
     $message = Message::create($data);
+    // Validate the field.
+    $violations = $message->oe_topic->validate();
+    $this->assertEmpty($violations);
     $message->save();
 
     /** @var \Drupal\Core\Entity\Sql\SqlContentEntityStorage $entity_type_manager */

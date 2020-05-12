@@ -19,9 +19,9 @@ class ContactMessageForm extends MessageForm {
    */
   public function form(array $form, FormStateInterface $form_state): array {
     $form = parent::form($form, $form_state);
-    /** @var \Drupal\contact\Entity\Message $message */
+    /** @var \Drupal\contact\MessageInterface $contact_message */
     $message = $this->entity;
-    /** @var \Drupal\contact\Entity\ContactForm $contact_form */
+    /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $message->getContactForm();
 
     $header = $contact_form->getThirdPartySetting('oe_contact_forms', 'header', FALSE);
@@ -61,7 +61,9 @@ class ContactMessageForm extends MessageForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state): void {
+    /** @var \Drupal\contact\MessageInterface $contact_message */
     $message = $this->entity;
+    /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $message->getContactForm();
 
     // If the form is configured to include all the fields in the auto-reply,
@@ -86,11 +88,11 @@ class ContactMessageForm extends MessageForm {
 
     // Set the email recipient(s) based on the selected topic.
     $recipients = $contact_form->getRecipients();
-    $topic_email_address = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_email_address', FALSE);
+    $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
     $selected_topics = $form_state->getValue('oe_topic')['0']['value'];
 
-    if (isset($topic_email_address[$selected_topics])) {
-      $topic_recipients = explode(',', $topic_email_address[$selected_topics]);
+    if (isset($topics[$selected_topics])) {
+      $topic_recipients = explode(',', $topics[$selected_topics]['topic_email_address']);
       $recipients = array_merge($recipients, $topic_recipients);
       $contact_form->setRecipients($recipients);
     }

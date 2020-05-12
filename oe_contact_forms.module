@@ -359,18 +359,10 @@ function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form
 
   // Set trimmed values.
   $form_state->setValue('corporate_fields', $values);
-
-
-/**
- * Implements hook_entity_type_alter().
- */
-function oe_contact_forms_entity_type_alter(array &$entity_types) {
-
 }
 
 /**
-
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for contact_message_form().
  */
 function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   /** @var \Drupal\Core\Entity\ContentEntityForm $form_object */
@@ -414,24 +406,23 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
         'weight' => 0,
       ]);
 
-    $fields['oe_telephone'] = BaseFieldDefinition::create('string')
+    $fields['oe_telephone'] = BaseFieldDefinition::create('telephone')
       ->setLabel(t('Phone'))
-      ->setSettings(array(
+      ->setSettings([
         'default_value' => '',
         'max_length' => 255,
-      ))
-      ->setDisplayOptions('form', [
-        'weight' => -1,
       ])
-      ->setDisplayOptions('view', array(
-        'weight' => -1,
-      ));
+      ->setDisplayOptions('form', [
+        'type' => 'tel',
+      ])
+      ->setDisplayOptions('view', [
+        'weight' => 0,
+      ]);
 
     $fields['oe_topic'] = BaseFieldDefinition::create('list_string')
       ->setLabel(t('Topic'))
       ->setDisplayOptions('form', [
         'type' => 'options_select',
-
       ])
       ->setDisplayOptions('view', [
         'weight' => 0,
@@ -459,7 +450,7 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
  * @see options_allowed_values()
  */
 function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message $entity = NULL, &$cacheable = TRUE): array {
-  /** @var \Drupal\contact\Entity\ContactForm $contact_form */
+  /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $entity->getContactForm();
   $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
   $options = array_column($topics, 'topic_name');
@@ -471,7 +462,7 @@ function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message
  * Implements hook_entity_type_alter().
  */
 function oe_contact_forms_entity_type_alter(array &$entity_types) {
-  /* @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
+  /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
   // Set the form handler class for messages to corporate implementation.
   $entity_types['contact_message']->setFormClass('corporate_default', '\Drupal\oe_contact_forms\ContactMessageForm');
 }

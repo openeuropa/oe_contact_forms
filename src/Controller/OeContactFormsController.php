@@ -21,6 +21,7 @@ class OeContactFormsController extends ContactStorageController {
     // render it with the corporate form handler ("corporate_default"),
     // instead of the default one.
     if (!empty($contact_form) && $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
+      /** @var \Drupal\contact\MessageInterface $contact_message */
       $message = $this->entityTypeManager()->getStorage('contact_message')->create([
         'contact_form' => $contact_form->id(),
       ]);

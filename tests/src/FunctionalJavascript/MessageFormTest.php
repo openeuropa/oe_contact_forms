@@ -19,16 +19,9 @@ class MessageFormTest extends WebDriverTestBase {
   }
 
   /**
-   * An test user with permission to submit contact forms.
-   *
-   * @var \Drupal\user\UserInterface
-   */
-  protected $testuser;
-
-  /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'user',
     'system',
     'contact',
@@ -43,38 +36,24 @@ class MessageFormTest extends WebDriverTestBase {
     parent::setUp();
 
     // Create and login test user.
-    $this->testuser = $this->drupalCreateUser([
+    /** @var \Drupal\user\UserInterface $test_user */
+    $testuser = $this->drupalCreateUser([
       'access site-wide contact form',
     ]);
-    $this->drupalLogin($this->testuser);
+    $this->drupalLogin($testuser);
   }
 
   /**
    * Tests for corporate forms behaviour.
-   *
-   * Testing of corporate fields is already done
-   * in Drupal\Tests\oe_contact_forms\Kernel\BaseFieldTest,
-   * so here we test corporate form behaviour.
-   * The behaviour consists or adding privacy policy,
-   * setting fields in a specific order,
-   * hidding/showing optional fields,
-   * printing header value set in form config,
-   * setting topic field label defined in config,
-   * changing the email subject,
-   * adding email recipients as selected in topic field,
-   * adding field values in confirmation message,
-   * adding privacy text in confirmation message,
-   * adding field values in autoreply mail.
    */
   public function testCorporateForm(): void {
+    /** @var \Behat\Mink\WebAssert $assert */
+    $assert = $this->assertSession();
+    // Prepare a corporate contact form.
     $contact_form_id = 'oe_contact_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
     $contact_form->setReply('this is a autoreply');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
-    $topic_names = ['Agriculture', 'Business and industry'];
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_name', $topic_names);
-    $topic_emails = ['agri@test.com', 'business@test.com'];
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_email_address', $topic_emails);
     $topic_label = 'Topic label';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $topic_label);
     $email_subject = 'Email Subject';
@@ -84,24 +63,26 @@ class MessageFormTest extends WebDriverTestBase {
     $privacy_text = 'Lorem ipsum sint dolor';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_text);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', TRUE);
-    $optional_selected = ['oe_country_residence'];
+    $optional_selected = ['oe_country_residence' => 'oe_country_residence'];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
+    $topics = [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']];
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();
 
     // Access canonical url.
     $this->drupalGet('contact/' . $contact_form_id);
 
     // Assert corporate fields and optional fields handling.
-    $this->assertSession()->fieldExists('oe_country_residence[0][target_id]');
-    $this->assertSession()->fieldNotExists('oe_telephone[0][value]');
-    $this->assertSession()->fieldExists('oe_topic');
-    $this->assertSession()->fieldExists('privacy_policy');
+    $assert->fieldExists('oe_country_residence[0][target_id]');
+    $assert->fieldNotExists('oe_telephone[0][value]');
+    $assert->fieldExists('oe_topic');
+    $assert->fieldExists('privacy_policy');
     // Assert header printed.
-    $this->assertSession()->pageTextContains($header);
+    $assert->pageTextContains($header);
     // Assert privacy text.
-    $this->assertSession()->pageTextContains($privacy_text);
+    $assert->pageTextContains($privacy_text);
     // Assert topic label.
-    $this->assertSession()->elementTextContains('css', 'label[for="edit-oe-topic"]', $topic_label);
+    $assert->elementTextContains('css', 'label[for="edit-oe-topic"]', $topic_label);
     // Assert elements order.
     $elements = $this->xpath('//form');
     $this->assertCount(1, $elements);
@@ -129,14 +110,14 @@ class MessageFormTest extends WebDriverTestBase {
     $page = $this->getSession()->getPage();
     $page->fillField('subject[0][value]', 'Test subject');
     $page->fillField('message[0][value]', 'Test message');
-    $page->selectFieldOption('oe_topic', '1');
+    $page->selectFieldOption('oe_topic', '0');
     $page->findField('privacy_policy')->click();
     $page->findButton('Send message')->click();
 
     // Assert confirmation message.
-    $this->assertSession()->elementTextContains('css', '.messages--status', $privacy_text);
-    $this->assertSession()->elementTextContains('css', '.messages--status', $email_subject);
-    $this->assertSession()->elementTextContains('css', '.messages--status', $topic_names[1]);
+    $assert->elementTextContains('css', '.messages--status', $privacy_text);
+    $assert->elementTextContains('css', '.messages--status', $email_subject);
+    $assert->elementTextContains('css', '.messages--status', $topics['0']['topic_name']);
 
     // Load captured emails to check.
     $captured_emails = $this->drupalGetMails();
@@ -145,23 +126,22 @@ class MessageFormTest extends WebDriverTestBase {
     // Assert email subject.
     $this->assertTrue(strpos($captured_emails[0]['subject'], $email_subject) !== FALSE);
     // Assert email recipients.
-    $this->assertTrue($captured_emails[0]['to'] === $topic_emails[1]);
+    $this->assertTrue($captured_emails[0]['to'] === $topics['0']['topic_email_address']);
     // Make sure we have an autoreply.
     $this->assertTrue($captured_emails[1]['id'] === 'contact_page_autoreply');
     // Assert fields in autoreply.
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test subject') !== FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') !== FALSE);
-    $this->assertTrue(strpos($captured_emails[1]['body'], $topic_names[1]) !== FALSE);
+    $this->assertTrue(strpos($captured_emails[1]['body'], $topics['0']['topic_name']) !== FALSE);
   }
 
   /**
    * Tests default form is not changed.
-   *
-   * Absence of corporate fields is already tested
-   * in Drupal\Tests\oe_contact_forms\Kernel\BaseFieldTest,
-   * so here we test that default form behaviour is not affected.
    */
   public function testDefaultFormNotChanged(): void {
+    /** @var \Behat\Mink\WebAssert $assert */
+    $assert = $this->assertSession();
+    // Prepare a default contact form.
     $contact_form_id = 'default_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
     $contact_form->setRecipients(['test@test.com']);
@@ -179,7 +159,7 @@ class MessageFormTest extends WebDriverTestBase {
     $page->findButton('Send message')->click();
 
     // Assert no confirmation message.
-    $this->assertSession()->elementNotExists('css', '.messages--status');
+    $assert->elementNotExists('css', '.messages--status');
 
     // Load captured emails to check.
     $captured_emails = $this->drupalGetMails();

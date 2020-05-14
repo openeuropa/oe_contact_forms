@@ -7,6 +7,7 @@
 
 declare(strict_types = 1);
 
+use Drupal\contact\MessageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Form\FormStateInterface;
@@ -18,7 +19,7 @@ use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 /**
  * Implements hook_form_FORM_ID_alter() for contact_form_form().
  */
-function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterface $form_state): void {
+function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterface $form_state) {
   /** @var \Drupal\contact\ContactFormEditForm $form_object */
   $form_object = $form_state->getFormObject();
 
@@ -371,11 +372,14 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
   $contact_message = $form_object->getEntity();
   /** @var \Drupal\contact\Entity\ContactForm $contact_form */
   $contact_form = ContactForm::load($contact_message->bundle());
-
+  // We only want corporate fields on corporate forms.
   if (!$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
     $fields = ['oe_country_residence', 'oe_telephone', 'oe_topic'];
 
     foreach ($fields as $field) {
+      if (!isset($form[$field])) {
+        continue;
+      }
       $form[$field]['#access'] = FALSE;
     }
   }
@@ -453,7 +457,12 @@ function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message
   /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $entity->getContactForm();
   $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
-  $options = array_column($topics, 'topic_name');
+  $options = [];
+
+  foreach ($topics as $topic) {
+    $topic_name = $topic['topic_name'];
+    $options[$topic_name] = $topic_name;
+  }
 
   return $options;
 }
@@ -464,7 +473,7 @@ function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message
 function oe_contact_forms_entity_type_alter(array &$entity_types) {
   /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
   // Set the form handler class for messages to corporate implementation.
-  $entity_types['contact_message']->setFormClass('corporate_default', '\Drupal\oe_contact_forms\ContactMessageForm');
+  $entity_types['contact_message']->setFormClass('corporate_default', '\Drupal\oe_contact_forms\Form\ContactMessageForm');
 }
 
 /**
@@ -505,4 +514,26 @@ function oe_contact_forms_entity_form_display_alter(EntityFormDisplayInterface $
         'weight' => 8,
       ]);
   }
+}
+
+/**
+ * Implements hook_mail_alter().
+ */
+function oe_contact_forms_mail_alter(&$message) {
+  // Check if its a corporate contact form.
+  $is_corporate_form = FALSE;
+  $mail_ids = ['contact_page_mail', 'contact_page_copy', 'contact_page_autoreply'];
+
+  if (isset($message['params']['contact_form'])) {
+    /** @var \Drupal\contact\ContactFormInterface $contact_form */
+    $contact_form = $message['params']['contact_form'];
+    $is_corporate_form = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
+  }
+
+  if (!$is_corporate_form || !in_array($message['id'], $mail_ids)) {
+    return;
+  }
+
+  // Change subject for corporate mail, copy and reply.
+  $message['subject'] = $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject');
 }

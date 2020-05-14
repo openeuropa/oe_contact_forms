@@ -60,7 +60,7 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $email_subject);
     $header = 'this is a test header';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $header);
-    $privacy_text = 'Lorem ipsum sint dolor';
+    $privacy_text = 'this is a test privacy policy';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_text);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', TRUE);
     $optional_selected = ['oe_country_residence' => 'oe_country_residence'];
@@ -110,13 +110,12 @@ class MessageFormTest extends WebDriverTestBase {
     $page = $this->getSession()->getPage();
     $page->fillField('subject[0][value]', 'Test subject');
     $page->fillField('message[0][value]', 'Test message');
-    $page->selectFieldOption('oe_topic', '0');
+    $page->selectFieldOption('oe_topic', 'Topic name');
     $page->findField('privacy_policy')->click();
     $page->findButton('Send message')->click();
 
     // Assert confirmation message.
     $assert->elementTextContains('css', '.messages--status', $privacy_text);
-    $assert->elementTextContains('css', '.messages--status', $email_subject);
     $assert->elementTextContains('css', '.messages--status', $topics['0']['topic_name']);
 
     // Load captured emails to check.
@@ -124,7 +123,7 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue(count($captured_emails) === 2);
 
     // Assert email subject.
-    $this->assertTrue(strpos($captured_emails[0]['subject'], $email_subject) !== FALSE);
+    $this->assertTrue($captured_emails[0]['subject'] === $email_subject);
     // Assert email recipients.
     $this->assertTrue($captured_emails[0]['to'] === $topics['0']['topic_email_address']);
     // Make sure we have an autoreply.

@@ -53,23 +53,23 @@ class BaseFieldTest extends RdfKernelTestBase {
       'subject' => 'Test subject',
       'message' => 'Test message',
       // Add an unsupported value.
-      'oe_topic' => 1,
+      'oe_topic' => FALSE,
     ];
 
     $message = Message::create($data);
     // Validate the field.
     $violations = $message->oe_topic->validate();
-    $this->assertNotEmpty($violations);
+    $this->assertTrue($violations->count() > 0);
 
     // Set correct values.
     $data['oe_country_residence'] = 'http://publications.europa.eu/resource/authority/country/BEL';
     $data['oe_telephone'] = '0123456';
-    $data['oe_topic'] = 0;
+    $data['oe_topic'] = 'Topic name';
 
     $message = Message::create($data);
     // Validate the field.
     $violations = $message->oe_topic->validate();
-    $this->assertEmpty($violations);
+    $this->assertTrue($violations->count() === 0);
     $message->save();
 
     /** @var \Drupal\Core\Entity\Sql\SqlContentEntityStorage $entity_type_manager */

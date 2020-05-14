@@ -6,12 +6,12 @@ namespace Drupal\oe_contact_forms\Routing;
 
 use Symfony\Component\Routing\RouteCollection;
 use Drupal\contact_storage\Routing\RouteSubscriber;
-use Drupal\oe_contact_forms\Controller\OeContactFormsController;
+use Drupal\oe_contact_forms\Controller\CorporateContactFormController;
 
 /**
  * Listens to the dynamic route events.
  */
-class DecoratingRouteSubscriber extends RouteSubscriber {
+class ContactFormRouteSubscriber extends RouteSubscriber {
 
   /**
    * {@inheritdoc}
@@ -21,7 +21,7 @@ class DecoratingRouteSubscriber extends RouteSubscriber {
 
     if ($route = $collection->get('entity.contact_form.canonical')) {
       // Change the contact_form controller.
-      $route->setDefault('_controller', OeContactFormsController::class . '::contactSitePage');
+      $route->setDefault('_controller', CorporateContactFormController::class . '::contactSitePage');
     }
   }
 

@@ -13,6 +13,9 @@ declare(strict_types = 1);
 function oe_contact_forms_install() {
   // Configure the RDF SKOS graphs.
   if (!\Drupal::service('config.installer')->isSyncing()) {
-    \Drupal::service('oe_contact_forms.country_skos_setup')->setup();
+    $graphs = [
+      'country' => 'http://publications.europa.eu/resource/authority/country',
+    ];
+    \Drupal::service('rdf_skos.skos_graph_configurator')->addGraphs($graphs);
   }
 }

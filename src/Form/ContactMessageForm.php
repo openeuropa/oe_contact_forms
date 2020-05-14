@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\oe_contact_forms;
+namespace Drupal\oe_contact_forms\Form;
 
 use Drupal\contact\MessageForm;
 use Drupal\Core\Form\FormStateInterface;
@@ -35,13 +35,13 @@ class ContactMessageForm extends MessageForm {
     // Checkbox to accept privacy policy configured in the ContactForm.
     $form['privacy_policy'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Privacy policy'),
-      '#description' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', ''),
+      '#title' => $this->t('I accept privacy policy'),
+      '#description' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy'),
       '#required' => TRUE,
     ];
 
     // Hide the optional fields the form manager has not configured to be used.
-    $optional_selected = $contact_form->getThirdPartySetting('oe_contact_forms', 'optional_fields', ['oe_country_residence', 'oe_telephone']);
+    $optional_selected = $contact_form->getThirdPartySetting('oe_contact_forms', 'optional_fields', []);
 
     if (!in_array('oe_country_residence', $optional_selected)) {
       $form['oe_country_residence']['#access'] = FALSE;
@@ -52,7 +52,11 @@ class ContactMessageForm extends MessageForm {
     }
 
     // Alter the Topics label with the value configured by the form manager.
-    $form['oe_topic']['widget']['#title'] = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_label', 'Topics');
+    $topic_label = $contact_form->getThirdPartySetting('oe_contact_forms', 'topic_label');
+
+    if (!empty($topic_label)) {
+      $form['oe_topic']['widget']['#title'] = $topic_label;
+    }
 
     return $form;
   }
@@ -73,28 +77,25 @@ class ContactMessageForm extends MessageForm {
     $includes_fields_in_auto_reply = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', FALSE);
 
     if (!empty($reply) && $includes_fields_in_auto_reply === TRUE) {
-      $mail_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'mail');
-      $reply .= "\n" . \Drupal::service('renderer')->render($mail_view);
+      $mail_view = $this->entityTypeManager
+        ->getViewBuilder('contact_message')
+        ->view($message, 'mail');
+      $reply .= "\n" . \Drupal::service('renderer')->renderPlain($mail_view);
       $contact_form->setReply($reply);
-    }
-
-    // Set on the ContactMessage the configured subject.
-    $email_subject = $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject', FALSE);
-
-    if (!empty($email_subject)) {
-      $subject = $message->getSubject();
-      $message->setSubject($email_subject . ' - ' . $subject);
     }
 
     // Set the email recipient(s) based on the selected topic.
     $recipients = $contact_form->getRecipients();
     $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
-    $selected_topics = $form_state->getValue('oe_topic')['0']['value'];
+    $selected_topic = $form_state->getValue('oe_topic')['0']['value'];
 
-    if (isset($topics[$selected_topics])) {
-      $topic_recipients = explode(',', $topics[$selected_topics]['topic_email_address']);
-      $recipients = array_merge($recipients, $topic_recipients);
-      $contact_form->setRecipients($recipients);
+    foreach ($topics as $index => $topic) {
+      if ($topic['topic_name'] === $selected_topic) {
+        $topic_recipients = explode(',', $topic['topic_email_address']);
+        $recipients = array_merge($recipients, $topic_recipients);
+        $contact_form->setRecipients($recipients);
+        break;
+      }
     }
 
     // Send the emails.

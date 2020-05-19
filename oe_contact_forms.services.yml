@@ -1,0 +1,5 @@
+services:
+  oe_contact_forms.route_subscriber:
+    class: Drupal\oe_contact_forms\Routing\ContactFormRouteSubscriber
+    tags:
+      - { name: event_subscriber }

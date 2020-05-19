@@ -22,6 +22,13 @@ services:
       - SCREEN_WIDTH=1280
       - SCREEN_HEIGHT=800
 
+  sparql:
+    image: openeuropa/triple-store-dev:1.2.0
+    pull: true
+    environment:
+      - SPARQL_UPDATE=true
+      - DBA_PASSWORD=dba
+
 pipeline:
   composer-install:
     group: prepare

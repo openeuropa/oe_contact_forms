@@ -199,6 +199,31 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   }
 
   $form['#entity_builders'][] = '_oe_contact_forms_contact_form_builder';
+  $form['actions']['submit']['#submit'][] = '_oe_contact_forms_contact_form_submit';
+}
+
+/**
+ * Submit callback for the corporate contact form to clear block definitions.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _oe_contact_forms_contact_form_submit(array $form, FormStateInterface $form_state): void {
+  /** @var \Drupal\contact\ContactFormInterface $contact_form */
+  $contact_form = $form_state->getFormObject()->getEntity();
+  /** @var \Drupal\Core\Block\BlockManagerInterface $block_manager */
+  $block_manager = \Drupal::service('plugin.manager.block');
+  $plugin_id = 'oe_contact_forms_corporate_block:' . $contact_form->uuid();
+  $expose_as_block = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'expose_as_block', TRUE);
+
+  // Only flush block definitions if contact form is/was exposed as block.
+  if (!$block_manager->hasDefinition($plugin_id) && !$expose_as_block) {
+    return;
+  }
+
+  $block_manager->clearCachedDefinitions();
 }
 
 /**

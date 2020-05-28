@@ -80,4 +80,33 @@ class AccessTest extends ContactFormTestBase {
     ])->access());
   }
 
+  /**
+   * Tests corporate contact form block access.
+   */
+  public function testContactBlockAccess(): void {
+    /** @var \Drupal\Core\Block\BlockManagerInterface $block_manager */
+    $block_manager = $this->container->get('plugin.manager.block');
+
+    $contact_form = ContactForm::create(['id' => 'oe_contact_form']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', TRUE);
+    $contact_form->save();
+    $plugin_id = 'oe_contact_forms_corporate_block:' . $contact_form->uuid();
+    $definition = $block_manager->getDefinition($plugin_id);
+
+    // Assert we have the contact form block definition.
+    $this->assertEqual($definition['id'], 'oe_contact_forms_corporate_block');
+
+    /** @var \Drupal\Core\Block\BlockPluginInterface $plugin */
+    $plugin = $block_manager->createInstance($plugin_id);
+
+    // Assert user with "access corporate contact form" permission has access
+    // to contact form block.
+    $account1 = $this->createUser(['name' => 'test1'], ['access corporate contact form']);
+    $this->assertTrue($plugin->access($account1));
+    // Assert user without "access corporate contact form" permission does not.
+    $account2 = $this->createUser(['name' => 'test2'], ['access site-wide contact form']);
+    $this->assertFalse($plugin->access($account2));
+  }
+
 }

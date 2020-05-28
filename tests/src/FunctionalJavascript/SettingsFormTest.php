@@ -9,7 +9,7 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 /**
  * Tests the corporate contact forms.
  */
-class CorporateContactFormTest extends WebDriverTestBase {
+class SettingsFormTest extends WebDriverTestBase {
 
   /**
    * Corporate fields to test against.

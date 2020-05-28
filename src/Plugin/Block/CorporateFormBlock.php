@@ -6,13 +6,13 @@ namespace Drupal\oe_contact_forms\Plugin\Block;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\contact\Entity\ContactForm;
+use Drupal\contact\ContactFormInterface;
 use Drupal\Core\Entity\EntityFormBuilderInterface;
-use Drupal\Core\Render\RendererInterface;
 
 /**
  * Provides a block that renders a corporate form.
@@ -34,14 +34,6 @@ class CorporateFormBlock extends BlockBase implements ContainerFactoryPluginInte
   protected $entityFormBuilder;
 
   /**
-   * The Renderer.
-   *
-   * @var \Drupal\Core\Render\Renderer
-   */
-  protected $renderer;
-
-
-  /**
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -61,14 +53,11 @@ class CorporateFormBlock extends BlockBase implements ContainerFactoryPluginInte
    *   The entity type manager.
    * @param \Drupal\Core\Entity\EntityFormBuilderInterface $entity_form_builder
    *   The entity form builder.
-   * @param \Drupal\Core\Render\RendererInterface $renderer
-   *   The renderer.
    */
-  public function __construct(array $configuration, string $plugin_id, array $plugin_definition, EntityTypeManagerInterface $entityTypeManager, EntityFormBuilderInterface $entity_form_builder, RendererInterface $renderer) {
+  public function __construct(array $configuration, string $plugin_id, array $plugin_definition, EntityTypeManagerInterface $entityTypeManager, EntityFormBuilderInterface $entity_form_builder) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->entityTypeManager = $entityTypeManager;
     $this->entityFormBuilder = $entity_form_builder;
-    $this->renderer = $renderer;
   }
 
   /**
@@ -80,8 +69,7 @@ class CorporateFormBlock extends BlockBase implements ContainerFactoryPluginInte
       $plugin_id,
       $plugin_definition,
       $container->get('entity_type.manager'),
-      $container->get('entity.form_builder'),
-      $container->get('renderer')
+      $container->get('entity.form_builder')
     );
   }
 
@@ -89,45 +77,55 @@ class CorporateFormBlock extends BlockBase implements ContainerFactoryPluginInte
    * {@inheritdoc}
    */
   public function blockAccess(AccountInterface $account) {
-    /** @var \Drupal\contact\Entity\ContactForm $contact_form */
+    /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $this->getContactForm();
 
     if (!$contact_form) {
       return AccessResult::forbidden();
     }
 
-    return $contact_form->access('access corporate contact form', $account, TRUE);
+    return $this->entityTypeManager->getAccessControlHandler('contact_message')->createAccess($contact_form->id(), $account, [], TRUE);
   }
 
   /**
    * {@inheritdoc}
    */
   public function build() {
-    /** @var \Drupal\contact\Entity\ContactForm $contact_form */
+    /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $this->getContactForm();
     if (!$contact_form) {
       return [];
     }
-    $builder = $this->entityTypeManager->getViewBuilder('contact_form');
-    return $builder->view($contact_form);
+
+    /** @var \Drupal\contact\MessageInterface $contact_message */
+    $message = $this->entityTypeManager->getStorage('contact_message')->create([
+      'contact_form' => $contact_form->id(),
+    ]);
+
+    $form = $this->entityFormBuilder->getForm($message, 'corporate_default');
+    $cache = new CacheableMetadata();
+    $cache->addCacheableDependency($contact_form);
+    $cache->applyTo($form);
+
+    return $form;
   }
 
   /**
    * Returns the derived contact form.
    *
-   * @return \Drupal\contact\Entity\ContactForm|null
+   * @return \Drupal\contact\ContactFormInterface|null
    *   The contact form entity.
    */
-  protected function getContactForm(): ?ContactForm {
+  protected function getContactForm(): ?ContactFormInterface {
     $uuid = $this->getDerivativeId();
-    $contact_form = $this->entityTypeManager->getStorage('contact_form')->loadByProperties(['uuid' => $uuid]);
-    if (!$contact_form) {
+    $results = $this->entityTypeManager->getStorage('contact_form')->loadByProperties(['uuid' => $uuid]);
+    if (!$results) {
       // Normally, this should not happen but in case the entity has been
       // deleted.
       return NULL;
     }
 
-    return reset($contact_form);
+    return reset($results);
   }
 
 }

@@ -22,7 +22,7 @@ class CorporateFormBlock extends DeriverBase implements ContainerDeriverInterfac
   protected $entityTypeManager;
 
   /**
-   * LinkListBlock constructor.
+   * CorporateFormBlock constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
@@ -46,20 +46,19 @@ class CorporateFormBlock extends DeriverBase implements ContainerDeriverInterfac
   public function getDerivativeDefinitions($base_plugin_definition) {
     /** @var \Drupal\contact\ContactFormInterface[] $contact_forms */
     $contact_forms = $this->entityTypeManager->getStorage('contact_form')->loadMultiple();
+    $this->derivatives = [];
+
     foreach ($contact_forms as $key => $contact_form) {
       $expose_as_block = $contact_form->getThirdPartySetting('oe_contact_forms', 'expose_as_block', FALSE);
-      $is_corporate_form = $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
-
       // Only expose corporate forms configured as block.
-      if ($expose_as_block && $is_corporate_form) {
+      if ($expose_as_block) {
         $this->derivatives[$contact_form->uuid()] = $base_plugin_definition;
         $this->derivatives[$contact_form->uuid()]['admin_label'] = $contact_form->label();
         $this->derivatives[$contact_form->uuid()]['config_dependencies']['config'] = [$contact_form->getConfigDependencyName()];
       }
-
     }
 
-    return $this->derivatives;
+    return parent::getDerivativeDefinitions($base_plugin_definition);
   }
 
 }

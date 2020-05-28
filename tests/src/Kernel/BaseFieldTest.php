@@ -4,34 +4,13 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_contact_forms\Kernel;
 
-use Drupal\Tests\rdf_entity\Kernel\RdfKernelTestBase;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 
 /**
  * Tests contact form with new fields.
  */
-class BaseFieldTest extends RdfKernelTestBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static $modules = [
-    'options',
-    'telephone',
-    'contact',
-    'contact_storage',
-    'rdf_skos',
-    'oe_contact_forms',
-  ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    parent::setUp();
-    $this->installEntitySchema('contact_message');
-  }
+class BaseFieldTest extends ContactFormTestBase {
 
   /**
    * Tests successful corporate forms message.

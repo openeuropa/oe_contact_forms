@@ -3,3 +3,7 @@ services:
     class: Drupal\oe_contact_forms\Routing\ContactFormRouteSubscriber
     tags:
       - { name: event_subscriber }
+  oe_contact_forms.access_checker:
+    class: Drupal\oe_contact_forms\Access\ContactFormsAccessCheck
+    tags:
+      - { name: access_check, applies_to: _oe_contact_forms_access_check }

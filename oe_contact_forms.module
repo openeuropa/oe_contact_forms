@@ -7,7 +7,6 @@
 
 declare(strict_types = 1);
 
-use Drupal\contact\MessageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Form\FormStateInterface;
@@ -15,6 +14,8 @@ use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 use Drupal\contact\ContactFormInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Implements hook_form_FORM_ID_alter() for contact_form_form().
@@ -372,6 +373,7 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
   $contact_message = $form_object->getEntity();
   /** @var \Drupal\contact\Entity\ContactForm $contact_form */
   $contact_form = ContactForm::load($contact_message->bundle());
+
   // We only want corporate fields on corporate forms.
   if (!$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
     $fields = ['oe_country_residence', 'oe_telephone', 'oe_topic'];
@@ -536,4 +538,31 @@ function oe_contact_forms_mail_alter(&$message) {
 
   // Change subject for corporate mail, copy and reply.
   $message['subject'] = $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject');
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_create_access().
+ */
+function oe_contact_forms_contact_message_create_access(AccountInterface $account, array $context, $entity_bundle) {
+  if (!$entity_bundle) {
+    return AccessResult::neutral();
+  }
+
+  /** @var \Drupal\contact\Entity\ContactForm $contact_form */
+  $contact_form = ContactForm::load($entity_bundle);
+
+  if (!$contact_form) {
+    return AccessResult::neutral();
+  }
+
+  // Leave default contact forms untouched.
+  if (!$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
+    return AccessResult::neutral()->addCacheableDependency($contact_form);
+  }
+
+  if ($account->hasPermission('access corporate contact form')) {
+    return AccessResult::allowed()->cachePerPermissions()->addCacheTags($contact_form->getCacheTags());
+  }
+
+  return AccessResult::forbidden()->cachePerPermissions();
 }

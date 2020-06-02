@@ -70,6 +70,12 @@ class ContactMessageForm extends MessageForm {
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $message->getContactForm();
 
+    // Redirect back to same page if redirect value is not set.
+    if (!$contact_form->getRedirectPath()) {
+      $contact_form->setRedirectPath(\Drupal::service('path.current')->getPath());
+      $contact_form->save();
+    }
+
     // If the form is configured to include all the fields in the auto-reply,
     // set the values after the auto-reply body,
     // so they get included in the email as well.

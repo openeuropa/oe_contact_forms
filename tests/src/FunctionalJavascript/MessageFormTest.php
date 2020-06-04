@@ -8,6 +8,7 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Test\AssertMailTrait;
+use Drupal\node\Entity\Node;
 
 /**
  * Test Corporate MessageForm behaviour.
@@ -25,6 +26,7 @@ class MessageFormTest extends WebDriverTestBase {
     'user',
     'system',
     'path',
+    'node',
     'contact',
     'contact_storage',
     'oe_contact_forms',
@@ -138,8 +140,31 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') !== FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], $topics['0']['topic_name']) !== FALSE);
 
-    // Assert that there was no redirection.
+    // Assert that instead of the user being redirected to the homepage,
+    // they are redirected to the same, contact form page.
     $this->assertUrl('/contact/' . $contact_form_id);
+
+    // Set redirect to an existing path, other then the current one.
+    $node = Node::create([
+      'title' => 'Destination',
+      'type' => 'page',
+      'path' => ['alias' => '/destination'],
+      'status' => TRUE,
+      'uid' => 0,
+    ]);
+    $node->save();
+    $contact_form->setRedirectPath('/destination');
+    $contact_form->save();
+
+    // Submit the form.
+    $page->fillField('subject[0][value]', 'Test subject');
+    $page->fillField('message[0][value]', 'Test message');
+    $page->selectFieldOption('oe_topic', 'Topic name');
+    $page->findField('privacy_policy')->click();
+    $page->findButton('Send message')->press();
+
+    // Assert that the user is being redirected to the path set.
+    $this->assertUrl('/destination');
   }
 
   /**
@@ -180,7 +205,8 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test subject') === FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') === FALSE);
 
-    // Assert redirection was not changed.
+    // Assert that non-corporate forms are being redirected to the homepage
+    // (which in the case of the test setup is the user page).
     $this->assertUrl('/user/' . $this->loggedInUser->id());
   }
 

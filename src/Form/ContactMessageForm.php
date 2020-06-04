@@ -6,6 +6,7 @@ namespace Drupal\oe_contact_forms\Form;
 
 use Drupal\contact\MessageForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Form controller for contact message forms.
@@ -70,12 +71,6 @@ class ContactMessageForm extends MessageForm {
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $message->getContactForm();
 
-    // Redirect back to same page if redirect value is not set.
-    if (!$contact_form->getRedirectPath()) {
-      $contact_form->setRedirectPath(\Drupal::service('path.current')->getPath());
-      $contact_form->save();
-    }
-
     // If the form is configured to include all the fields in the auto-reply,
     // set the values after the auto-reply body,
     // so they get included in the email as well.
@@ -117,6 +112,11 @@ class ContactMessageForm extends MessageForm {
     // The values of the submitted fields.
     $full_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'full');
     $this->messenger()->addMessage($full_view);
+
+    // Redirect back to same page if redirect value is not set.
+    if (!$contact_form->getRedirectPath()) {
+      $form_state->setRedirectUrl(Url::fromRoute('<current>'));
+    }
   }
 
 }

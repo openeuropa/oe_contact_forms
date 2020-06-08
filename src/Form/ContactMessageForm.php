@@ -6,6 +6,7 @@ namespace Drupal\oe_contact_forms\Form;
 
 use Drupal\contact\MessageForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Form controller for contact message forms.
@@ -111,6 +112,11 @@ class ContactMessageForm extends MessageForm {
     // The values of the submitted fields.
     $full_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'full');
     $this->messenger()->addMessage($full_view);
+
+    // Redirect back to same page if redirect value is not set.
+    if (!$contact_form->getRedirectPath()) {
+      $form_state->setRedirectUrl(Url::fromRoute('<current>'));
+    }
   }
 
 }

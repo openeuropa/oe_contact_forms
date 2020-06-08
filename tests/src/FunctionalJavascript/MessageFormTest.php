@@ -8,6 +8,7 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Test\AssertMailTrait;
+use Drupal\node\Entity\Node;
 
 /**
  * Test Corporate MessageForm behaviour.
@@ -24,6 +25,8 @@ class MessageFormTest extends WebDriverTestBase {
   protected static $modules = [
     'user',
     'system',
+    'path',
+    'node',
     'contact',
     'contact_storage',
     'oe_contact_forms',
@@ -39,6 +42,7 @@ class MessageFormTest extends WebDriverTestBase {
     /** @var \Drupal\user\UserInterface $test_user */
     $testuser = $this->drupalCreateUser([
       'access site-wide contact form',
+      'access corporate contact form',
     ]);
     $this->drupalLogin($testuser);
   }
@@ -49,6 +53,9 @@ class MessageFormTest extends WebDriverTestBase {
   public function testCorporateForm(): void {
     /** @var \Behat\Mink\WebAssert $assert */
     $assert = $this->assertSession();
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
     // Prepare a corporate contact form.
     $contact_form_id = 'oe_contact_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
@@ -108,12 +115,11 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue($i['country'] < $i['privacy']);
 
     // Submit the form.
-    $page = $this->getSession()->getPage();
     $page->fillField('subject[0][value]', 'Test subject');
     $page->fillField('message[0][value]', 'Test message');
     $page->selectFieldOption('oe_topic', 'Topic name');
     $page->findField('privacy_policy')->click();
-    $page->findButton('Send message')->click();
+    $page->findButton('Send message')->press();
 
     // Assert confirmation message.
     $assert->elementTextContains('css', '.messages--status', $privacy_text);
@@ -133,6 +139,32 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test subject') !== FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') !== FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], $topics['0']['topic_name']) !== FALSE);
+
+    // Assert that instead of the user being redirected to the homepage,
+    // they are redirected to the same, contact form page.
+    $this->assertUrl('/contact/' . $contact_form_id);
+
+    // Set redirect to an existing path, other then the current one.
+    $node = Node::create([
+      'title' => 'Destination',
+      'type' => 'page',
+      'path' => ['alias' => '/destination'],
+      'status' => TRUE,
+      'uid' => 0,
+    ]);
+    $node->save();
+    $contact_form->setRedirectPath('/destination');
+    $contact_form->save();
+
+    // Submit the form.
+    $page->fillField('subject[0][value]', 'Test subject');
+    $page->fillField('message[0][value]', 'Test message');
+    $page->selectFieldOption('oe_topic', 'Topic name');
+    $page->findField('privacy_policy')->click();
+    $page->findButton('Send message')->press();
+
+    // Assert that the user is being redirected to the path set.
+    $this->assertUrl('/destination');
   }
 
   /**
@@ -141,6 +173,9 @@ class MessageFormTest extends WebDriverTestBase {
   public function testDefaultFormNotChanged(): void {
     /** @var \Behat\Mink\WebAssert $assert */
     $assert = $this->assertSession();
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+
     // Prepare a default contact form.
     $contact_form_id = 'default_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
@@ -153,10 +188,9 @@ class MessageFormTest extends WebDriverTestBase {
     $this->drupalGet('contact/' . $contact_form_id);
 
     // Submit the form.
-    $page = $this->getSession()->getPage();
     $page->fillField('subject[0][value]', 'Test subject');
     $page->fillField('message[0][value]', 'Test message');
-    $page->findButton('Send message')->click();
+    $page->findButton('Send message')->press();
 
     // Assert no confirmation message.
     $assert->elementNotExists('css', '.messages--status');
@@ -170,6 +204,10 @@ class MessageFormTest extends WebDriverTestBase {
     // Assert fields in autoreply.
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test subject') === FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') === FALSE);
+
+    // Assert that non-corporate forms are being redirected to the homepage
+    // (which in the case of the test setup is the user page).
+    $this->assertUrl('/user/' . $this->loggedInUser->id());
   }
 
 }

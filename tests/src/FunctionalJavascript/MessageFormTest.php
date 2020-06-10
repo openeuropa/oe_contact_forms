@@ -84,7 +84,7 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $settings['email_subject']);
     $settings['header'] = 'this is a test header';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $settings['header']);
-    $settings['privacy_text'] = 'this is a test privacy policy';
+    $settings['privacy_text'] = 'http://example.net';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $settings['privacy_text']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', TRUE);
     $settings['optional_selected'] = ['oe_country_residence' => 'oe_country_residence'];
@@ -147,7 +147,7 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $settings['email_subject']);
     $settings['header'] = 'this is a test header';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $settings['header']);
-    $settings['privacy_text'] = 'this is a test privacy policy';
+    $settings['privacy_text'] = 'http://example.net';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $settings['privacy_text']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', TRUE);
     $settings['optional_selected'] = ['oe_country_residence' => 'oe_country_residence'];
@@ -269,7 +269,9 @@ class MessageFormTest extends WebDriverTestBase {
     // Assert header printed.
     $assert->pageTextContains($settings['header']);
     // Assert privacy text.
-    $assert->pageTextContains($settings['privacy_text']);
+    $assert->pageTextContains('Check to accept our privacy policy');
+    // Assert privacy text link.
+    $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'target', "_blank");
     // Assert topic label.
     $assert->elementTextContains('css', 'label[for="edit-oe-topic"]', $settings['topic_label']);
     // Assert elements order.
@@ -317,7 +319,7 @@ class MessageFormTest extends WebDriverTestBase {
     $page->findButton('Send message')->press();
 
     // Assert confirmation message.
-    $assert->elementTextContains('css', '.messages--status', $settings['privacy_text']);
+    $assert->elementTextNotContains('css', '.messages--status', 'Check to accept our privacy policy');
     $assert->elementTextContains('css', '.messages--status', $settings['topics']['0']['topic_name']);
 
     // Load captured emails to check.

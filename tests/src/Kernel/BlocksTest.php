@@ -25,8 +25,9 @@ class BlocksTest extends ContactFormTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $topic_label);
     $header = 'this is a test header';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $header);
-    $privacy_text = 'this is a test privacy policy';
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_text);
+    $privacy_url = 'http://example.net';
+    $privacy_text = "I have read and agree with the <a href=\"{$privacy_url}\" target=\"_blank\">data protection terms</a>";
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_url);
     $topics = [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();
@@ -41,7 +42,7 @@ class BlocksTest extends ContactFormTestBase {
 
     // Assert we have correct build.
     $this->assertEqual($build['header']['#markup'], $header);
-    $this->assertEqual($build['privacy_policy']['#description'], $privacy_text);
+    $this->assertEqual($build['privacy_policy']['#title'], $privacy_text);
     $this->assertEqual($build['oe_topic']['widget']['#title'], $topic_label);
 
     // Remove from derivatives.

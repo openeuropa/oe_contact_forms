@@ -24,8 +24,8 @@ class ContactMessageForm extends MessageForm {
     $message = $this->entity;
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $message->getContactForm();
-
     $header = $contact_form->getThirdPartySetting('oe_contact_forms', 'header', FALSE);
+    $privacy_link = $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', FALSE);
 
     if (!empty($header)) {
       $form['header'] = [
@@ -36,8 +36,7 @@ class ContactMessageForm extends MessageForm {
     // Checkbox to accept privacy policy configured in the ContactForm.
     $form['privacy_policy'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('I accept privacy policy'),
-      '#description' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy'),
+      '#title' => $this->t('I have read and agree with the <a href="@link" target="_blank">data protection terms</a>', ['@link' => $privacy_link]),
       '#required' => TRUE,
     ];
 
@@ -103,12 +102,6 @@ class ContactMessageForm extends MessageForm {
     parent::save($form, $form_state);
 
     // Apart from the confirmation message also include the following.
-    // Privacy notice.
-    $privacy_policy = $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', '');
-
-    if (!empty($privacy_policy)) {
-      $this->messenger()->addMessage($privacy_policy);
-    }
     // The values of the submitted fields.
     $full_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'full');
     $this->messenger()->addMessage($full_view);

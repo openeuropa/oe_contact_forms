@@ -159,10 +159,10 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'header', ''),
     ];
     $form['corporate_fields']['privacy_policy'] = [
-      '#type' => 'textarea',
-      '#title' => t('Privacy policy'),
+      '#type' => 'url',
+      '#title' => t('Privacy policy link'),
       '#required' => TRUE,
-      '#description' => t("Please specify a privacy policy message to display on the form."),
+      '#description' => t("Link to form privacy policy/data protection page."),
       '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', ''),
     ];
     $form['corporate_fields']['includes_fields_in_auto_reply'] = [

@@ -20,7 +20,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     'corporate_fields[topic_label]' => 'Topic label',
     'corporate_fields[email_subject]' => 'Email subject',
     'corporate_fields[header]' => 'Header text',
-    'corporate_fields[privacy_policy]' => 'Privacy text',
+    'corporate_fields[privacy_policy]' => 'http://example.net',
     'corporate_fields[includes_fields_in_auto_reply]' => TRUE,
     'corporate_fields[allow_canonical_url]' => TRUE,
     // For expose_as_block default is true so we test false.
@@ -408,7 +408,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'topic_label' => 'Topic label',
       'email_subject' => 'Email subject',
       'header' => 'Header text',
-      'privacy_policy' => 'Privacy text',
+      'privacy_policy' => 'http://example.net',
       'includes_fields_in_auto_reply' => TRUE,
       'allow_canonical_url' => TRUE,
       'expose_as_block' => FALSE,

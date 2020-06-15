@@ -8,6 +8,7 @@
 declare(strict_types = 1);
 
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\contact\Entity\ContactForm;
@@ -199,6 +200,27 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   }
 
   $form['#entity_builders'][] = '_oe_contact_forms_contact_form_builder';
+}
+
+/**
+ * Clear block cached definitions.
+ */
+function _oe_contact_forms_clear_block_cached_definitions(): void {
+  \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function oe_contact_forms_contact_form_presave(EntityInterface $entity) {
+  _oe_contact_forms_clear_block_cached_definitions();
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ */
+function oe_contact_forms_contact_form_delete(EntityInterface $entity) {
+  _oe_contact_forms_clear_block_cached_definitions();
 }
 
 /**

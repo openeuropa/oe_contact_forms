@@ -15,6 +15,7 @@ class ContactFormTestBase extends RdfKernelTestBase {
    * {@inheritdoc}
    */
   public static $modules = [
+    'path',
     'options',
     'telephone',
     'contact',
@@ -28,6 +29,7 @@ class ContactFormTestBase extends RdfKernelTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
+    $this->installEntitySchema('path_alias');
     $this->installEntitySchema('contact_message');
   }
 

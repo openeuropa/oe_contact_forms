@@ -23,7 +23,10 @@ class ContactFormRouteSubscriber extends RouteSubscriber {
       // Change the contact_form controller.
       $route->setDefault('_controller', CorporateContactFormController::class . '::contactSitePage');
       // Add access check.
-      $route->setRequirements(['_oe_contact_forms_access_check' => 'TRUE']);
+      $route->setRequirements([
+        '_oe_contact_forms_access_check' => 'TRUE',
+        '_entity_access' => 'contact_form.view',
+      ]);
     }
   }
 

@@ -20,33 +20,33 @@ class ContactFormsAccessCheck extends EntityAccessCheck {
    * {@inheritdoc}
    */
   public function access(Route $route, RouteMatchInterface $route_match, AccountInterface $account) {
-    $contact_form = $route_match->getParameters()->get('contact_form');
+    $contact_form = $route_match->getParameter('contact_form');
     $cache = new CacheableMetadata();
     $cache->addCacheableDependency($contact_form);
     $cache->addCacheContexts(['route']);
 
-    // Deny access if form is corporate and the 'Allow canonical URL' is FALSE,
-    // unless user is contact forms administrator.
-    if (
-      !empty($contact_form) &&
-      $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE) &&
-      !$contact_form->getThirdPartySetting('oe_contact_forms', 'allow_canonical_url', FALSE) &&
-      !$account->hasPermission('administer contact forms')
-    ) {
-      return AccessResult::forbidden()->addCacheableDependency($cache);
+    // If not a corporate form, we defer the the original access checker.
+    if (!$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
+      return parent::access($route, $route_match, $account)->addCacheableDependency($cache);
     }
-    // Deny if form is corporate and the 'Allow canonical URL' is TRUE and
-    // the user does not have 'access corporate contact form' permission.
+
+    // If the contact form should allow canonical URLs, we defer to the
+    // original access checker.
     if (
-      $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE) &&
       $contact_form->getThirdPartySetting('oe_contact_forms', 'allow_canonical_url', FALSE) &&
-      !$account->hasPermission('access corporate contact form')
+      $account->hasPermission('access corporate contact form')
     ) {
+      return parent::access($route, $route_match, $account)->addCacheableDependency($cache);
+    }
+
+    $cache->addCacheContexts(['user.permissions']);
+
+    // Otherwise, we deny access unless the user can actually manage the
+    // contact forms.
+    if (!$account->hasPermission('administer contact forms')) {
       return AccessResult::forbidden()->addCacheableDependency($cache);
     }
 
-    // No opinion, so parent access checks should decide if access should be
-    // allowed or not.
     return parent::access($route, $route_match, $account);
   }
 

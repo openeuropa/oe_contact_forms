@@ -4,41 +4,50 @@ declare(strict_types = 1);
 
 namespace Drupal\oe_contact_forms\Access;
 
-use Drupal\contact\ContactFormInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Routing\Access\AccessInterface;
-use Drupal\Core\Access\AccessResultInterface;
+use Drupal\Core\Entity\EntityAccessCheck;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
+use Symfony\Component\Routing\Route;
 
 /**
  * Route access handler for contact form routes.
  */
-class ContactFormsAccessCheck implements AccessInterface {
+class ContactFormsAccessCheck extends EntityAccessCheck {
 
   /**
-   * Denies access to the corporate contact form if not meant for canonical URL.
-   *
-   * @param Drupal\contact\ContactFormInterface $contact_form
-   *   The contact form to check against.
-   *
-   * @return \Drupal\Core\Access\AccessResultInterface
-   *   The access result.
+   * {@inheritdoc}
    */
-  public function access(ContactFormInterface $contact_form = NULL): AccessResultInterface {
+  public function access(Route $route, RouteMatchInterface $route_match, AccountInterface $account) {
+    $contact_form = $route_match->getParameter('contact_form');
     $cache = new CacheableMetadata();
     $cache->addCacheableDependency($contact_form);
     $cache->addCacheContexts(['route']);
 
-    // Deny access if form is corporate and the 'Allow canonical URL' is FALSE.
+    // If not a corporate form, we defer the the original access checker.
+    if (!$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
+      return parent::access($route, $route_match, $account)->addCacheableDependency($cache);
+    }
+
+    // If the contact form should allow canonical URLs, we defer to the
+    // original access checker.
     if (
-      !empty($contact_form) &&
-      $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE) &&
-      !$contact_form->getThirdPartySetting('oe_contact_forms', 'allow_canonical_url', FALSE)
+      $contact_form->getThirdPartySetting('oe_contact_forms', 'allow_canonical_url', FALSE) &&
+      $account->hasPermission('access corporate contact form')
     ) {
+      return parent::access($route, $route_match, $account)->addCacheableDependency($cache);
+    }
+
+    $cache->addCacheContexts(['user.permissions']);
+
+    // Otherwise, we deny access unless the user can actually manage the
+    // contact forms.
+    if (!$account->hasPermission('administer contact forms')) {
       return AccessResult::forbidden()->addCacheableDependency($cache);
     }
 
-    return AccessResult::allowed()->addCacheableDependency($cache);
+    return parent::access($route, $route_match, $account);
   }
 
 }

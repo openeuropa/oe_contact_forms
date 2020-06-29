@@ -43,24 +43,46 @@ class AccessTest extends ContactFormTestBase {
 
     // Assert user with "access corporate contact form" permission has access
     // to contact_message entity.
-    $account1 = $this->createUser(['name' => 'test1'], ['access corporate contact form']);
+    $account1 = $this->createUser(['name' => 'test1', 'uid' => 2], ['access site-wide contact form', 'access corporate contact form']);
     $this->assertTrue($message_storage->getAccessControlHandler('contact_message')->createAccess($contact_form->id(), $account1));
     // Assert user without "access corporate contact form" permission does not.
-    $account2 = $this->createUser(['name' => 'test2'], ['access site-wide contact form']);
+    $account2 = $this->createUser(['name' => 'test2', 'uid' => 3], ['access site-wide contact form']);
     $this->assertFalse($message_storage->getAccessControlHandler('contact_message')->createAccess($contact_form->id(), $account2));
 
     // Assert form without allow_canonical_url is forbidden.
     $this->assertFalse(Url::fromRoute('entity.contact_form.canonical', [
       'contact_form' => $contact_form->id(),
-    ])->access());
-    // Assert form with allow_canonical_url is allowed.
+    ])->access($account1));
+    // Assert form without allow_canonical_url is allowed for users with
+    // 'administer contact forms' permission.
+    $account3 = $this->createUser(['name' => 'test3', 'uid' => 4], ['access site-wide contact form', 'administer contact forms']);
+    $this->assertTrue(Url::fromRoute('entity.contact_form.canonical', [
+      'contact_form' => $contact_form->id(),
+    ])->access($account3));
+    // Assert form with allow_canonical_url is allowed for users with
+    // 'access corporate contact form' permission.
     $contact_form = ContactForm::create(['id' => 'oe_contact_form2']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', TRUE);
     $contact_form->save();
     $this->assertTrue(Url::fromRoute('entity.contact_form.canonical', [
       'contact_form' => $contact_form->id(),
-    ])->access());
+    ])->access($account1));
+    // But denied for users without 'access corporate contact form' permission.
+    $this->assertFalse(Url::fromRoute('entity.contact_form.canonical', [
+      'contact_form' => $contact_form->id(),
+    ])->access($account2));
+    // Assert the transition of allow_canonical_url.
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', FALSE);
+    $contact_form->save();
+    $this->assertFalse(Url::fromRoute('entity.contact_form.canonical', [
+      'contact_form' => $contact_form->id(),
+    ])->access($account1));
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', TRUE);
+    $contact_form->save();
+    $this->assertTrue(Url::fromRoute('entity.contact_form.canonical', [
+      'contact_form' => $contact_form->id(),
+    ])->access($account1));
 
     // Tests default contact form access.
     $contact_form = ContactForm::create(['id' => 'default_form']);
@@ -77,7 +99,7 @@ class AccessTest extends ContactFormTestBase {
     // Assert we still have access to plain contact form.
     $this->assertTrue(Url::fromRoute('entity.contact_form.canonical', [
       'contact_form' => $contact_form->id(),
-    ])->access());
+    ])->access($account2));
   }
 
   /**

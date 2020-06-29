@@ -17,6 +17,7 @@ use Drupal\contact\ContactFormInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Implements hook_form_FORM_ID_alter() for contact_form_form().
@@ -214,6 +215,8 @@ function _oe_contact_forms_clear_block_cached_definitions(): void {
  */
 function oe_contact_forms_contact_form_presave(EntityInterface $entity) {
   _oe_contact_forms_clear_block_cached_definitions();
+  // Invalidate cache tags if config is changed.
+  Cache::invalidateTags($entity->getCacheTags());
 }
 
 /**
@@ -432,6 +435,9 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
       ])
       ->setDisplayOptions('view', [
         'weight' => 0,
+        'settings' => [
+          'link' => FALSE,
+        ],
       ]);
 
     $fields['oe_telephone'] = BaseFieldDefinition::create('telephone')

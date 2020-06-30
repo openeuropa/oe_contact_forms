@@ -432,7 +432,7 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
         ],
       ])
       ->setDisplayOptions('form', [
-        'type' => 'skos_concept_entity_reference_autocomplete',
+        'type' => 'skos_concept_entity_reference_options_select',
       ])
       ->setDisplayOptions('view', [
         'weight' => 0,

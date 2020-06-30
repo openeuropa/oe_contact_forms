@@ -18,6 +18,7 @@ use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
 
 /**
  * Implements hook_form_FORM_ID_alter() for contact_form_form().
@@ -215,8 +216,15 @@ function _oe_contact_forms_clear_block_cached_definitions(): void {
  */
 function oe_contact_forms_contact_form_presave(EntityInterface $entity) {
   _oe_contact_forms_clear_block_cached_definitions();
-  // Invalidate cache tags if config is changed.
-  Cache::invalidateTags($entity->getCacheTags());
+  // Invalidate form display cache tags if config is changed,
+  // since the EntityFormDisplay is not in storage we have to instantiate here.
+  $entity_form_display = new EntityFormDisplay([
+    'targetEntityType' => 'contact_message',
+    'bundle' => $entity->id(),
+    'mode' => 'corporate_default',
+  ], 'entity_form_display');
+
+  Cache::invalidateTags($entity_form_display->getCacheTags());
 }
 
 /**

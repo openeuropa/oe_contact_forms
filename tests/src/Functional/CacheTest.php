@@ -51,16 +51,16 @@ class CacheTest extends BrowserTestBase {
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', TRUE);
-    $topic_label = 'Topic label';
+    $topic_label = t('Topic label');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $topic_label);
-    $header = 'this is a test header';
+    $header = t('this is a test header');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $header);
     $privacy_url = 'http://example.net';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_url);
     $optional_selected = [];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
     $topics = [
-      ['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com'],
+      ['topic_name' => t('Topic name'), 'topic_email_address' => 'topic@emailaddress.com'],
     ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();
@@ -80,9 +80,9 @@ class CacheTest extends BrowserTestBase {
     }
 
     // Change settings.
-    $topic_label = 'Topic label changed';
+    $topic_label = t('Topic label changed');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $topic_label);
-    $header = 'this is a changed test header';
+    $header = t('this is a changed test header');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $header);
     $privacy_url = 'http://changed.example.net';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_url);
@@ -92,8 +92,8 @@ class CacheTest extends BrowserTestBase {
     ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
     $topics = [
-      ['topic_name' => 'Changed name', 'topic_email_address' => 'changed@emailaddress.com'],
-      ['topic_name' => 'Another topic', 'topic_email_address' => 'another@emailaddress.com'],
+      ['topic_name' => t('Changed name'), 'topic_email_address' => 'changed@emailaddress.com'],
+      ['topic_name' => t('Another topic'), 'topic_email_address' => 'another@emailaddress.com'],
     ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();

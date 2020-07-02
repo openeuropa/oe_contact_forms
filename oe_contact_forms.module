@@ -224,7 +224,8 @@ function oe_contact_forms_contact_form_presave(EntityInterface $entity) {
     'mode' => 'corporate_default',
   ], 'entity_form_display');
 
-  Cache::invalidateTags($entity_form_display->getCacheTags());
+  $tags = array_merge($entity_form_display->getCacheTags(), $entity->getCacheTags());
+  Cache::invalidateTags($tags);
 }
 
 /**

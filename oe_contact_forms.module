@@ -215,8 +215,9 @@ function _oe_contact_forms_clear_block_cached_definitions(): void {
  */
 function oe_contact_forms_contact_form_presave(EntityInterface $entity) {
   _oe_contact_forms_clear_block_cached_definitions();
-  // Invalidate cache tags if config is changed.
-  Cache::invalidateTags($entity->getCacheTags());
+  // Invalidate form display cache tags if config is changed,
+  // since the EntityFormDisplay is not in storage we compose the tag.;
+  Cache::invalidateTags(['config:core.entity_form_display.contact_message.' . $entity->id() . '.corporate_default']);
 }
 
 /**

@@ -145,7 +145,7 @@ class MessageFormTest extends WebDriverTestBase {
     $assert->pageTextContains($topic_label);
     $assert->pageTextContains($header);
     $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'href', $privacy_url);
-    $assert->fieldExists('oe_country_residence[0][target_id]');
+    $assert->fieldExists('oe_country_residence');
     $assert->fieldExists('oe_telephone[0][value]');
 
     foreach ($topics as $topic) {

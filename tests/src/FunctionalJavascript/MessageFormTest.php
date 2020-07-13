@@ -27,6 +27,8 @@ class MessageFormTest extends WebDriverTestBase {
     'system',
     'path',
     'node',
+    'dynamic_page_cache',
+    'page_cache',
     'contact',
     'contact_storage',
     'oe_contact_forms',
@@ -116,10 +118,43 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue($i['topic'] < $i['country']);
     $this->assertTrue($i['country'] < $i['privacy']);
 
+    // Change settings.
+    $topic_label = 'Topic label changed';
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $topic_label);
+    $header = 'this is a changed test header';
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $header);
+    $privacy_url = 'http://changed.example.net';
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_url);
+    $optional_selected = [
+      'oe_country_residence' => 'oe_country_residence',
+      'oe_telephone' => 'oe_telephone',
+    ];
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
+    $topics = [
+      ['topic_name' => 'Changed name', 'topic_email_address' => 'changed@emailaddress.com'],
+      ['topic_name' => 'Another topic', 'topic_email_address' => 'another@emailaddress.com'],
+    ];
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
+    $contact_form->save();
+
+    // Access canonical url.
+    $this->drupalGet('contact/' . $contact_form_id);
+
+    // Assert rendering has changed.
+    $assert->pageTextContains($topic_label);
+    $assert->pageTextContains($header);
+    $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'href', $privacy_url);
+    $assert->fieldExists('oe_country_residence[0][target_id]');
+    $assert->fieldExists('oe_telephone[0][value]');
+
+    foreach ($topics as $topic) {
+      $assert->elementExists('named', ['option', $topic['topic_name']]);
+    }
+
     // Submit the form.
     $page->fillField('subject[0][value]', 'Test subject');
     $page->fillField('message[0][value]', 'Test message');
-    $page->selectFieldOption('oe_topic', 'Topic name');
+    $page->selectFieldOption('oe_topic', $topics['0']['topic_name']);
     $page->findField('privacy_policy')->click();
     $page->findButton('Send message')->press();
 
@@ -160,7 +195,7 @@ class MessageFormTest extends WebDriverTestBase {
     // Submit the form.
     $page->fillField('subject[0][value]', 'Test subject');
     $page->fillField('message[0][value]', 'Test message');
-    $page->selectFieldOption('oe_topic', 'Topic name');
+    $page->selectFieldOption('oe_topic', $topics['0']['topic_name']);
     $page->findField('privacy_policy')->click();
     $page->findButton('Send message')->press();
 

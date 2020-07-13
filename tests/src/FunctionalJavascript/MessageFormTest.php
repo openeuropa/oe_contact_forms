@@ -9,6 +9,7 @@ use Drupal\contact\Entity\ContactForm;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\node\Entity\Node;
+use Drupal\Tests\rdf_entity\Traits\RdfDatabaseConnectionTrait;
 use Drupal\user\Entity\Role;
 use Drupal\user\RoleInterface;
 
@@ -16,6 +17,8 @@ use Drupal\user\RoleInterface;
  * Test Corporate MessageForm behaviour.
  */
 class MessageFormTest extends WebDriverTestBase {
+
+  use RdfDatabaseConnectionTrait;
 
   use AssertMailTrait {
     getMails as drupalGetMails;
@@ -83,7 +86,7 @@ class MessageFormTest extends WebDriverTestBase {
     $this->drupalGet('contact/' . $contact_form_id);
 
     // Assert corporate fields and optional fields handling.
-    $assert->fieldExists('oe_country_residence[0][target_id]');
+    $assert->fieldExists('oe_country_residence');
     $assert->fieldNotExists('oe_telephone[0][value]');
     $assert->fieldExists('oe_topic');
     $assert->fieldExists('privacy_policy');
@@ -106,7 +109,7 @@ class MessageFormTest extends WebDriverTestBase {
     $i['subject'] = Unicode::strpos($html, 'edit-subject-0-value');
     $i['message'] = Unicode::strpos($html, 'edit-message-0-value');
     $i['topic'] = Unicode::strpos($html, 'edit-oe-topic');
-    $i['country'] = Unicode::strpos($html, 'edit-oe-country-residence-0-target-id');
+    $i['country'] = Unicode::strpos($html, 'edit-oe-country-residence');
     $i['privacy'] = Unicode::strpos($html, 'edit-privacy-policy');
 
     $this->assertTrue($i['name'] < $i['email']);
@@ -142,7 +145,7 @@ class MessageFormTest extends WebDriverTestBase {
     $assert->pageTextContains($topic_label);
     $assert->pageTextContains($header);
     $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'href', $privacy_url);
-    $assert->fieldExists('oe_country_residence[0][target_id]');
+    $assert->fieldExists('oe_country_residence');
     $assert->fieldExists('oe_telephone[0][value]');
 
     foreach ($topics as $topic) {

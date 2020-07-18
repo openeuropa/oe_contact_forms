@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
+use Drupal\node\Entity\Node;
 
 /**
  * Tests the corporate contact forms.
@@ -34,6 +35,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
    */
   protected static $modules = [
     'user',
+    'path',
+    'node',
     'oe_contact_forms',
   ];
 
@@ -113,6 +116,50 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Make sure the saved values are the ones expected.
     $this->checkCorporateFieldsOnPage(2);
     $this->checkCorporateFieldsInStorage(2);
+
+    // Assert internal links for privacy policy.
+    $field_name = 'corporate_fields[privacy_policy]';
+    $element = $page->findField($field_name);
+    $value = '<front>';
+    $element->setValue($value);
+    $page->pressButton('Save');
+    $assert->pageTextContains('Contact form Test form has been updated.');
+
+    // Make sure the saved value is the one expected.
+    $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
+    $element = $page->findField($field_name);
+    $this->assertNotEmpty($element);
+    $this->assertEquals($value, $element->getValue());
+
+    // Test with entity reference.
+    $alias = '/privacy-page';
+    $node = Node::create([
+      'title' => 'Privacy page',
+      'type' => 'page',
+      'path' => ['alias' => $alias],
+      'status' => TRUE,
+      'uid' => 0,
+    ]);
+    $node->save();
+    $value = 'Privacy page (' . $node->id() . ')';
+    $element->setValue($value);
+    $page->pressButton('Save');
+    $assert->pageTextContains('Contact form Test form has been updated.');
+
+    $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
+    $element = $page->findField($field_name);
+    $this->assertNotEmpty($element);
+    $this->assertEquals($value, $element->getValue());
+
+    // Test with node alias.
+    $element->setValue($alias);
+    $page->pressButton('Save');
+    $assert->pageTextContains('Contact form Test form has been updated.');
+
+    $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
+    $element = $page->findField($field_name);
+    $this->assertNotEmpty($element);
+    $this->assertEquals($alias, $element->getValue());
   }
 
   /**

@@ -7,6 +7,7 @@ namespace Drupal\oe_contact_forms\Form;
 use Drupal\contact\MessageForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\Core\Link;
 
 /**
  * Form controller for contact message forms.
@@ -25,7 +26,6 @@ class ContactMessageForm extends MessageForm {
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $message->getContactForm();
     $header = $contact_form->getThirdPartySetting('oe_contact_forms', 'header', FALSE);
-    $privacy_link = $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', FALSE);
 
     if (!empty($header)) {
       $form['header'] = [
@@ -34,9 +34,14 @@ class ContactMessageForm extends MessageForm {
     }
 
     // Checkbox to accept privacy policy configured in the ContactForm.
+    $privacy_policy = $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy');
+    $privacy_link = Link::fromTextAndUrl('data protection terms', Url::fromUri($privacy_policy, [
+      'absolute' => TRUE,
+      'attributes' => ['target' => '_blank'],
+    ]));
     $form['privacy_policy'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('I have read and agree with the <a href="@link" target="_blank">data protection terms</a>', ['@link' => $privacy_link]),
+      '#title' => $this->t('I have read and agree with the @link', ['@link' => $privacy_link->toString()]),
       '#required' => TRUE,
     ];
 

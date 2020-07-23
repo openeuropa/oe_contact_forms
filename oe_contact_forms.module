@@ -7,6 +7,7 @@
 
 declare(strict_types = 1);
 
+use Drupal\Core\Entity\Element\EntityAutocomplete;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -160,11 +161,21 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'header', ''),
     ];
     $form['corporate_fields']['privacy_policy'] = [
-      '#type' => 'url',
+      '#type' => 'entity_autocomplete',
+      '#target_type' => 'node',
+      '#attributes' => ['data-autocomplete-first-character-blacklist' => '/#?'],
       '#title' => t('Privacy policy link'),
       '#required' => TRUE,
       '#description' => t("Link to form privacy policy/data protection page."),
-      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', ''),
+      '#element_validate' => array(
+        array(
+          '\Drupal\link\Plugin\Field\FieldWidget\LinkWidget',
+          'validateUriElement',
+        ),
+      ),
+      '#maxlength' => 2048,
+      '#process_default_value' => FALSE,
+      '#default_value' => _oe_contact_forms_get_privacy_default($contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', '')),
     ];
     $form['corporate_fields']['includes_fields_in_auto_reply'] = [
       '#type' => 'checkbox',
@@ -201,6 +212,58 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   }
 
   $form['#entity_builders'][] = '_oe_contact_forms_contact_form_builder';
+}
+
+/**
+ * Gets the URI without the 'internal:' or 'entity:' scheme.
+ *
+ * The following two forms of URIs are transformed:
+ * - 'entity:' URIs: to entity autocomplete ("label (entity id)") strings;
+ * - 'internal:' URIs: the scheme is stripped.
+ *
+ * It's sad that LinkWidget::getUriAsDisplayableString() is a protected method,
+ * and we can't benefit from its implementation.
+ *
+ * @param string $uri
+ *   The URI to get the displayable string for.
+ *
+ * @return string
+ *
+ * @see \Drupal\link\Plugin\Field\FieldWidget\LinkWidget::getUriAsDisplayableString()
+ */
+function _oe_contact_forms_get_privacy_default(string $uri): string {
+  $scheme = parse_url($uri, PHP_URL_SCHEME);
+  // By default, the displayable string is the URI.
+  $displayable_string = $uri;
+
+  // A different displayable string may be chosen in case of the 'internal:'
+  // or 'entity:' built-in schemes.
+  if ($scheme === 'internal') {
+    $uri_reference = explode(':', $uri, 2)[1];
+
+    // @todo '<front>' is valid input for BC reasons, may be removed by
+    //   https://www.drupal.org/node/2421941
+    $path = parse_url($uri, PHP_URL_PATH);
+    if ($path === '/') {
+      $uri_reference = '<front>' . substr($uri_reference, 1);
+    }
+
+    $displayable_string = $uri_reference;
+  }
+  elseif ($scheme === 'entity') {
+    [$entity_type, $entity_id] = explode('/', substr($uri, 7), 2);
+    // Show the 'entity:' URI as the entity autocomplete would.
+    // @todo Support entity types other than 'node'. Will be fixed in
+    //    https://www.drupal.org/node/2423093.
+    if ($entity_type == 'node' && $entity = \Drupal::entityTypeManager()->getStorage($entity_type)->load($entity_id)) {
+      $displayable_string = EntityAutocomplete::getEntityLabels([$entity]);
+    }
+  }
+  elseif ($scheme === 'route') {
+    $displayable_string = ltrim($displayable_string, 'route:');
+  }
+
+  return $displayable_string;
 }
 
 /**
@@ -448,7 +511,7 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
         'max_length' => 255,
       ])
       ->setDisplayOptions('form', [
-        'type' => 'tel',
+        'type' => 'telephone_default',
       ])
       ->setDisplayOptions('view', [
         'weight' => 0,

@@ -206,6 +206,21 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Assert that the user is being redirected to the path set.
     $this->assertUrl('/destination');
+
+    // Assert internal value for privacy policy.
+    $alias = '/privacy-page';
+    $node = Node::create([
+      'title' => 'Privacy page',
+      'type' => 'page',
+      'path' => ['alias' => $alias],
+      'status' => TRUE,
+      'uid' => 0,
+    ]);
+    $node->save();
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', 'internal:' . $alias);
+    $contact_form->save();
+    $this->drupalGet('contact/' . $contact_form_id);
+    $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'href', $alias);
   }
 
   /**

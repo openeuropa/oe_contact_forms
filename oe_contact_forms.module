@@ -175,7 +175,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       ),
       '#maxlength' => 2048,
       '#process_default_value' => FALSE,
-      '#default_value' => _oe_contact_forms_get_privacy_default($contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy')),
+      '#default_value' => _oe_contact_forms_get_privacy_default($contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', '')),
     ];
     $form['corporate_fields']['includes_fields_in_auto_reply'] = [
       '#type' => 'checkbox',
@@ -221,7 +221,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
  * - 'entity:' URIs: to entity autocomplete ("label (entity id)") strings;
  * - 'internal:' URIs: the scheme is stripped.
  *
- * It's sad that LinkWidget::getUriAsDisplayableString() is a protecgted method,
+ * It's sad that LinkWidget::getUriAsDisplayableString() is a protected method,
  * and we can't benefit from its implementation.
  *
  * @param string $uri
@@ -231,11 +231,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
  *
  * @see \Drupal\link\Plugin\Field\FieldWidget\LinkWidget::getUriAsDisplayableString()
  */
-function _oe_contact_forms_get_privacy_default($uri): string {
-  if (!$uri) {
-    return '';
-  }
-
+function _oe_contact_forms_get_privacy_default(string $uri): string {
   $scheme = parse_url($uri, PHP_URL_SCHEME);
   // By default, the displayable string is the URI.
   $displayable_string = $uri;

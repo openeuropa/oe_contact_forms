@@ -60,6 +60,9 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   ];
 
   if ($is_corporate_form) {
+    // Remove disable message as it's not used in corporate contact forms.
+    unset($form['contact_storage_disabled_form_message']);
+
     $form['corporate_fields']['topics_fieldset'] = [
       '#type' => 'fieldset',
       '#title' => t('Topics'),
@@ -568,6 +571,22 @@ function oe_contact_forms_entity_type_alter(array &$entity_types) {
   /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
   // Set the form handler class for messages to corporate implementation.
   $entity_types['contact_message']->setFormClass('corporate_default', '\Drupal\oe_contact_forms\Form\ContactMessageForm');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for contact_form_disable_form().
+ */
+function oe_contact_forms_form_contact_form_disable_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  /** @var \Drupal\contact\ContactFormInterface $contact_form */
+  $contact_form = $form_state->getFormObject()->getEntity();
+
+  if (!$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
+    // Only alter disable form if its a corporate contact forms.
+    return;
+  }
+
+  // Remove disable message as it's not used in corporate contact forms.
+  unset($form['contact_storage_disabled_form_message']);
 }
 
 /**

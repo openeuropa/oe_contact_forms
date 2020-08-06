@@ -84,6 +84,11 @@ class CorporateFormBlock extends BlockBase implements ContainerFactoryPluginInte
       return AccessResult::forbidden();
     }
 
+    if (!$contact_form->status()) {
+      // Deny access in case the form is disabled.
+      return AccessResult::forbidden()->addCacheableDependency($contact_form);
+    }
+
     return $this->entityTypeManager->getAccessControlHandler('contact_message')->createAccess($contact_form->id(), $account, [], TRUE);
   }
 

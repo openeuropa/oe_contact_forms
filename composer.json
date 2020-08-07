@@ -58,7 +58,8 @@
         },
         "patches": {
             "drupal/contact_storage": {
-                "https://www.drupal.org/project/contact_storage/issues/2708809": "https://www.drupal.org/files/issues/2020-04-07/revisit_permissions-2708809-56.patch"
+                "https://www.drupal.org/project/contact_storage/issues/2708809": "https://www.drupal.org/files/issues/2020-04-07/revisit_permissions-2708809-56.patch",
+                "https://www.drupal.org/project/contact_storage/issues/2871305": "https://www.drupal.org/files/issues/2020-08-06/contact_storage-test_shows_issue-2871305-9-D8.patch"
             },
             "drupal/contact_storage_export": {
                 "https://www.drupal.org/project/contact_storage_export/issues/2996037": "https://www.drupal.org/files/issues/2020-04-16/contact_storage_export-breaks-on-high-load-balancer-2996037-10.patch",

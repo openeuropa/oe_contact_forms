@@ -41,6 +41,13 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     $is_corporate_form = TRUE;
   }
 
+  // Remove disable message as it's not used in corporate contact forms.
+  $form['contact_storage_disabled_form_message']['#states'] = [
+    'visible' => [
+      ':input[name="is_corporate_form"]' => ['checked' => FALSE],
+    ],
+  ];
+
   // Adding checkbox with ajax callback that managed addionals fields.
   $form['is_corporate_form'] = [
     '#type' => 'checkbox',
@@ -60,9 +67,6 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
   ];
 
   if ($is_corporate_form) {
-    // Remove disable message as it's not used in corporate contact forms.
-    unset($form['contact_storage_disabled_form_message']);
-
     $form['corporate_fields']['topics_fieldset'] = [
       '#type' => 'fieldset',
       '#title' => t('Topics'),

@@ -30,6 +30,11 @@ class ContactFormsAccessCheck extends EntityAccessCheck {
       return parent::access($route, $route_match, $account)->addCacheableDependency($cache);
     }
 
+    if (!$contact_form->status()) {
+      // Deny access in case the form is disabled.
+      return AccessResult::forbidden()->addCacheableDependency($contact_form);
+    }
+
     // If the contact form should allow canonical URLs, we defer to the
     // original access checker.
     if (

@@ -65,6 +65,10 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     $this->drupalGet('admin/structure/contact/add');
 
+    // Assert contact_storage_disabled_form_message is visible.
+    $disabled_message = $page->findField('contact_storage_disabled_form_message');
+    $this->assertTrue($disabled_message->isVisible());
+
     // Assert corporate fields are not present before is_corporate_form click.
     $is_corporate_form = $page->findField('is_corporate_form');
     $this->assertNotEmpty($is_corporate_form);
@@ -73,6 +77,9 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Ajax call to load corporate fields.
     $is_corporate_form->click();
     $assert->assertWaitOnAjaxRequest();
+
+    // Assert contact_storage_disabled_form_message was hidden.
+    $this->assertFalse($disabled_message->isVisible());
 
     // Assert fields are now visible.
     $this->assertFieldsVisible(TRUE);
@@ -98,6 +105,10 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $is_corporate_form = $page->findField('is_corporate_form');
     $this->assertNotEmpty($is_corporate_form);
     $this->assertTrue($is_corporate_form->isChecked());
+
+    // Assert contact_storage_disabled_form_message is hidden.
+    $disabled_message = $page->findField('contact_storage_disabled_form_message');
+    $this->assertFalse($disabled_message->isVisible());
 
     // Make sure the saved values are the ones expected.
     $this->checkCorporateFieldsOnPage();

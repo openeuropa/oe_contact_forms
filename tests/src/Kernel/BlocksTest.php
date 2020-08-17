@@ -18,6 +18,25 @@ class BlocksTest extends ContactFormTestBase {
     /** @var \Drupal\Core\Block\BlockManagerInterface $block_manager */
     $block_manager = $this->container->get('plugin.manager.block');
 
+    $contact_form = ContactForm::create(['id' => 'oe_contact_form_compare']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', TRUE);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', 'http://example.net');
+    $topics = [['topic_name' => 'Topic to compare', 'topic_email_address' => 'compare-topic@emailaddress.com']];
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
+    $contact_form->save();
+    $plugin_id = 'oe_contact_forms_corporate_block:' . $contact_form->uuid();
+
+    // Assert the block was created.
+    $this->assertTrue($block_manager->hasDefinition($plugin_id));
+
+    /** @var \Drupal\oe_contact_forms\Plugin\Block\CorporateFormBlock $plugin */
+    $plugin = $block_manager->createInstance($plugin_id);
+    $build = $plugin->build();
+
+    // Assert we have correct topic option.
+    $this->assertContains('Topic to compare', $build['oe_topic']['widget']['#options']);
+
     $contact_form = ContactForm::create(['id' => 'oe_contact_form']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', TRUE);
@@ -44,6 +63,8 @@ class BlocksTest extends ContactFormTestBase {
     $this->assertEqual($build['header']['#markup'], $header);
     $this->assertEqual($build['privacy_policy']['#title'], $privacy_text);
     $this->assertEqual($build['oe_topic']['widget']['#title'], $topic_label);
+    $this->assertContains('Topic name', $build['oe_topic']['widget']['#options']);
+    $this->assertNotContains('Topic to compare', $build['oe_topic']['widget']['#options']);
 
     // Remove from derivatives.
     $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', FALSE);

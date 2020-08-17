@@ -565,6 +565,10 @@ function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message
     $options[$topic_name] = $topic_name;
   }
 
+  // There could be more then 1 contact form on page,
+  // so let's make sure the right options are used.
+  $cacheable = FALSE;
+
   return $options;
 }
 

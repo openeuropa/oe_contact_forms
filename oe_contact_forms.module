@@ -500,7 +500,7 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
         'concept_schemes' => [
           'http://publications.europa.eu/resource/authority/country',
         ],
-        //'concept_subset' => 'deprecated_countries',
+        'concept_subset' => 'deprecated_countries',
       ])
       ->setDisplayOptions('form', [
         'type' => 'skos_concept_entity_reference_options_select',

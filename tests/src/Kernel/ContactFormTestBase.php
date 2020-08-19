@@ -22,6 +22,7 @@ class ContactFormTestBase extends RdfKernelTestBase {
     'contact_storage',
     'rdf_skos',
     'oe_contact_forms',
+    'oe_corporate_countries',
   ];
 
   /**

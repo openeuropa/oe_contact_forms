@@ -1,4 +1,13 @@
-# Changelog
+# Change Log
+
+## [0.2.0](https://github.com/openeuropa/oe_contact_forms/tree/0.2.0) (2020-08-19)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.1.0...0.2.0)
+
+**Merged pull requests:**
+
+- EWPP-176: Add filters and ordering for country field [\#22](https://github.com/openeuropa/oe_contact_forms/pull/22) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- EWPP-153: Cloning forms triggers an error. [\#20](https://github.com/openeuropa/oe_contact_forms/pull/20) ([yenyasinn](https://github.com/yenyasinn))
+- EWPP-152: Remove disable message, add check for disabled contact form [\#19](https://github.com/openeuropa/oe_contact_forms/pull/19) ([drishu](https://github.com/drishu))
 
 ## [0.1.0](https://github.com/openeuropa/oe_contact_forms/tree/0.1.0) (2020-08-06)
 

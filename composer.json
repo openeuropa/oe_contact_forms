@@ -67,7 +67,7 @@
                 "https://www.drupal.org/project/contact_storage_export/issues/3049010": "https://www.drupal.org/files/issues/2020-04-14/php73-3049010-15.patch"
             },
             "openeuropa/rdf_skos": {
-                "EWPP-176" : "https://github.com/openeuropa/rdf_skos/compare/0.9.0...EWPP-176.diff"
+                "latest-master" : "https://github.com/openeuropa/rdf_skos/compare/0.9.0...master.diff"
             },
             "openeuropa/oe_corporate_countries": {
                 "EWPP-176" : "https://github.com/openeuropa/oe_corporate_countries/compare/1.0.0-beta2...EWPP-176.diff"

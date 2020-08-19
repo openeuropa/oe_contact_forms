@@ -12,4 +12,5 @@ declare(strict_types = 1);
  */
 function oe_contact_forms_post_update_00001(): void {
   \Drupal::service('module_installer')->install(['oe_corporate_countries']);
+  \Drupal::service('kernel')->invalidateContainer();
 }

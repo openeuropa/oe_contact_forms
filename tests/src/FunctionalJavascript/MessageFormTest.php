@@ -87,6 +87,18 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Assert corporate fields and optional fields handling.
     $assert->fieldExists('oe_country_residence');
+    // Assert country options are ordered by label and deprecated ones
+    // have been filtered out.
+    $options = $this->getOptions('oe_country_residence');
+    $actual_countries = array_slice($options, 0, 5);
+    $expected_countries = [
+      '_none' => '- None -',
+      'http://publications.europa.eu/resource/authority/country/AFG' => 'Afghanistan',
+      'http://publications.europa.eu/resource/authority/country/ALA' => 'Åland Islands',
+      'http://publications.europa.eu/resource/authority/country/ALB' => 'Albania',
+      'http://publications.europa.eu/resource/authority/country/DZA' => 'Algeria',
+    ];
+    $this->assertEquals($expected_countries, $actual_countries);
     $assert->fieldNotExists('oe_telephone[0][value]');
     $assert->fieldExists('oe_topic');
     $assert->fieldExists('privacy_policy');

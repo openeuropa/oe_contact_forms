@@ -9,7 +9,7 @@ use Drupal\contact\Entity\ContactForm;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\node\Entity\Node;
-use Drupal\Tests\rdf_entity\Traits\RdfDatabaseConnectionTrait;
+use Drupal\Tests\sparql_entity_storage\Traits\SparqlConnectionTrait;
 use Drupal\user\Entity\Role;
 use Drupal\user\RoleInterface;
 
@@ -18,7 +18,7 @@ use Drupal\user\RoleInterface;
  */
 class MessageFormTest extends WebDriverTestBase {
 
-  use RdfDatabaseConnectionTrait;
+  use SparqlConnectionTrait;
 
   use AssertMailTrait {
     getMails as drupalGetMails;

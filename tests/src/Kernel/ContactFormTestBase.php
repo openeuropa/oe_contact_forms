@@ -4,12 +4,15 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_contact_forms\Kernel;
 
-use Drupal\Tests\rdf_entity\Kernel\RdfKernelTestBase;
+use Drupal\Tests\sparql_entity_storage\Kernel\SparqlKernelTestBase;
+use Drupal\Tests\user\Traits\UserCreationTrait;
 
 /**
  * Base test class for contact form kernel tests.
  */
-class ContactFormTestBase extends RdfKernelTestBase {
+class ContactFormTestBase extends SparqlKernelTestBase {
+
+  use UserCreationTrait;
 
   /**
    * {@inheritdoc}
@@ -17,6 +20,8 @@ class ContactFormTestBase extends RdfKernelTestBase {
   public static $modules = [
     'path',
     'options',
+    'user',
+    'system',
     'telephone',
     'contact',
     'contact_storage',
@@ -32,6 +37,8 @@ class ContactFormTestBase extends RdfKernelTestBase {
     parent::setUp();
     $this->installEntitySchema('path_alias');
     $this->installEntitySchema('contact_message');
+    $this->installEntitySchema('user');
+    $this->installSchema('system', 'sequences');
   }
 
 }

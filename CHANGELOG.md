@@ -1,10 +1,21 @@
-# Change Log
+# Changelog
+
+## [0.3.0](https://github.com/openeuropa/oe_contact_forms/tree/0.3.0) (2020-10-01)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.2.0...0.3.0)
+
+**Merged pull requests:**
+
+- EWPP-280: Update rdf\_skos dependency to allow to include minor versions. [\#25](https://github.com/openeuropa/oe_contact_forms/pull/25) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- EWPP-177: Disable caching of topic options\_allowed\_values. [\#21](https://github.com/openeuropa/oe_contact_forms/pull/21) ([drishu](https://github.com/drishu))
 
 ## [0.2.0](https://github.com/openeuropa/oe_contact_forms/tree/0.2.0) (2020-08-19)
+
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.1.0...0.2.0)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for release 0.2.0. [\#23](https://github.com/openeuropa/oe_contact_forms/pull/23) ([ademarco](https://github.com/ademarco))
 - EWPP-176: Add filters and ordering for country field [\#22](https://github.com/openeuropa/oe_contact_forms/pull/22) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-153: Cloning forms triggers an error. [\#20](https://github.com/openeuropa/oe_contact_forms/pull/20) ([yenyasinn](https://github.com/yenyasinn))
 - EWPP-152: Remove disable message, add check for disabled contact form [\#19](https://github.com/openeuropa/oe_contact_forms/pull/19) ([drishu](https://github.com/drishu))
@@ -15,6 +26,7 @@
 
 **Merged pull requests:**
 
+- Release-0.1.0: Update changelog. [\#18](https://github.com/openeuropa/oe_contact_forms/pull/18) ([nagyad](https://github.com/nagyad))
 - OPENEUROPA-0000: Updating rdf\_skos. [\#17](https://github.com/openeuropa/oe_contact_forms/pull/17) ([upchuk](https://github.com/upchuk))
 - D8TEWPPE-60: Change privacy policy to accept internal links. [\#16](https://github.com/openeuropa/oe_contact_forms/pull/16) ([drishu](https://github.com/drishu))
 - EWPP-20: Use the RDF skos entity reference select widget [\#15](https://github.com/openeuropa/oe_contact_forms/pull/15) ([enriquelacoma](https://github.com/enriquelacoma))

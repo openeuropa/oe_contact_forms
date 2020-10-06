@@ -24,7 +24,7 @@ use Drupal\Core\Cache\Cache;
  * Implements hook_form_FORM_ID_alter() for contact_storage_export().
  */
 function oe_contact_forms_form_contact_storage_export_alter(&$form, FormStateInterface $form_state) {
-  // Remove ip_address to be GDPR compliant;
+  // Remove ip_address to be GDPR compliant.
   unset($form['advanced']['columns']['#options']['ip_address']);
 }
 

@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Drupal\oe_contact_forms\Commands\sql;
 
 use Drush\Commands\DrushCommands;
+use Drush\Drupal\Commands\sql\SanitizePluginInterface;
+use Consolidation\AnnotatedCommand\CommandData;
 use Symfony\Component\Console\Input\InputInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Extension\ModuleHandler;
@@ -13,7 +15,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 /**
  * Sanitizes the contact forms related data.
  */
-class SanitizeContactFormFieldsCommands extends DrushCommands {
+class SanitizeContactFormFieldsCommands extends DrushCommands implements SanitizePluginInterface {
 
   /**
    * The database service.
@@ -46,10 +48,7 @@ class SanitizeContactFormFieldsCommands extends DrushCommands {
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
    *   The logger service.
    */
-  public function __construct(
-    Connection $database,
-    ModuleHandler $moduleHandler,
-    LoggerChannelFactoryInterface $loggerFactory) {
+  public function __construct(Connection $database, ModuleHandler $moduleHandler, LoggerChannelFactoryInterface $loggerFactory) {
     $this->database = $database;
     $this->moduleHandler = $moduleHandler;
     $this->logger = $loggerFactory->get('oe_contact_forms');
@@ -62,7 +61,7 @@ class SanitizeContactFormFieldsCommands extends DrushCommands {
    *
    * @inheritdoc
    */
-  public function sanitize() {
+  public function sanitize($result, CommandData $commandData) {
     $this->database->update('contact_message')
       ->expression('name', "CONCAT('User', id)")
       ->expression('mail', "CONCAT('user+', id, '@example.com')")
@@ -76,7 +75,7 @@ class SanitizeContactFormFieldsCommands extends DrushCommands {
       ])
       ->execute();
 
-    $this->logger->notice('Contact messages data sanitized');
+    $this->logger->notice('Contact messages data sanitized.');
   }
 
   /**
@@ -86,7 +85,7 @@ class SanitizeContactFormFieldsCommands extends DrushCommands {
    *
    * @inheritdoc
    */
-  public function messages(array &$messages, InputInterface $input) {
+  public function messages(&$messages, InputInterface $input) {
     $messages[] = dt('Sanitize contact form data.');
   }
 

@@ -86,7 +86,7 @@ class SanitizeContactFormFieldsCommands extends DrushCommands {
    *
    * @inheritdoc
    */
-  public function messages(&$messages, InputInterface $input) {
+  public function messages(array &$messages, InputInterface $input) {
     $messages[] = dt('Sanitize contact form data.');
   }
 

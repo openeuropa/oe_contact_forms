@@ -6,6 +6,7 @@ namespace Drupal\Tests\oe_contact_forms\Kernel;
 
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
+use Consolidation\AnnotatedCommand\CommandData;
 
 /**
  * Tests the message fields drush sanitization.
@@ -50,7 +51,7 @@ class SanitizeContactFormFieldsTest extends ContactFormTestBase {
 
     /** @var \Drupal\oe_contact_forms\Commands\sql\SanitizeContactFormFieldsCommands $command */
     $command = \Drupal::service('oe_contact_forms.contact.commands');
-    $command->sanitize();
+    $command->sanitize([], $this->createMock(CommandData::class));
 
     $sanitized_message = Message::load($message_id);
 

@@ -75,7 +75,7 @@ class SanitizeContactFormFieldsCommands extends DrushCommands implements Sanitiz
       ])
       ->execute();
 
-    $this->logger->notice('Contact messages data sanitized.');
+    $this->logger->notice('Contact messages data has been sanitized.');
   }
 
   /**

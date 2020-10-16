@@ -7,7 +7,7 @@ services:
     class: Drupal\oe_contact_forms\Access\ContactFormsAccessCheck
     tags:
       - { name: access_check, applies_to: _oe_contact_forms_access_check }
-  oe_contact_forms.contact.commands:
+  oe_contact_forms.contact.sanitize_commands:
     class: Drupal\oe_contact_forms\Commands\sql\SanitizeContactFormFieldsCommands
     arguments: ['@database','@module_handler', '@logger.factory']
     tags:

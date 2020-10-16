@@ -42,15 +42,13 @@ class SanitizeContactFormFieldsTest extends ContactFormTestBase {
     ];
 
     $message = Message::create($data);
-
     $message->save();
 
     $message_id = $message->id();
-
     $this->assertEqual(1, $message_id);
 
     /** @var \Drupal\oe_contact_forms\Commands\sql\SanitizeContactFormFieldsCommands $command */
-    $command = \Drupal::service('oe_contact_forms.contact.commands');
+    $command = \Drupal::service('oe_contact_forms.contact.sanitize_commands');
     $command->sanitize([], $this->createMock(CommandData::class));
 
     $sanitized_message = Message::load($message_id);

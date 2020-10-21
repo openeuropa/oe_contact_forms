@@ -9,6 +9,6 @@ services:
       - { name: access_check, applies_to: _oe_contact_forms_access_check }
   oe_contact_forms.contact.sanitize_commands:
     class: Drupal\oe_contact_forms\Commands\sql\SanitizeContactFormFieldsCommands
-    arguments: ['@database','@module_handler', '@logger.factory']
+    arguments: ['@database', '@logger.factory', '@entity_type.manager', '@cache.entity']
     tags:
       -  { name: drush.command }

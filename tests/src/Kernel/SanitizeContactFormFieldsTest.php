@@ -78,13 +78,13 @@ class SanitizeContactFormFieldsTest extends ContactFormTestBase {
     $this->assertEqual($sanitized_message->get('oe_telephone')->value, '+000-' . $message_id);
     $this->assertEqual($sanitized_message->get('oe_topic')->value, 'topic-' . $message_id);
 
-    $sanitized_message = Message::load($plain_message_id);
+    $plain_message = Message::load($plain_message_id);
 
-    $this->assertEqual($sanitized_message->get('name')->value, $data['name']);
-    $this->assertEqual($sanitized_message->get('mail')->value, $data['mail']);
-    $this->assertEqual($sanitized_message->get('subject')->value, $data['subject']);
-    $this->assertEqual($sanitized_message->get('message')->value, $data['message']);
-    $this->assertEqual($sanitized_message->get('ip_address')->value, $data['ip_address']);
+    $this->assertEqual($plain_message->get('name')->value, $data['name']);
+    $this->assertEqual($plain_message->get('mail')->value, $data['mail']);
+    $this->assertEqual($plain_message->get('subject')->value, $data['subject']);
+    $this->assertEqual($plain_message->get('message')->value, $data['message']);
+    $this->assertEqual($plain_message->get('ip_address')->value, $data['ip_address']);
   }
 
 }

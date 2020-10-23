@@ -78,34 +78,19 @@ class SanitizeContactFormFieldsCommands extends DrushCommands implements Sanitiz
 
     foreach ($contact_forms as $key => $contact_form) {
       $is_corporate_form = $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
-
       if ($is_corporate_form) {
-        $this->database->update('contact_message')
-          ->expression('name', "CONCAT('User', id)")
-          ->expression('mail', "CONCAT('user+', id, '@example.com')")
-          ->expression('subject', "CONCAT('subject-by-', id)")
-          ->expression('message', "CONCAT('message-by-', id)")
-          ->expression('oe_country_residence', "CONCAT('residence-in-', id)")
-          ->expression('oe_telephone', "CONCAT('+000-', id)")
-          ->expression('oe_topic', "CONCAT('topic-', id)")
-          ->fields([
-            'ip_address' => '127.0.0.1',
-          ])
-          ->condition('contact_form', $contact_form->id(), '=')
-          ->execute();
-
-        $select = $this->database->select('contact_message', 'cm');
-        $select->fields('cm', ['id']);
-        $select->condition('contact_form', $contact_form->id(), '=');
-        $results = $select->execute()->fetchAll();
-
-        $cids = [];
-
-        foreach ($results as $result) {
-          $cids[] = 'values:contact_message:' . $result->id;
+        $messages = $this->entityTypeManager->getStorage('contact_message')->loadByProperties(['contact_form' => $contact_form->id()]);
+        foreach ($messages as $message) {
+          $message->set('name', 'User' . $message->id());
+          $message->set('mail', 'user+' . $message->id() . '@example.com');
+          $message->set('subject', 'subject-by-' . $message->id());
+          $message->set('message', 'message-by-' . $message->id());
+          $message->set('oe_country_residence', 'residence-in-' . $message->id());
+          $message->set('oe_telephone', '+000-' . $message->id());
+          $message->set('oe_topic', 'topic-' . $message->id());
+          $message->set('ip_address', '127.0.0.1');
+          $message->save();
         }
-
-        $this->entityCache->invalidateMultiple($cids);
       }
     }
 

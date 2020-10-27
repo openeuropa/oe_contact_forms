@@ -2,16 +2,26 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Tests\oe_contact_forms\Kernel;
+namespace Drupal\Tests\oe_contact_forms\Functional;
 
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
-use Consolidation\AnnotatedCommand\CommandData;
+use Drupal\Tests\BrowserTestBase;
+use Drush\TestTraits\DrushTestTrait;
 
 /**
  * Tests the message fields drush sanitization.
  */
-class SanitizeContactFormFieldsTest extends ContactFormTestBase {
+class ContactFormSanitizeCommandTest extends BrowserTestBase {
+
+  use DrushTestTrait;
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $modules = [
+    'oe_contact_forms',
+  ];
 
   /**
    * Tests the drush sanitization.
@@ -63,9 +73,14 @@ class SanitizeContactFormFieldsTest extends ContactFormTestBase {
     $plain_message->save();
     $plain_message_id = $plain_message->id();
 
-    /** @var \Drupal\oe_contact_forms\Commands\sql\SanitizeContactFormFieldsCommands $command */
-    $command = \Drupal::service('oe_contact_forms.contact.sanitize_commands');
-    $command->sanitize([], $this->createMock(CommandData::class));
+    $this->drush('sql:sanitize');
+    $expected = 'The following operations will be performed:' . PHP_EOL . PHP_EOL;
+    $expected .= '* Sanitize contact form data.' . PHP_EOL;
+    $expected .= '* Truncate sessions table.' . PHP_EOL;
+    $expected .= '* Sanitize text fields associated with users.' . PHP_EOL;
+    $expected .= '* Sanitize user passwords.' . PHP_EOL;
+    $expected .= '* Sanitize user emails.';
+    $this->assertOutputEquals($expected);
 
     $sanitized_message = Message::load($message_id);
 

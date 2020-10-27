@@ -8,22 +8,12 @@ use Drush\Commands\DrushCommands;
 use Drush\Drupal\Commands\sql\SanitizePluginInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Symfony\Component\Console\Input\InputInterface;
-use Drupal\Core\Database\Connection;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Cache\CacheBackendInterface;
 
 /**
  * Sanitizes the contact forms related data.
  */
-class SanitizeContactFormFieldsCommands extends DrushCommands implements SanitizePluginInterface {
-
-  /**
-   * The database service.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  protected $database;
+class ContactFormSanitizeCommand extends DrushCommands implements SanitizePluginInterface {
 
   /**
    * The entity type manager.
@@ -33,36 +23,14 @@ class SanitizeContactFormFieldsCommands extends DrushCommands implements Sanitiz
   protected $entityTypeManager;
 
   /**
-   * The logger service.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
-   */
-  protected $logger;
-
-  /**
-   * The entity cache service.
-   *
-   * @var \Drupal\Core\Cache\CacheBackendInterface
-   */
-  protected $entityCache;
-
-  /**
    * SanitizeContactFormFieldsCommands constructor.
    *
-   * @param \Drupal\Core\Database\Connection $database
-   *   The database service.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
-   *   The logger service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
-   * @param \Drupal\Core\Cache\CacheBackendInterface $entityCache
-   *   The entity cache service.
    */
-  public function __construct(Connection $database, LoggerChannelFactoryInterface $loggerFactory, EntityTypeManagerInterface $entityTypeManager, CacheBackendInterface $entityCache) {
-    $this->database = $database;
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+    parent::__construct();
     $this->entityTypeManager = $entityTypeManager;
-    $this->logger = $loggerFactory->get('oe_contact_forms');
-    $this->entityCache = $entityCache;
   }
 
   /**
@@ -94,7 +62,7 @@ class SanitizeContactFormFieldsCommands extends DrushCommands implements Sanitiz
       }
     }
 
-    $this->logger->notice('Contact messages data sanitized.');
+    $this->logger->success('Contact messages data sanitized.');
   }
 
   /**

@@ -9,7 +9,7 @@
         "drupal/core": "^8.8",
         "drupal/contact_storage": "1.0.0",
         "drupal/contact_storage_export": "^1.13",
-        "easyrdf/easyrdf": "1.0.0 as 0.9.2",
+        "easyrdf/easyrdf": "1.0.0 as 0.9.1",
         "openeuropa/rdf_skos": "dev-OPENEUROPA-3048",
         "openeuropa/oe_corporate_countries": "dev-OPENEUROPA-3048",
         "php": ">=7.2"

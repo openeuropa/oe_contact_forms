@@ -56,7 +56,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     ],
   ];
 
-  // Adding checkbox with ajax callback that managed addionals fields.
+  // Adding checkbox with ajax callback that manages additional fields.
   $form['is_corporate_form'] = [
     '#type' => 'checkbox',
     '#title' => t('Is corporate form'),
@@ -673,6 +673,12 @@ function oe_contact_forms_mail_alter(&$message) {
 
   // Change subject for corporate mail, copy and reply.
   $message['subject'] = $contact_form->getThirdPartySetting('oe_contact_forms', 'email_subject');
+
+  // Set back the auto-reply in case contact_storage re-rendered it.
+  // @see contact_storage_mail_alter.
+  if ($message['key'] === 'page_autoreply') {
+    $message['body'] = [$contact_form->getReply()];
+  }
 }
 
 /**

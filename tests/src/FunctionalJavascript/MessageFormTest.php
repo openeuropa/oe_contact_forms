@@ -186,10 +186,6 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue($captured_emails[0]['to'] === $topics['0']['topic_email_address']);
     // Make sure we have an autoreply.
     $this->assertTrue($captured_emails[1]['id'] === 'contact_page_autoreply');
-    // Assert fields in autoreply.
-    $this->assertTrue(strpos($captured_emails[1]['body'], 'Test subject') !== FALSE);
-    $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') !== FALSE);
-    $this->assertTrue(strpos($captured_emails[1]['body'], $topics['0']['topic_name']) !== FALSE);
     $this->assertTestEmailBodies($captured_emails);
 
     // Assert that instead of the user being redirected to the homepage,
@@ -291,17 +287,18 @@ class MessageFormTest extends WebDriverTestBase {
    */
   protected function assertTestEmailBodies(array $captured_emails): void {
     // First email is the outgoing one.
-    $expected = 'tester (not verified) (tester@example.com) sent a message using the contact
+    $expected = <<<EOF
+tester (not verified) (tester@example.com) sent a message using the contact
 form at http://web:8080/build/contact/oe_contact_form.
 
 
 
-      The sender\'s name
+      The sender's name
                 tester
 
 
 
-      The sender\'s email
+      The sender's email
                 tester@example.com
 
 
@@ -318,20 +315,22 @@ form at http://web:8080/build/contact/oe_contact_form.
 
       Topic
                 Changed name
-';
 
-    $this->assertEquals($expected, $captured_emails[0]['body']);
+EOF;
+
+    $this->assertEquals(preg_replace('/\s+/', ' ', $expected), preg_replace('/\s+/', ' ', $captured_emails[0]['body']));
 
     // The second is the autoreply.
-    $expected = 'this is a autoreply
+    $expected = <<<EOF
+this is a autoreply
 
 
-      The sender\'s name
+      The sender's name
                 tester
 
 
 
-      The sender\'s email
+      The sender's email
                 tester@example.com
 
 
@@ -348,9 +347,10 @@ form at http://web:8080/build/contact/oe_contact_form.
 
       Topic
                 Changed name
-';
 
-    $this->assertEquals($expected, $captured_emails[1]['body']);
+EOF;
+
+    $this->assertEquals(preg_replace('/\s+/', ' ', $expected), preg_replace('/\s+/', ' ', $captured_emails[1]['body']));
   }
 
 }

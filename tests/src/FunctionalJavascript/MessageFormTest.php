@@ -190,6 +190,7 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test subject') !== FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') !== FALSE);
     $this->assertTrue(strpos($captured_emails[1]['body'], $topics['0']['topic_name']) !== FALSE);
+    $this->assertTestEmailBodies($captured_emails);
 
     // Assert that instead of the user being redirected to the homepage,
     // they are redirected to the same, contact form page.
@@ -278,6 +279,78 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Assert that non-corporate forms are being redirected to the homepage.
     $this->assertUrl('/');
+  }
+
+  /**
+   * Asserts the sent emails are correctly formatted.
+   *
+   * @param array $captured_emails
+   *   The captured emails that were sent out: main one and auto-reply.
+   *
+   * @see self::testCorporateForm
+   */
+  protected function assertTestEmailBodies(array $captured_emails): void {
+    // First email is the outgoing one.
+    $expected = 'tester (not verified) (tester@example.com) sent a message using the contact
+form at http://web:8080/build/contact/oe_contact_form.
+
+
+
+      The sender\'s name
+                tester
+
+
+
+      The sender\'s email
+                tester@example.com
+
+
+
+      Subject
+                Test subject
+
+
+
+      Message
+                Test message
+
+
+
+      Topic
+                Changed name
+';
+
+    $this->assertEquals($expected, $captured_emails[0]['body']);
+
+    // The second is the autoreply.
+    $expected = 'this is a autoreply
+
+
+      The sender\'s name
+                tester
+
+
+
+      The sender\'s email
+                tester@example.com
+
+
+
+      Subject
+                Test subject
+
+
+
+      Message
+                Test message
+
+
+
+      Topic
+                Changed name
+';
+
+    $this->assertEquals($expected, $captured_emails[1]['body']);
   }
 
 }

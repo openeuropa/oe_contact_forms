@@ -1,11 +1,21 @@
 # Changelog
 
+## [0.6.0](https://github.com/openeuropa/oe_contact_forms/tree/0.6.0) (2021-03-11)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.5.0...0.6.0)
+
+**Merged pull requests:**
+
+- EWPP-772: Remove HTML markup in the contact form emails. [\#35](https://github.com/openeuropa/oe_contact_forms/pull/35) ([georgebaev](https://github.com/georgebaev))
+- EWPP-529: Update scaffold library. [\#32](https://github.com/openeuropa/oe_contact_forms/pull/32) ([sergepavle](https://github.com/sergepavle))
+
 ## [0.5.0](https://github.com/openeuropa/oe_contact_forms/tree/0.5.0) (2020-12-03)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.4.0...0.5.0)
 
 **Merged pull requests:**
 
+- EWPP-000: Update CHANGELOG.md for release 0.5.0. [\#31](https://github.com/openeuropa/oe_contact_forms/pull/31) ([sergepavle](https://github.com/sergepavle))
 - EWPP-516: Update docker images. [\#30](https://github.com/openeuropa/oe_contact_forms/pull/30) ([22Alexandra](https://github.com/22Alexandra))
 - EWPP-376: Add Contact Messages sanitization. [\#29](https://github.com/openeuropa/oe_contact_forms/pull/29) ([georgebaev](https://github.com/georgebaev))
 

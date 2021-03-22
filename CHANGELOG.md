@@ -1,11 +1,20 @@
 # Changelog
 
+## [1.0.0](https://github.com/openeuropa/oe_contact_forms/tree/1.0.0) (2021-03-22)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.6.0...1.0.0)
+
+**Merged pull requests:**
+
+- EWPP-109: Use dev branches for the rdf\_skos update. [\#24](https://github.com/openeuropa/oe_contact_forms/pull/24) ([imanoleguskiza](https://github.com/imanoleguskiza))
+
 ## [0.6.0](https://github.com/openeuropa/oe_contact_forms/tree/0.6.0) (2021-03-11)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.5.0...0.6.0)
 
 **Merged pull requests:**
 
+- Prepare release 0.6.0. [\#36](https://github.com/openeuropa/oe_contact_forms/pull/36) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-772: Remove HTML markup in the contact form emails. [\#35](https://github.com/openeuropa/oe_contact_forms/pull/35) ([georgebaev](https://github.com/georgebaev))
 - EWPP-529: Update scaffold library. [\#32](https://github.com/openeuropa/oe_contact_forms/pull/32) ([sergepavle](https://github.com/sergepavle))
 

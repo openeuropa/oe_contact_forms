@@ -13,3 +13,4 @@ runner.yml
 vendor
 yarn.lock
 .tmp
+/.gitattributes

@@ -19,6 +19,7 @@ class ContactFormTestBase extends SparqlKernelTestBase {
    */
   public static $modules = [
     'path',
+    'path_alias',
     'options',
     'user',
     'system',

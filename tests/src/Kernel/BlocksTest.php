@@ -62,9 +62,9 @@ class BlocksTest extends ContactFormTestBase {
     $build = $plugin->build();
 
     // Assert we have the correct build.
-    $this->assertEqual($build['header']['#markup'], $header);
-    $this->assertEqual($build['privacy_policy']['#title'], $privacy_text);
-    $this->assertEqual($build['oe_topic']['widget']['#title'], $topic_label);
+    $this->assertEquals($header, $build['header']['#markup']);
+    $this->assertEquals($privacy_text, $build['privacy_policy']['#title']);
+    $this->assertEquals($topic_label, $build['oe_topic']['widget']['#title']);
     $this->assertContains('Topic name', $build['oe_topic']['widget']['#options']);
 
     // Assert the dynamically generated topics did not get cached and we only

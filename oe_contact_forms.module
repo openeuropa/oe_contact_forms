@@ -182,12 +182,12 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       '#title' => t('Privacy policy link'),
       '#required' => TRUE,
       '#description' => t("Link to form privacy policy/data protection page."),
-      '#element_validate' => array(
-        array(
+      '#element_validate' => [
+        [
           '\Drupal\link\Plugin\Field\FieldWidget\LinkWidget',
           'validateUriElement',
-        ),
-      ),
+        ],
+      ],
       '#maxlength' => 2048,
       '#process_default_value' => FALSE,
       '#default_value' => _oe_contact_forms_get_privacy_default($contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', '')),
@@ -243,6 +243,7 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
  *   The URI to get the displayable string for.
  *
  * @return string
+ *   The URI without the 'internal:' or 'entity:' scheme
  *
  * @see \Drupal\link\Plugin\Field\FieldWidget\LinkWidget::getUriAsDisplayableString()
  */
@@ -268,9 +269,9 @@ function _oe_contact_forms_get_privacy_default(string $uri): string {
   elseif ($scheme === 'entity') {
     [$entity_type, $entity_id] = explode('/', substr($uri, 7), 2);
     // Show the 'entity:' URI as the entity autocomplete would.
-    // @todo Support entity types other than 'node'. Will be fixed in
-    //    https://www.drupal.org/node/2423093.
-    if ($entity_type == 'node' && $entity = \Drupal::entityTypeManager()->getStorage($entity_type)->load($entity_id)) {
+    // @todo   Support entity types other than 'node'. Will be fixed in
+    //   https://www.drupal.org/node/2423093.
+    if ($entity_type == 'node' && $entity = Drupal::entityTypeManager()->getStorage($entity_type)->load($entity_id)) {
       $displayable_string = EntityAutocomplete::getEntityLabels([$entity]);
     }
   }
@@ -285,7 +286,7 @@ function _oe_contact_forms_get_privacy_default(string $uri): string {
  * Clear block cached definitions.
  */
 function _oe_contact_forms_clear_block_cached_definitions(): void {
-  \Drupal::service('plugin.manager.block')->clearCachedDefinitions();
+  Drupal::service('plugin.manager.block')->clearCachedDefinitions();
 }
 
 /**
@@ -294,7 +295,7 @@ function _oe_contact_forms_clear_block_cached_definitions(): void {
 function oe_contact_forms_contact_form_presave(EntityInterface $entity) {
   _oe_contact_forms_clear_block_cached_definitions();
   // Invalidate form display cache tags if config is changed,
-  // since the EntityFormDisplay is not in storage we compose the tag.;
+  // since the EntityFormDisplay is not in storage we compose the tag.
   Cache::invalidateTags(['config:core.entity_form_display.contact_message.' . $entity->id() . '.corporate_default']);
 }
 
@@ -443,7 +444,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
 function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form_state): void {
   $values = $form_state->getValue('corporate_fields');
   $topics_fieldset = &$values['topics_fieldset'];
-  $email_validator = \Drupal::service('email.validator');
+  $email_validator = Drupal::service('email.validator');
 
   foreach ($topics_fieldset['group'] as $delta => &$topic) {
     if (empty($topic['topic_email_address'])) {
@@ -659,7 +660,11 @@ function oe_contact_forms_entity_form_display_alter(EntityFormDisplayInterface $
 function oe_contact_forms_mail_alter(&$message) {
   // Check if its a corporate contact form.
   $is_corporate_form = FALSE;
-  $mail_ids = ['contact_page_mail', 'contact_page_copy', 'contact_page_autoreply'];
+  $mail_ids = [
+    'contact_page_mail',
+    'contact_page_copy',
+    'contact_page_autoreply',
+  ];
 
   if (isset($message['params']['contact_form'])) {
     /** @var \Drupal\contact\ContactFormInterface $contact_form */

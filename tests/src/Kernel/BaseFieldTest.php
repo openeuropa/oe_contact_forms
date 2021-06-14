@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_contact_forms\Kernel;
 
+use Drupal;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 
@@ -52,7 +53,7 @@ class BaseFieldTest extends ContactFormTestBase {
     $message->save();
 
     /** @var \Drupal\Core\Entity\Sql\SqlContentEntityStorage $entity_type_manager */
-    $entity_type_manager = \Drupal::entityTypeManager()->getStorage('contact_message');
+    $entity_type_manager = Drupal::entityTypeManager()->getStorage('contact_message');
     $entity_type_manager->resetCache();
     /** @var \Drupal\contact\Entity\Message $message */
     $message = $entity_type_manager->load($message->id());
@@ -85,7 +86,7 @@ class BaseFieldTest extends ContactFormTestBase {
     $message = Message::create($data);
     $message->save();
 
-    $form = \Drupal::service('entity.form_builder')->getForm($message, 'default');
+    $form = Drupal::service('entity.form_builder')->getForm($message, 'default');
 
     $this->assertEquals(FALSE, $form['oe_country_residence']['#access'], 'Check that country is not available.');
     $this->assertEquals(FALSE, $form['oe_telephone']['#access'], 'Check that telephone is not available.');

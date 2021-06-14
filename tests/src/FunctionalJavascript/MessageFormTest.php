@@ -6,7 +6,6 @@ namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\contact\Entity\ContactForm;
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\sparql_entity_storage\Traits\SparqlConnectionTrait;
@@ -116,13 +115,13 @@ class MessageFormTest extends WebDriverTestBase {
     // TODO: is there a better method for this ?
     $html = $elements['0']->getOuterHtml();
     $i = [];
-    $i['name'] = Unicode::strpos($html, 'edit-name');
-    $i['email'] = Unicode::strpos($html, 'edit-mail');
-    $i['subject'] = Unicode::strpos($html, 'edit-subject-0-value');
-    $i['message'] = Unicode::strpos($html, 'edit-message-0-value');
-    $i['topic'] = Unicode::strpos($html, 'edit-oe-topic');
-    $i['country'] = Unicode::strpos($html, 'edit-oe-country-residence');
-    $i['privacy'] = Unicode::strpos($html, 'edit-privacy-policy');
+    $i['name'] = mb_strpos($html, 'edit-name');
+    $i['email'] = mb_strpos($html, 'edit-mail');
+    $i['subject'] = mb_strpos($html, 'edit-subject-0-value');
+    $i['message'] = mb_strpos($html, 'edit-message-0-value');
+    $i['topic'] = mb_strpos($html, 'edit-oe-topic');
+    $i['country'] = mb_strpos($html, 'edit-oe-country-residence');
+    $i['privacy'] = mb_strpos($html, 'edit-privacy-policy');
 
     $this->assertTrue($i['name'] < $i['email']);
     $this->assertTrue($i['email'] < $i['subject']);

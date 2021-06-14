@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 
+use Drupal;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
@@ -124,11 +125,11 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     // Assert CSV output with selected columns.
     /* @var \Drupal\file\FileInterface[] $files */
-    $files = \Drupal::entityTypeManager()
+    $files = Drupal::entityTypeManager()
       ->getStorage('file')
       ->loadByProperties(['filename' => 'contact-storage-export.csv']);
     $file = reset($files);
-    $absolute_path = \Drupal::service('file_system')->realpath($file->getFileUri());
+    $absolute_path = Drupal::service('file_system')->realpath($file->getFileUri());
     $actual = file_get_contents($absolute_path);
 
     $headers = '"Message ID",Language,"Form ID","The sender\'s name","The sender\'s email",Subject,Message,Copy,"Recipient ID",Created,"User ID","Country of residence",Phone,Topic';
@@ -539,7 +540,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
    */
   protected function checkCorporateFieldsInStorage($max_delta = 1): void {
     /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $entity_storage */
-    $entity_storage = \Drupal::entityTypeManager()->getStorage('contact_form');
+    $entity_storage = Drupal::entityTypeManager()->getStorage('contact_form');
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $entity_storage->load('oe_corporate_form');
     $this->assertNotEmpty($contact_form);
@@ -573,7 +574,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
    */
   protected function checkCorporateFieldsNotInStorage(): void {
     /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $entity_storage */
-    $entity_storage = \Drupal::entityTypeManager()->getStorage('contact_form');
+    $entity_storage = Drupal::entityTypeManager()->getStorage('contact_form');
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $entity_storage->load('oe_corporate_form');
     $this->assertNotEmpty($contact_form);

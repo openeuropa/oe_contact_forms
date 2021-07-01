@@ -46,7 +46,7 @@ class MessageFormTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Allow anonymous users to use corporate contact forms.

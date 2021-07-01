@@ -10,8 +10,8 @@
         "drupal/contact_storage": "^1.1",
         "drupal/contact_storage_export": "^1.14",
         "easyrdf/easyrdf": "1.0.0 as 0.9.1",
-        "openeuropa/rdf_skos": "~1.0",
-        "openeuropa/oe_corporate_countries": "dev-EWPP-914",
+        "openeuropa/rdf_skos": "^1.0",
+        "openeuropa/oe_corporate_countries": "^2.0",
         "php": ">=7.3"
     },
     "require-dev": {
@@ -19,8 +19,8 @@
         "drupal/config_devel": "~1.2",
         "drupal/core-composer-scaffold": "^8.9 || ^9.1",
         "drupal/drupal-extension": "~4.0",
-        "drush/drush": "~10.3",
-        "openeuropa/code-review": "~1.6",
+        "drush/drush": "^10.3",
+        "openeuropa/code-review": "^1.6",
         "openeuropa/drupal-core-require-dev": "^8.9 || ^9.1",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0",
         "phpspec/prophecy-phpunit": "^1 || ^2"

@@ -10,9 +10,9 @@ declare(strict_types = 1);
 /**
  * Implements hook_install().
  */
-function oe_contact_forms_install() {
+function oe_contact_forms_install($is_syncing) {
   // Configure the RDF SKOS graphs.
-  if (!\Drupal::service('config.installer')->isSyncing()) {
+  if (!$is_syncing) {
     $graphs = [
       'country' => 'http://publications.europa.eu/resource/authority/country',
     ];

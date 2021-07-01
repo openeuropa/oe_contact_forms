@@ -128,7 +128,7 @@ class AccessTest extends ContactFormTestBase {
     $definition = $block_manager->getDefinition($plugin_id);
 
     // Assert we have the contact form block definition.
-    $this->assertEqual($definition['id'], 'oe_contact_forms_corporate_block');
+    $this->assertEquals('oe_contact_forms_corporate_block', $definition['id']);
 
     /** @var \Drupal\Core\Block\BlockPluginInterface $plugin */
     $plugin = $block_manager->createInstance($plugin_id);

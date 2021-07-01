@@ -35,6 +35,11 @@ class CorporateContactFormTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = [
     'file',
     'user',
@@ -46,7 +51,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Create and login test user with permission to create contact forms.

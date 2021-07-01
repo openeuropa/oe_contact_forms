@@ -19,6 +19,11 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = [
     'oe_contact_forms',
   ];
@@ -84,22 +89,22 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
 
     $sanitized_message = Message::load($message_id);
 
-    $this->assertEqual($sanitized_message->get('name')->value, 'User' . $message_id);
-    $this->assertEqual($sanitized_message->get('mail')->value, 'user+' . $message_id . '@example.com');
-    $this->assertEqual($sanitized_message->get('subject')->value, 'subject-by-' . $message_id);
-    $this->assertEqual($sanitized_message->get('message')->value, 'message-by-' . $message_id);
-    $this->assertEqual($sanitized_message->get('ip_address')->value, '127.0.0.1');
-    $this->assertEqual($sanitized_message->get('oe_country_residence')->target_id, 'residence-in-' . $message_id);
-    $this->assertEqual($sanitized_message->get('oe_telephone')->value, '+000-' . $message_id);
-    $this->assertEqual($sanitized_message->get('oe_topic')->value, 'topic-' . $message_id);
+    $this->assertEquals('User' . $message_id, $sanitized_message->get('name')->value);
+    $this->assertEquals('user+' . $message_id . '@example.com', $sanitized_message->get('mail')->value);
+    $this->assertEquals('subject-by-' . $message_id, $sanitized_message->get('subject')->value);
+    $this->assertEquals('message-by-' . $message_id, $sanitized_message->get('message')->value);
+    $this->assertEquals('127.0.0.1', $sanitized_message->get('ip_address')->value);
+    $this->assertEquals('residence-in-' . $message_id, $sanitized_message->get('oe_country_residence')->target_id);
+    $this->assertEquals('+000-' . $message_id, $sanitized_message->get('oe_telephone')->value);
+    $this->assertEquals('topic-' . $message_id, $sanitized_message->get('oe_topic')->value);
 
     $plain_message = Message::load($plain_message_id);
 
-    $this->assertEqual($plain_message->get('name')->value, $data['name']);
-    $this->assertEqual($plain_message->get('mail')->value, $data['mail']);
-    $this->assertEqual($plain_message->get('subject')->value, $data['subject']);
-    $this->assertEqual($plain_message->get('message')->value, $data['message']);
-    $this->assertEqual($plain_message->get('ip_address')->value, $data['ip_address']);
+    $this->assertEquals($data['name'], $plain_message->get('name')->value);
+    $this->assertEquals($data['mail'], $plain_message->get('mail')->value);
+    $this->assertEquals($data['subject'], $plain_message->get('subject')->value);
+    $this->assertEquals($data['message'], $plain_message->get('message')->value);
+    $this->assertEquals($data['ip_address'], $plain_message->get('ip_address')->value);
   }
 
 }

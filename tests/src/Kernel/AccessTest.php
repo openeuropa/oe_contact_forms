@@ -43,10 +43,15 @@ class AccessTest extends ContactFormTestBase {
 
     // Assert user with "access corporate contact form" permission has access
     // to contact_message entity.
-    $account1 = $this->createUser(['access site-wide contact form', 'access corporate contact form'], NULL, FALSE, ['name' => 'test1', 'uid' => 2]);
+    $account1 = $this->createUser([
+      'access site-wide contact form',
+      'access corporate contact form',
+    ], NULL, FALSE, ['name' => 'test1', 'uid' => 2]);
     $this->assertTrue($message_storage->getAccessControlHandler('contact_message')->createAccess($contact_form->id(), $account1));
     // Assert user without "access corporate contact form" permission does not.
-    $account2 = $this->createUser(['access site-wide contact form'], NULL, FALSE, ['name' => 'test2', 'uid' => 3]);
+    $account2 = $this->createUser([
+      'access site-wide contact form',
+    ], NULL, FALSE, ['name' => 'test2', 'uid' => 3]);
     $this->assertFalse($message_storage->getAccessControlHandler('contact_message')->createAccess($contact_form->id(), $account2));
 
     // Assert form without allow_canonical_url is forbidden.
@@ -55,7 +60,10 @@ class AccessTest extends ContactFormTestBase {
     ])->access($account1));
     // Assert form without allow_canonical_url is allowed for users with
     // 'administer contact forms' permission.
-    $account3 = $this->createUser(['access site-wide contact form', 'administer contact forms'], NULL, FALSE, ['name' => 'test3', 'uid' => 4]);
+    $account3 = $this->createUser([
+      'access site-wide contact form',
+      'administer contact forms',
+    ], NULL, FALSE, ['name' => 'test3', 'uid' => 4]);
     $this->assertTrue(Url::fromRoute('entity.contact_form.canonical', [
       'contact_form' => $contact_form->id(),
     ])->access($account3));

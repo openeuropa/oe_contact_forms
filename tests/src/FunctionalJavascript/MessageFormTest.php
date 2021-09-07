@@ -82,7 +82,12 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', TRUE);
     $optional_selected = ['oe_country_residence' => 'oe_country_residence'];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
-    $topics = [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']];
+    $topics = [
+      [
+        'topic_name' => 'Topic name',
+        'topic_email_address' => 'topic@emailaddress.com',
+      ],
+    ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();
 
@@ -117,7 +122,7 @@ class MessageFormTest extends WebDriverTestBase {
     // Assert elements order.
     $elements = $this->xpath('//form');
     $this->assertCount(1, $elements);
-    // TODO: is there a better method for this ?
+    // @todo is there a better method for this ?
     $html = $elements['0']->getOuterHtml();
     $i = [];
     $i['name'] = mb_strpos($html, 'edit-name');
@@ -148,8 +153,14 @@ class MessageFormTest extends WebDriverTestBase {
     ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
     $topics = [
-      ['topic_name' => 'Changed name', 'topic_email_address' => 'changed@emailaddress.com'],
-      ['topic_name' => 'Another topic', 'topic_email_address' => 'another@emailaddress.com'],
+      [
+        'topic_name' => 'Changed name',
+        'topic_email_address' => 'changed@emailaddress.com',
+      ],
+      [
+        'topic_name' => 'Another topic',
+        'topic_email_address' => 'another@emailaddress.com',
+      ],
     ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();

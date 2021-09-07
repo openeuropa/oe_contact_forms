@@ -128,7 +128,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertSession()->assertWaitOnAjaxRequest();
 
     // Assert CSV output with selected columns.
-    /* @var \Drupal\file\FileInterface[] $files */
+    /** @var \Drupal\file\FileInterface[] $files */
     $files = \Drupal::entityTypeManager()
       ->getStorage('file')
       ->loadByProperties(['filename' => 'contact-storage-export.csv']);
@@ -558,13 +558,19 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'includes_fields_in_auto_reply' => TRUE,
       'allow_canonical_url' => TRUE,
       'expose_as_block' => FALSE,
-      'optional_fields' => ['oe_country_residence' => 'oe_country_residence', 'oe_telephone' => 'oe_telephone'],
+      'optional_fields' => [
+        'oe_country_residence' => 'oe_country_residence',
+        'oe_telephone' => 'oe_telephone',
+      ],
       'topics' => [],
     ];
 
     // Dynamically add topic fields.
     for ($i = 0; $i <= $max_delta; $i++) {
-      $expected_values['topics'][] = ['topic_name' => 'topic-' . $i, 'topic_email_address' => $i . '-topic@email.com'];
+      $expected_values['topics'][] = [
+        'topic_name' => 'topic-' . $i,
+        'topic_email_address' => $i . '-topic@email.com',
+      ];
     }
 
     foreach ($expected_values as $key => $expected) {

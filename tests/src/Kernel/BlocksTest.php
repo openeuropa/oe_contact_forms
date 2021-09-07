@@ -23,7 +23,11 @@ class BlocksTest extends ContactFormTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', 'http://example.net');
-    $topics = [['topic_name' => 'Topic to compare', 'topic_email_address' => 'compare-topic@emailaddress.com']];
+    $topics = [[
+      'topic_name' => 'Topic to compare',
+      'topic_email_address' => 'compare-topic@emailaddress.com',
+    ],
+    ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();
     $plugin_id = 'oe_contact_forms_corporate_block:' . $contact_form->uuid();
@@ -49,7 +53,12 @@ class BlocksTest extends ContactFormTestBase {
     $privacy_url = 'http://example.net';
     $privacy_text = "I have read and agree with the <a href=\"{$privacy_url}\" target=\"_blank\">data protection terms</a>";
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_url);
-    $topics = [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']];
+    $topics = [
+      [
+        'topic_name' => 'Topic name',
+        'topic_email_address' => 'topic@emailaddress.com',
+      ],
+    ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();
     $plugin_id = 'oe_contact_forms_corporate_block:' . $contact_form->uuid();

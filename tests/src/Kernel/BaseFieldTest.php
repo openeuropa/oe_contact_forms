@@ -19,7 +19,12 @@ class BaseFieldTest extends ContactFormTestBase {
     $contact_form_id = 'oe_contact_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']]);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', [
+      [
+        'topic_name' => 'Topic name',
+        'topic_email_address' => 'topic@emailaddress.com',
+      ],
+    ]);
     $contact_form->save();
 
     $data = [

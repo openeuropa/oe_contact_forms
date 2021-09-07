@@ -589,7 +589,7 @@ function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message
  * Implements hook_entity_type_alter().
  */
 function oe_contact_forms_entity_type_alter(array &$entity_types) {
-  /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
+  /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
   // Set the form handler class for messages to corporate implementation.
   $entity_types['contact_message']->setFormClass('corporate_default', '\Drupal\oe_contact_forms\Form\ContactMessageForm');
 }

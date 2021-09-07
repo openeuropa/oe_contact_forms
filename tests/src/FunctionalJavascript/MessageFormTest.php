@@ -6,7 +6,6 @@ namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\contact\Entity\ContactForm;
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\sparql_entity_storage\Traits\SparqlConnectionTrait;
@@ -27,6 +26,11 @@ class MessageFormTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = [
     'user',
     'system',
@@ -42,7 +46,7 @@ class MessageFormTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Allow anonymous users to use corporate contact forms.
@@ -78,7 +82,12 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', TRUE);
     $optional_selected = ['oe_country_residence' => 'oe_country_residence'];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
-    $topics = [['topic_name' => 'Topic name', 'topic_email_address' => 'topic@emailaddress.com']];
+    $topics = [
+      [
+        'topic_name' => 'Topic name',
+        'topic_email_address' => 'topic@emailaddress.com',
+      ],
+    ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();
 
@@ -113,16 +122,16 @@ class MessageFormTest extends WebDriverTestBase {
     // Assert elements order.
     $elements = $this->xpath('//form');
     $this->assertCount(1, $elements);
-    // TODO: is there a better method for this ?
+    // @todo is there a better method for this ?
     $html = $elements['0']->getOuterHtml();
     $i = [];
-    $i['name'] = Unicode::strpos($html, 'edit-name');
-    $i['email'] = Unicode::strpos($html, 'edit-mail');
-    $i['subject'] = Unicode::strpos($html, 'edit-subject-0-value');
-    $i['message'] = Unicode::strpos($html, 'edit-message-0-value');
-    $i['topic'] = Unicode::strpos($html, 'edit-oe-topic');
-    $i['country'] = Unicode::strpos($html, 'edit-oe-country-residence');
-    $i['privacy'] = Unicode::strpos($html, 'edit-privacy-policy');
+    $i['name'] = mb_strpos($html, 'edit-name');
+    $i['email'] = mb_strpos($html, 'edit-mail');
+    $i['subject'] = mb_strpos($html, 'edit-subject-0-value');
+    $i['message'] = mb_strpos($html, 'edit-message-0-value');
+    $i['topic'] = mb_strpos($html, 'edit-oe-topic');
+    $i['country'] = mb_strpos($html, 'edit-oe-country-residence');
+    $i['privacy'] = mb_strpos($html, 'edit-privacy-policy');
 
     $this->assertTrue($i['name'] < $i['email']);
     $this->assertTrue($i['email'] < $i['subject']);
@@ -144,8 +153,14 @@ class MessageFormTest extends WebDriverTestBase {
     ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
     $topics = [
-      ['topic_name' => 'Changed name', 'topic_email_address' => 'changed@emailaddress.com'],
-      ['topic_name' => 'Another topic', 'topic_email_address' => 'another@emailaddress.com'],
+      [
+        'topic_name' => 'Changed name',
+        'topic_email_address' => 'changed@emailaddress.com',
+      ],
+      [
+        'topic_name' => 'Another topic',
+        'topic_email_address' => 'another@emailaddress.com',
+      ],
     ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();
@@ -174,7 +189,7 @@ class MessageFormTest extends WebDriverTestBase {
     $page->findButton('Send message')->press();
 
     // Assert confirmation message.
-    $assert->elementTextContains('css', '.messages--status', $topics['0']['topic_name']);
+    $assert->elementTextContains('css', 'div[aria-label="Status message"]', $topics['0']['topic_name']);
 
     // Load captured emails to check.
     $captured_emails = $this->drupalGetMails();
@@ -190,7 +205,7 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Assert that instead of the user being redirected to the homepage,
     // they are redirected to the same, contact form page.
-    $this->assertUrl('/contact/' . $contact_form_id);
+    $assert->addressEquals('/contact/' . $contact_form_id);
 
     // Set redirect to an existing path, other then the current one.
     $node = Node::create([
@@ -214,7 +229,7 @@ class MessageFormTest extends WebDriverTestBase {
     $page->findButton('Send message')->press();
 
     // Assert that the user is being redirected to the path set.
-    $this->assertUrl('/destination');
+    $assert->addressEquals('/destination');
 
     // Assert internal value for privacy policy.
     $alias = '/privacy-page';
@@ -274,7 +289,7 @@ class MessageFormTest extends WebDriverTestBase {
     $this->assertTrue(strpos($captured_emails[1]['body'], 'Test message') === FALSE);
 
     // Assert that non-corporate forms are being redirected to the homepage.
-    $this->assertUrl('/');
+    $assert->addressEquals('/');
   }
 
   /**

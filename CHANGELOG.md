@@ -1,11 +1,22 @@
 # Changelog
 
+## [1.1.0](https://github.com/openeuropa/oe_contact_forms/tree/1.1.0) (2021-09-27)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.0.0...1.1.0)
+
+**Merged pull requests:**
+
+- EWPP-1312: Translate "I have read and agree with the data protection … [\#40](https://github.com/openeuropa/oe_contact_forms/pull/40) ([yenyasinn](https://github.com/yenyasinn))
+- OEL-164: Drupal 9 compatibility fixes. [\#39](https://github.com/openeuropa/oe_contact_forms/pull/39) ([escuriola](https://github.com/escuriola))
+- EWPP-721: Update xdebug configuration. [\#34](https://github.com/openeuropa/oe_contact_forms/pull/34) ([22Alexandra](https://github.com/22Alexandra))
+
 ## [1.0.0](https://github.com/openeuropa/oe_contact_forms/tree/1.0.0) (2021-03-22)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.6.0...1.0.0)
 
 **Merged pull requests:**
 
+- Prepare release 1.0.0. [\#37](https://github.com/openeuropa/oe_contact_forms/pull/37) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-109: Use dev branches for the rdf\_skos update. [\#24](https://github.com/openeuropa/oe_contact_forms/pull/24) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [0.6.0](https://github.com/openeuropa/oe_contact_forms/tree/0.6.0) (2021-03-11)

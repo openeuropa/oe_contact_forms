@@ -61,7 +61,7 @@
                 "https://www.drupal.org/project/contact_storage/issues/3053497": "https://www.drupal.org/files/issues/2020-09-28/3053497-8.patch"
             },
             "drupal/contact_storage_export": {
-                "https://www.drupal.org/project/contact_storage_export/issues/2996037": "https://git.drupalcode.org/project/contact_storage_export/-/merge_requests/1.patch",
+                "https://www.drupal.org/project/contact_storage_export/issues/2996037": "https://www.drupal.org/files/issues/2021-10-22/contact_storage_export-breaks-on-high-load-balancer-2996037-17.patch",
                 "https://www.drupal.org/project/contact_storage_export/issues/3049010": "https://www.drupal.org/files/issues/2020-04-14/php73-3049010-15.patch"
             }
         },

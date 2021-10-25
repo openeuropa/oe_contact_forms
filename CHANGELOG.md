@@ -1,11 +1,20 @@
 # Changelog
 
+## [1.1.0](https://github.com/openeuropa/oe_contact_forms/tree/1.1.0) (2021-10-25)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.1.0...1.1.0)
+
+**Merged pull requests:**
+
+- EWPP-1636: Replace patch for contact\_storage\_export in composer.json. [\#42](https://github.com/openeuropa/oe_contact_forms/pull/42) ([sergepavle](https://github.com/sergepavle))
+
 ## [1.1.0](https://github.com/openeuropa/oe_contact_forms/tree/1.1.0) (2021-09-27)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.0.0...1.1.0)
 
 **Merged pull requests:**
 
+- Release-1.1.0: Update changelog. [\#41](https://github.com/openeuropa/oe_contact_forms/pull/41) ([nagyad](https://github.com/nagyad))
 - EWPP-1312: Translate "I have read and agree with the data protection … [\#40](https://github.com/openeuropa/oe_contact_forms/pull/40) ([yenyasinn](https://github.com/yenyasinn))
 - OEL-164: Drupal 9 compatibility fixes. [\#39](https://github.com/openeuropa/oe_contact_forms/pull/39) ([escuriola](https://github.com/escuriola))
 - EWPP-721: Update xdebug configuration. [\#34](https://github.com/openeuropa/oe_contact_forms/pull/34) ([22Alexandra](https://github.com/22Alexandra))

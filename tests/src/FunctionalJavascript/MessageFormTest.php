@@ -41,7 +41,6 @@ class MessageFormTest extends WebDriverTestBase {
     'contact',
     'contact_storage',
     'oe_contact_forms',
-    'honeypot',
     'oe_contact_forms_honeypot',
   ];
 

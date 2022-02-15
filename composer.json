@@ -72,9 +72,6 @@
             "drupal/contact_storage_export": {
                 "https://www.drupal.org/project/contact_storage_export/issues/2996037": "https://www.drupal.org/files/issues/2021-10-22/contact_storage_export-breaks-on-high-load-balancer-2996037-17.patch",
                 "https://www.drupal.org/project/contact_storage_export/issues/3049010": "https://www.drupal.org/files/issues/2020-04-14/php73-3049010-15.patch"
-            },
-            "drupal/honeypot": {
-                "https://www.drupal.org/project/honeypot/issues/3149689": "https://www.drupal.org/files/issues/2020-07-30/3149689-6-2.0.0.patch"
             }
         },
         "drupal-scaffold": {

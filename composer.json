@@ -22,7 +22,7 @@
         "drupal/core-dev": "^9.2",
         "drupal/drupal-extension": "~4.0",
         "drush/drush": "^10.3",
-        "drupal/honeypot": "^2.0",
+        "drupal/honeypot": "2.0.2",
         "egulias/email-validator": "^2.1.22 || ^3.0",
         "openeuropa/code-review": "^1.6 || ^2.0",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0.0-beta5",

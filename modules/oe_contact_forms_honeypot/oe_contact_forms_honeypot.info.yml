@@ -1,0 +1,9 @@
+name: OpenEuropa Contact Forms Honeypot
+description: Provides Honeypot module to contact form.
+type: module
+package: OpenEuropa
+core_version_requirement: ^8.9 || ^9.1
+
+dependencies:
+  - oe_contact_forms:oe_contact_forms
+  - honeypot:honeypot

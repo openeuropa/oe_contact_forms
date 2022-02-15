@@ -22,10 +22,12 @@
         "drupal/core-dev": "^9.2",
         "drupal/drupal-extension": "~4.0",
         "drush/drush": "^10.3",
+        "drupal/honeypot": "^2.0",
         "egulias/email-validator": "^2.1.22 || ^3.0",
         "openeuropa/code-review": "^1.6 || ^2.0",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0.0-beta5",
-        "phpspec/prophecy-phpunit": "^1 || ^2"
+        "phpspec/prophecy-phpunit": "^1 || ^2",
+        "weitzman/drupal-test-traits": "^1.5"
     },
     "_readme": [
         "Explicit requirement for egulias/email-validator due to https://www.drupal.org/project/drupal/issues/3061074#comment-14300579. It can be removed when Drupal core 9.2 support is droppped.",
@@ -84,7 +86,8 @@
             "composer/installers": true,
             "cweagans/composer-patches": true,
             "drupal/core-composer-scaffold": true,
-            "phpro/grumphp": true
+            "phpro/grumphp": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

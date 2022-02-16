@@ -56,7 +56,8 @@ class MessageFormTest extends WebDriverTestBase {
       'access corporate contact form',
     ]);
 
-    // Disable the time limit.
+    // Disable the time limit to avoid honeypot error due to
+    // the quick submission form.
     \Drupal::configFactory()->getEditable('honeypot.settings')->set('time_limit', 0)->save();
   }
 

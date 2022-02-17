@@ -24,7 +24,6 @@ drupal:
     # Enable the modules.
     - "./vendor/bin/drush en config_devel -y"
     - "./vendor/bin/drush en oe_contact_forms -y"
-    - "./vendor/bin/drush en oe_contact_forms_honeypot -y"
     - "./vendor/bin/drush cr"
   settings:
     settings:

@@ -24,7 +24,6 @@ class HoneypotTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'oe_contact_forms',
     'oe_contact_forms_honeypot',
   ];
 

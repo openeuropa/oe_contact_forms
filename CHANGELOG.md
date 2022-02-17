@@ -1,11 +1,20 @@
 # Changelog
 
-## [1.1.0](https://github.com/openeuropa/oe_contact_forms/tree/1.1.0) (2021-10-25)
+## [1.2.0](https://github.com/openeuropa/oe_contact_forms/tree/1.2.0) (2022-02-17)
 
-[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.1.0...1.1.0)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.1.1...1.2.0)
 
 **Merged pull requests:**
 
+- EWPP-1845: Update PHP8 [\#44](https://github.com/openeuropa/oe_contact_forms/pull/44) ([hernani](https://github.com/hernani))
+
+## [1.1.1](https://github.com/openeuropa/oe_contact_forms/tree/1.1.1) (2021-10-25)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.1.0...1.1.1)
+
+**Merged pull requests:**
+
+- Prepare release 1.1.1. [\#43](https://github.com/openeuropa/oe_contact_forms/pull/43) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-1636: Replace patch for contact\_storage\_export in composer.json. [\#42](https://github.com/openeuropa/oe_contact_forms/pull/42) ([sergepavle](https://github.com/sergepavle))
 
 ## [1.1.0](https://github.com/openeuropa/oe_contact_forms/tree/1.1.0) (2021-09-27)

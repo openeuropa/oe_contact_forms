@@ -41,7 +41,6 @@ class MessageFormTest extends WebDriverTestBase {
     'contact',
     'contact_storage',
     'oe_contact_forms',
-    'oe_contact_forms_honeypot',
   ];
 
   /**
@@ -55,10 +54,6 @@ class MessageFormTest extends WebDriverTestBase {
       'access site-wide contact form',
       'access corporate contact form',
     ]);
-
-    // Disable the time limit to avoid honeypot error due to
-    // the quick submission form.
-    \Drupal::configFactory()->getEditable('honeypot.settings')->set('time_limit', 0)->save();
   }
 
   /**
@@ -183,9 +178,6 @@ class MessageFormTest extends WebDriverTestBase {
     foreach ($topics as $topic) {
       $assert->elementExists('named', ['option', $topic['topic_name']]);
     }
-
-    // Assert honeypot is enabled and working for the contact form.
-    $assert->fieldExists('url');
 
     // Submit the form.
     $page->fillField('name', 'tester');

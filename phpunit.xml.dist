@@ -11,6 +11,7 @@
   </php>
   <testsuites>
     <testsuite name="OE Contact Forms Tests">
+      <directory>./modules/**/tests/</directory>
       <directory>./tests/</directory>
     </testsuite>
   </testsuites>

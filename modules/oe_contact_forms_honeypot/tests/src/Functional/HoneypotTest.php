@@ -33,7 +33,6 @@ class HoneypotTest extends BrowserTestBase {
   public function setUp() {
     parent::setUp();
 
-    // Set up required Honeypot configuration.
     $honeypot_config = \Drupal::configFactory()
       ->getEditable('honeypot.settings');
     $honeypot_config->set('element_name', 'url');
@@ -50,7 +49,7 @@ class HoneypotTest extends BrowserTestBase {
   }
 
   /**
-   * Check creation contact form content through the UI.
+   * Tests the honeypot integration.
    */
   public function testCreateContactForm() {
     $assert_session = $this->assertSession();

@@ -1,4 +1,4 @@
-# OpenEuropa Honeypot for contact form
+# OpenEuropa Contact Forms Honeypot
 
 Provides honeypot integration for contact forms.
 

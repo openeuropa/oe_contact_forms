@@ -1,11 +1,23 @@
 # Changelog
 
+## [1.3.0](https://github.com/openeuropa/oe_contact_forms/tree/1.3.0) (2022-03-07)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.2.0...1.3.0)
+
+**Merged pull requests:**
+
+- EWPP-2035: Revert fixing xdebug-handler version. [\#50](https://github.com/openeuropa/oe_contact_forms/pull/50) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- EWPP-2035: Fix xdebug-handler version until phpmd 2.12 is released. [\#49](https://github.com/openeuropa/oe_contact_forms/pull/49) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- OEL-0000: Fix comments in honeypot test [\#47](https://github.com/openeuropa/oe_contact_forms/pull/47) ([drishu](https://github.com/drishu))
+- OEL-1134: Contact form Honeypot submodule. [\#45](https://github.com/openeuropa/oe_contact_forms/pull/45) ([Maxfire](https://github.com/Maxfire))
+
 ## [1.2.0](https://github.com/openeuropa/oe_contact_forms/tree/1.2.0) (2022-02-17)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.1.1...1.2.0)
 
 **Merged pull requests:**
 
+- EWPP-0000: Prepare for 1.2.0 release. [\#46](https://github.com/openeuropa/oe_contact_forms/pull/46) ([hernani](https://github.com/hernani))
 - EWPP-1845: Update PHP8 [\#44](https://github.com/openeuropa/oe_contact_forms/pull/44) ([hernani](https://github.com/hernani))
 
 ## [1.1.1](https://github.com/openeuropa/oe_contact_forms/tree/1.1.1) (2021-10-25)

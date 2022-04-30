@@ -6,6 +6,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "cweagans/composer-patches": "~1.4",
         "drupal/core": "^9.2",
         "drupal/contact_storage": "^1.1",
         "drupal/contact_storage_export": "^1.14",

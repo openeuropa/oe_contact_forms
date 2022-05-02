@@ -37,9 +37,17 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', [
       [
-        'topic_name' => 'Topic name',
-        'topic_email_address' => 'topic@emailaddress.com',
+        'topic_name' => 'Topic name1',
+        'topic_email_address' => 'topic1@emailaddress.com',
       ],
+      [
+        'topic_name' => 'Topic name2',
+        'topic_email_address' => 'topic2@emailaddress.com',
+      ],
+    ]);
+    $contact_form->setRecipients([
+      'recipient1@emailaddress.com',
+      'recipient2@emailaddress.com',
     ]);
     $contact_form->save();
 
@@ -79,6 +87,7 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $plain_message_id = $plain_message->id();
 
     $this->drush('sql:sanitize');
+    \Drupal::configFactory()->clearStaticCache();
     $expected = 'The following operations will be performed:' . PHP_EOL . PHP_EOL;
     $expected .= '* Sanitize contact form data.' . PHP_EOL;
     $expected .= '* Truncate sessions table.' . PHP_EOL;
@@ -86,6 +95,16 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $expected .= '* Sanitize user passwords.' . PHP_EOL;
     $expected .= '* Sanitize user emails.';
     $this->assertOutputEquals($expected);
+
+    $contact_form_sanitized = ContactForm::load($contact_form_id);
+    $topics = $contact_form_sanitized->getThirdPartySetting('oe_contact_forms', 'topics', []);
+    foreach ($topics as $key => $topic) {
+      $this->assertEquals('topic+' . $key . '@example.com', $topic['topic_email_address']);
+    }
+    $recipients = $contact_form_sanitized->getRecipients();
+    foreach ($recipients as $key => $recipient) {
+      $this->assertEquals('recipient+' . $key . '@example.com', $recipient);
+    }
 
     $sanitized_message = Message::load($message_id);
 
@@ -97,6 +116,16 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $this->assertEquals('residence-in-' . $message_id, $sanitized_message->get('oe_country_residence')->target_id);
     $this->assertEquals('+000-' . $message_id, $sanitized_message->get('oe_telephone')->value);
     $this->assertEquals('topic-' . $message_id, $sanitized_message->get('oe_topic')->value);
+
+    $plain_contact_form_sanitized = ContactForm::load($plain_contact_form_id);
+    $topics = $plain_contact_form_sanitized->getThirdPartySetting('oe_contact_forms', 'topics', []);
+    foreach ($topics as $key => $topic) {
+      $this->assertEquals('topic+' . $key . '@example.com', $topic['topic_email_address']);
+    }
+    $recipients = $plain_contact_form_sanitized->getRecipients();
+    foreach ($recipients as $key => $recipient) {
+      $this->assertEquals('recipient+' . $key . '@example.com', $recipient);
+    }
 
     $plain_message = Message::load($plain_message_id);
 

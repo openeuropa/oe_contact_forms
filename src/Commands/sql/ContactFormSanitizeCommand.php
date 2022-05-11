@@ -59,6 +59,23 @@ class ContactFormSanitizeCommand extends DrushCommands implements SanitizePlugin
           $message->set('ip_address', '127.0.0.1');
           $message->save();
         }
+
+        $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
+        foreach ($topics as $key => $topic) {
+          if (!empty($topic['topic_email_address'])) {
+            $topics[$key]['topic_email_address'] = 'topic+' . $key . '@example.com';
+          }
+        }
+        $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
+
+        $recipients = $contact_form->getRecipients();
+        foreach ($recipients as $key => $recipient) {
+          if (!empty($recipient)) {
+            $recipients[$key] = 'recipient+' . $key . '@example.com';
+          }
+        }
+        $contact_form->setRecipients($recipients);
+        $contact_form->save();
       }
     }
 

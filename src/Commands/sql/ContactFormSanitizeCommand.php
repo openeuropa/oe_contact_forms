@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Drupal\oe_contact_forms\Commands\sql;
 
+use Drupal\Core\Database\Connection;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Commands\sql\SanitizePluginInterface;
 use Consolidation\AnnotatedCommand\CommandData;
@@ -23,14 +24,24 @@ class ContactFormSanitizeCommand extends DrushCommands implements SanitizePlugin
   protected $entityTypeManager;
 
   /**
+   * The database connection to use.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $connection;
+
+  /**
    * SanitizeContactFormFieldsCommands constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
+   * @param \Drupal\Core\Database\Connection $connection
+   *   The database connection to use.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Connection $connection) {
     parent::__construct();
     $this->entityTypeManager = $entityTypeManager;
+    $this->connection = $connection;
   }
 
   /**
@@ -47,18 +58,36 @@ class ContactFormSanitizeCommand extends DrushCommands implements SanitizePlugin
     foreach ($contact_forms as $key => $contact_form) {
       $is_corporate_form = $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
       if ($is_corporate_form) {
-        $messages = $this->entityTypeManager->getStorage('contact_message')->loadByProperties(['contact_form' => $contact_form->id()]);
-        foreach ($messages as $message) {
-          $message->set('name', 'User' . $message->id());
-          $message->set('mail', 'user+' . $message->id() . '@example.com');
-          $message->set('subject', 'subject-by-' . $message->id());
-          $message->set('message', 'message-by-' . $message->id());
-          $message->set('oe_country_residence', 'residence-in-' . $message->id());
-          $message->set('oe_telephone', '+000-' . $message->id());
-          $message->set('oe_topic', 'topic-' . $message->id());
-          $message->set('ip_address', '127.0.0.1');
-          $message->save();
-        }
+        $this->connection->update('contact_message')
+          ->expression('name', 'CONCAT(:name_dummy_string, id)', [
+            ':name_dummy_string' => 'User',
+          ])
+          ->expression('mail', 'CONCAT(:mail_dummy_string, id, :maildomain_dummy_string)', [
+            ':mail_dummy_string' => 'user+',
+            ':maildomain_dummy_string' => '@example.com',
+          ])
+          ->expression('subject', 'CONCAT(:subject_dummy_string, id)', [
+            ':subject_dummy_string' => 'subject-by-',
+          ])
+          ->expression('message', 'CONCAT(:message_dummy_string, id)', [
+            ':message_dummy_string' => 'message-by-',
+          ])
+          ->expression('oe_country_residence', 'CONCAT(:residence_dummy_string, id)', [
+            ':residence_dummy_string' => 'residence-in-',
+          ])
+          ->expression('oe_telephone', 'CONCAT(:telephone_dummy_string, id)', [
+            ':telephone_dummy_string' => '+000-',
+          ])
+          ->expression('oe_topic', 'CONCAT(:topic_dummy_string, id)', [
+            ':topic_dummy_string' => 'topic-',
+          ])
+          ->fields(['ip_address' => '127.0.0.1'])
+          ->condition('contact_form', $contact_form->id())
+          ->execute();
+
+        // Make sure that we don't have sensitive data of contact messages
+        // in the cache.
+        $this->entityTypeManager->getStorage('contact_message')->resetCache();
 
         $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);
         foreach ($topics as $key => $topic) {

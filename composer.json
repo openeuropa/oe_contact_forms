@@ -8,7 +8,7 @@
     "require": {
         "cweagans/composer-patches": "~1.4",
         "drupal/core": "^9.2",
-        "drupal/contact_storage": "^1.1",
+        "drupal/contact_storage": "^1.2",
         "drupal/contact_storage_export": "^1.14",
         "drupal/csv_serialization": "^2.0",
         "drupal/token": "^1.8",
@@ -66,7 +66,6 @@
         "patches": {
             "drupal/contact_storage": {
                 "https://www.drupal.org/project/contact_storage/issues/2708809": "https://www.drupal.org/files/issues/2020-04-07/revisit_permissions-2708809-56.patch",
-                "https://www.drupal.org/project/contact_storage/issues/2871305": "https://www.drupal.org/files/issues/2020-08-06/contact_storage-test_shows_issue-2871305-9-D8.patch",
                 "https://www.drupal.org/project/contact_storage/issues/3053497": "https://www.drupal.org/files/issues/2020-09-28/3053497-8.patch"
             },
             "drupal/contact_storage_export": {

@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.0](https://github.com/openeuropa/oe_contact_forms/tree/1.4.0) (2022-06-22)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.3.0...1.4.0)
+
+**Merged pull requests:**
+
+- EWPP-0000: Update contact\_storage minimum version and remove patch. [\#55](https://github.com/openeuropa/oe_contact_forms/pull/55) ([22Alexandra](https://github.com/22Alexandra))
+- EWPP-2210: Optimize performance for sanitize query. [\#53](https://github.com/openeuropa/oe_contact_forms/pull/53) ([sergepavle](https://github.com/sergepavle))
+- EWPP-1672: Sanitize emails of contact forms. [\#52](https://github.com/openeuropa/oe_contact_forms/pull/52) ([sergepavle](https://github.com/sergepavle))
+- EWPP-2201: Fix dependency from composer patches. [\#51](https://github.com/openeuropa/oe_contact_forms/pull/51) ([yenyasinn](https://github.com/yenyasinn))
+
 ## [1.3.0](https://github.com/openeuropa/oe_contact_forms/tree/1.3.0) (2022-03-07)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.2.0...1.3.0)
@@ -8,6 +19,7 @@
 
 - EWPP-2035: Revert fixing xdebug-handler version. [\#50](https://github.com/openeuropa/oe_contact_forms/pull/50) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2035: Fix xdebug-handler version until phpmd 2.12 is released. [\#49](https://github.com/openeuropa/oe_contact_forms/pull/49) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- Prepare release 1.3.0. [\#48](https://github.com/openeuropa/oe_contact_forms/pull/48) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - OEL-0000: Fix comments in honeypot test [\#47](https://github.com/openeuropa/oe_contact_forms/pull/47) ([drishu](https://github.com/drishu))
 - OEL-1134: Contact form Honeypot submodule. [\#45](https://github.com/openeuropa/oe_contact_forms/pull/45) ([Maxfire](https://github.com/Maxfire))
 

@@ -7,7 +7,7 @@
     "prefer-stable": true,
     "require": {
         "cweagans/composer-patches": "~1.4",
-        "drupal/core": "^9.2",
+        "drupal/core": "^9.3",
         "drupal/contact_storage": "^1.2",
         "drupal/contact_storage_export": "^1.14",
         "drupal/csv_serialization": "^2.0",
@@ -19,18 +19,16 @@
     "require-dev": {
         "composer/installers": "~1.11",
         "drupal/config_devel": "~1.2",
-        "drupal/core-composer-scaffold": "^9.2",
-        "drupal/core-dev": "^9.2",
+        "drupal/core-composer-scaffold": "^9.3",
+        "drupal/core-dev": "^9.3",
         "drupal/drupal-extension": "~4.0",
         "drush/drush": "^10.3",
         "drupal/honeypot": "^2.0.2",
-        "egulias/email-validator": "^2.1.22 || ^3.0",
         "openeuropa/code-review": "^1.6 || ^2.0",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0.0-beta5",
         "phpspec/prophecy-phpunit": "^1 || ^2"
     },
     "_readme": [
-        "Explicit requirement for egulias/email-validator due to https://www.drupal.org/project/drupal/issues/3061074#comment-14300579. It can be removed when Drupal core 9.2 support is droppped.",
         "Explicit requirement for drupal/csv_serialization version due to its dependency compatibility league/csv with PHP7.4",
         "Explicit requirement for drupal/token version due to its dependency compatibility with Drupal9."
     ],

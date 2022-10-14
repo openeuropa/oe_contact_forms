@@ -19,6 +19,7 @@ use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Cache\Cache;
+use Drupal\Component\Render\MarkupInterface;
 
 /**
  * Implements hook_form_FORM_ID_alter() for contact_storage_export().
@@ -215,6 +216,8 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       '#title' => t('Optional fields'),
       '#options' => [
         'oe_country_residence' => t('Country of residence'),
+        'oe_preferred_language' => t('Preferred contact language'),
+        'oe_alternative_language' => t('Alternative contact language'),
         'oe_telephone' => t('Phone'),
       ],
       '#description' => t("Please specify which optional fields you'd like to include in the form."),
@@ -224,7 +227,9 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     // To not flatten the data in $form_state.
     $form['#tree'] = TRUE;
     $form['#validate'][] = '_oe_contact_forms_email_validate';
+    $form['#validate'][] = '_oe_contact_forms_alternative_contact_language_validate';
   }
+  $form['#attached']['library'][] = 'oe_contact_forms/related_checkboxes';
 
   $form['#entity_builders'][] = '_oe_contact_forms_contact_form_builder';
 }
@@ -469,6 +474,23 @@ function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form
 }
 
 /**
+ * Validate alternative contact language field if set.
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _oe_contact_forms_alternative_contact_language_validate(array &$form, FormStateInterface $form_state): void {
+  $values = &$form_state->getValue('corporate_fields');
+  if (empty($values['optional_fields']['oe_preferred_language'])) {
+    // Uncheck alternative contact language if preferred language is unchecked.
+    $values['optional_fields']['oe_alternative_language'] = '';
+    $form_state->setValue('corporate_fields', $values);
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter() for contact_message_form().
  */
 function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInterface $form_state, $form_id) {
@@ -481,7 +503,13 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
 
   // We only want corporate fields on corporate forms.
   if (!$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
-    $fields = ['oe_country_residence', 'oe_telephone', 'oe_topic'];
+    $fields = [
+      'oe_country_residence',
+      'oe_telephone',
+      'oe_topic',
+      'oe_preferred_language',
+      'oe_alternative_language',
+    ];
 
     foreach ($fields as $field) {
       if (!isset($form[$field])) {
@@ -524,6 +552,9 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
         ],
       ]);
 
+    $fields['oe_preferred_language'] = oe_contact_forms_create_language_base_field(t('Preferred contact language'));
+    $fields['oe_alternative_language'] = oe_contact_forms_create_language_base_field(t('Alternative contact language'));
+
     $fields['oe_telephone'] = BaseFieldDefinition::create('telephone')
       ->setLabel(t('Phone'))
       ->setSettings([
@@ -550,6 +581,42 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
 
     return $fields;
   }
+}
+
+/**
+ * Creates language base fields.
+ *
+ * @param \Drupal\Component\Render\MarkupInterface $title
+ *   Field label.
+ *
+ * @return \Drupal\Core\Field\BaseFieldDefinition
+ *   Base field definition.
+ */
+function oe_contact_forms_create_language_base_field(MarkupInterface $title): BaseFieldDefinition {
+  return BaseFieldDefinition::create('skos_concept_entity_reference')
+    ->setLabel($title)
+    ->setSetting('target_type', 'skos_concept')
+    ->setSetting('handler', 'default:skos_concept')
+    ->setSetting('handler_settings', [
+      'target_bundles' => NULL,
+      'auto_create' => FALSE,
+      'concept_schemes' => [
+        'http://publications.europa.eu/resource/authority/language',
+      ],
+      'concept_subset' => 'contact_languages',
+    ])
+    ->setDisplayOptions('form', [
+      'type' => 'skos_concept_entity_reference_options_select',
+      'settings' => [
+        'sort' => 'label',
+      ],
+    ])
+    ->setDisplayOptions('view', [
+      'weight' => 0,
+      'settings' => [
+        'link' => FALSE,
+      ],
+    ]);
 }
 
 /**
@@ -642,14 +709,28 @@ function oe_contact_forms_entity_form_display_alter(EntityFormDisplayInterface $
           'sort' => 'label',
         ],
       ])
-      ->setComponent('oe_telephone', [
+      ->setComponent('oe_preferred_language', [
         'weight' => 6,
+        'type' => 'skos_concept_entity_reference_options_select',
+        'settings' => [
+          'sort' => 'label',
+        ],
+      ])
+      ->setComponent('oe_alternative_language', [
+        'weight' => 7,
+        'type' => 'skos_concept_entity_reference_options_select',
+        'settings' => [
+          'sort' => 'label',
+        ],
+      ])
+      ->setComponent('oe_telephone', [
+        'weight' => 8,
       ])
       ->setComponent('copy', [
-        'weight' => 7,
+        'weight' => 9,
       ])
       ->setComponent('privacy_policy', [
-        'weight' => 8,
+        'weight' => 10,
       ]);
   }
 }

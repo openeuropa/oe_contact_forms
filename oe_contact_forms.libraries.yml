@@ -1,0 +1,6 @@
+related_checkboxes:
+  js:
+    js/related_checkboxes.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery

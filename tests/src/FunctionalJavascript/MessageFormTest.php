@@ -108,6 +108,8 @@ class MessageFormTest extends WebDriverTestBase {
       'http://publications.europa.eu/resource/authority/country/DZA' => 'Algeria',
     ];
     $this->assertEquals($expected_countries, $actual_countries);
+    $assert->fieldNotExists('oe_preferred_language');
+    $assert->fieldNotExists('oe_alternative_language');
     $assert->fieldNotExists('oe_telephone[0][value]');
     $assert->fieldExists('oe_topic');
     $assert->fieldExists('privacy_policy');
@@ -149,6 +151,8 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_url);
     $optional_selected = [
       'oe_country_residence' => 'oe_country_residence',
+      'oe_preferred_language' => 'oe_preferred_language',
+      'oe_alternative_language' => 'oe_alternative_language',
       'oe_telephone' => 'oe_telephone',
     ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
@@ -173,7 +177,26 @@ class MessageFormTest extends WebDriverTestBase {
     $assert->pageTextContains($header);
     $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'href', $privacy_url);
     $assert->fieldExists('oe_country_residence');
+    $assert->fieldExists('oe_preferred_language');
+    $assert->fieldExists('oe_alternative_language');
     $assert->fieldExists('oe_telephone[0][value]');
+
+    // Assert contact language fields contains 24 EU languages.
+    $expected_languages = [
+      '_none' => '- None -',
+      'http://publications.europa.eu/resource/authority/language/BUL' => 'Bulgarian',
+      'http://publications.europa.eu/resource/authority/language/HRV' => 'Croatian',
+      'http://publications.europa.eu/resource/authority/language/CES' => 'Czech',
+      'http://publications.europa.eu/resource/authority/language/DAN' => 'Danish',
+    ];
+    $options = $this->getOptions('oe_preferred_language');
+    $this->assertEquals(25, count($options));
+    $actual_preferred_language = array_slice($options, 0, 5);
+    $this->assertEquals($expected_languages, $actual_preferred_language);
+    $options = $this->getOptions('oe_alternative_language');
+    $this->assertEquals(25, count($options));
+    $actual_alternative_language = array_slice($options, 0, 5);
+    $this->assertEquals($expected_languages, $actual_alternative_language);
 
     foreach ($topics as $topic) {
       $assert->elementExists('named', ['option', $topic['topic_name']]);

@@ -36,7 +36,7 @@ services:
       - NODE_MAX_SESSION=5
 
   sparql:
-    image: registry.fpfis.eu/openeuropa/triple-store-dev
+    image: registry.fpfis.eu/openeuropa/triple-store-dev:1.20.0
     pull: true
     environment:
       - SPARQL_UPDATE=true

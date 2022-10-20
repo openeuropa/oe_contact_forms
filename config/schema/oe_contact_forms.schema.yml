@@ -44,6 +44,22 @@ contact.form.*.third_party.oe_contact_forms:
         oe_telephone:
           type: string
           label: 'Phone'
+    override_languages:
+      type: mapping
+      label: 'Override languages'
+      mapping:
+        oe_preferred_language_options:
+          type: sequence
+          label: 'Preferred contact language options'
+          sequence:
+            type: string
+            label: 'Skos term'
+        oe_alternative_language_options:
+          type: sequence
+          label: 'Alternative contact language options'
+          sequence:
+            type: string
+            label: 'Skos term'
     topics:
       type: sequence
       sequence:

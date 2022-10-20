@@ -21,6 +21,10 @@ function oe_contact_forms_post_update_00001(): void {
  * Add "Preferred contact language", "Alternative contact language" base fields.
  */
 function oe_contact_forms_post_update_00002(): void {
+  // Enable new dependency.
+  \Drupal::service('module_installer')->install(['multivalue_form_element']);
+
+  // Add language skos vocabulary.
   $graphs = [
     'language' => 'http://publications.europa.eu/resource/authority/language',
   ];
@@ -42,7 +46,7 @@ function oe_contact_forms_post_update_00002(): void {
     ->setDisplayOptions('form', [
       'type' => 'skos_concept_entity_reference_options_select',
       'settings' => [
-        'sort' => 'label',
+        'sort' => 'id',
       ],
     ])
     ->setDisplayOptions('view', [

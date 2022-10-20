@@ -25,10 +25,11 @@
 
       // Disable/enable "Alternative contact language" based on "Preferred contact language" state.
       prefered_language_checkbox.once().click({checkbox: alternative_language_checkbox}, function(e) {
-        e.data.checkbox.attr('disabled', !$(this).prop('checked'));
         if (!$(this).prop('checked')) {
           e.data.checkbox.prop('checked', false);
+          e.data.checkbox.change();
         }
+        e.data.checkbox.attr('disabled', !$(this).prop('checked'));
       });
     },
   };

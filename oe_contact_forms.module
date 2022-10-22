@@ -227,7 +227,6 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     // To not flatten the data in $form_state.
     $form['#tree'] = TRUE;
     $form['#validate'][] = '_oe_contact_forms_email_validate';
-    $form['#validate'][] = '_oe_contact_forms_alternative_contact_language_validate';
   }
   $form['#attached']['library'][] = 'oe_contact_forms/related_checkboxes';
 
@@ -409,6 +408,11 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
   $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
 
   if ($is_corporate_form && !empty($values)) {
+    if (empty($values['optional_fields']['oe_preferred_language'])) {
+      // Uncheck alternative language if preferred language is unchecked.
+      $values['optional_fields']['oe_alternative_language'] = 0;
+    }
+
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $values['topic_label']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $values['email_subject']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $values['header']);
@@ -482,12 +486,7 @@ function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form
  *   The form state.
  */
 function _oe_contact_forms_alternative_contact_language_validate(array &$form, FormStateInterface $form_state): void {
-  $values = &$form_state->getValue('corporate_fields');
-  if (empty($values['optional_fields']['oe_preferred_language'])) {
-    // Uncheck alternative contact language if preferred language is unchecked.
-    $values['optional_fields']['oe_alternative_language'] = '';
-    $form_state->setValue('corporate_fields', $values);
-  }
+
 }
 
 /**

@@ -275,6 +275,12 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     // Test with node alias.
     $element->setValue($alias);
+
+    // Uncheck alternative language to assert its state after form loading.
+    $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
+    $alternative_language_element->click();
+    $this->assertFalse($alternative_language_element->isChecked());
+
     $page->pressButton('Save');
     $assert->pageTextContains('Contact form Test form has been updated.');
 
@@ -282,6 +288,13 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $element = $page->findField($field_name);
     $this->assertNotEmpty($element);
     $this->assertEquals($alias, $element->getValue());
+
+    // Assert alternative language element is active if preferred is checked.
+    $preferred_language_element = $page->findField('corporate_fields[optional_fields][oe_preferred_language]');
+    $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
+    $this->assertTrue($preferred_language_element->isChecked());
+    $this->assertFalse($alternative_language_element->isChecked());
+    $this->assertEmpty($alternative_language_element->getAttribute('disabled'));
   }
 
   /**

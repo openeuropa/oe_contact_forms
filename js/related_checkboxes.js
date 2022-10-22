@@ -3,8 +3,15 @@
  * "Related checkboxes" library file.
  */
 (function (Drupal, $) {
+  'use strict';
+
   /**
    * Sets state of "Alternative contact language" checkbox based on "Preferred contact language" state.
+   *
+   * @type {Drupal~behavior}
+   *
+   * @prop {Drupal~behaviorAttach} attach
+   *   Attaches the behavior for oeContactFormsRelatedCheckboxes.
    */
   Drupal.behaviors.oeContactFormsRelatedCheckboxes = {
     attach: function (context) {

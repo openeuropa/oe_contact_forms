@@ -211,6 +211,11 @@ class MessageFormTest extends WebDriverTestBase {
     $page->findField('privacy_policy')->click();
     $page->findButton('Send message')->press();
 
+    // Assert preferred contact language field is required.
+    $assert->elementTextContains('css', 'div[aria-label="Error message"]', 'Preferred contact language field is required.');
+    $page->selectFieldOption('Preferred contact language', 'http://publications.europa.eu/resource/authority/language/CES');
+    $page->findButton('Send message')->press();
+
     // Assert confirmation message.
     $assert->elementTextContains('css', 'div[aria-label="Status message"]', $topics['0']['topic_name']);
 
@@ -249,6 +254,7 @@ class MessageFormTest extends WebDriverTestBase {
     $page->fillField('message[0][value]', 'Test message');
     $page->selectFieldOption('oe_topic', $topics['0']['topic_name']);
     $page->findField('privacy_policy')->click();
+    $page->selectFieldOption('Preferred contact language', 'http://publications.europa.eu/resource/authority/language/CES');
     $page->findButton('Send message')->press();
 
     // Assert that the user is being redirected to the path set.

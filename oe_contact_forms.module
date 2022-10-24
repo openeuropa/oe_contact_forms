@@ -611,6 +611,10 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
         _oe_contact_forms_set_language_options($form, $field_name, $language_options);
       }
     }
+    if (in_array('oe_preferred_language', $optional_selected)) {
+      // Preferred language is required if shown.
+      $form['oe_preferred_language']['widget']['#required'] = TRUE;
+    }
   }
 }
 

@@ -191,23 +191,24 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertFalse($override_languages_element->isVisible());
 
     $preferred_language_element->click();
+    $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
+    $this->assertNotNull($alternative_language_element);
     $this->assertEmpty($alternative_language_element->getAttribute('disabled'));
     $this->assertTrue($override_languages_element->isVisible());
     $override_languages_element->click();
     $this->assertLanguageOptions('oe_preferred_language_options');
-    $alternative_language_options_element = $page->find('css', '[data-drupal-selector="edit-corporate-fields-override-languages-oe-alternative-language-options"]');
-    $this->assertTrue($alternative_language_options_element->hasClass('form-disabled'));
+    $this->assertAlternativeContactOptionsVisible(FALSE);
 
     $alternative_language_element->click();
     $this->assertTrue($preferred_language_element->isChecked());
     $this->assertTrue($alternative_language_element->isChecked());
-    $this->assertFalse($alternative_language_options_element->hasClass('form-disabled'));
+    $this->assertAlternativeContactOptionsVisible(TRUE);
     $this->assertLanguageOptions('oe_alternative_language_options');
 
     $preferred_language_element->click();
     $this->assertFalse($alternative_language_element->isChecked());
     $this->assertEquals('disabled', $alternative_language_element->getAttribute('disabled'));
-    $this->assertTrue($alternative_language_options_element->hasClass('form-disabled'));
+    $this->assertAlternativeContactOptionsVisible(FALSE);
     $this->assertFalse($override_languages_element->isVisible());
 
     // Assert expose_as_block is checked by default.
@@ -310,6 +311,10 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertTrue($preferred_language_element->isChecked());
     $this->assertFalse($alternative_language_element->isChecked());
     $this->assertEmpty($alternative_language_element->getAttribute('disabled'));
+    $override_languages_element = $page->find('css', '[data-drupal-selector="edit-corporate-fields-override-languages"]');
+    $this->assertTrue($override_languages_element->isVisible());
+    $override_languages_element->click();
+    $this->assertAlternativeContactOptionsVisible(FALSE);
   }
 
   /**
@@ -762,6 +767,22 @@ class CorporateContactFormTest extends WebDriverTestBase {
     foreach ($expected_values as $key => $expected) {
       $value = $contact_form->getThirdPartySetting('oe_contact_forms', $key);
       $this->assertEquals($expected, $value);
+    }
+  }
+
+  /**
+   * Asserts visibility of "Alternative contact language options" field.
+   *
+   * @param bool $visible
+   *   Whether field is visible or not.
+   */
+  protected function assertAlternativeContactOptionsVisible(bool $visible): void {
+    $element = $this->getSession()->getPage()->find('css', '[data-drupal-selector="edit-corporate-fields-override-languages-oe-alternative-language-options"]');
+    if ($visible) {
+      $this->assertStringNotContainsString('display: none', $element->getAttribute('style'));
+    }
+    else {
+      $this->assertStringContainsString('display: none', $element->getAttribute('style'));
     }
   }
 

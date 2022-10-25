@@ -248,8 +248,6 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
           ],
           'concept_subset' => 'contact_languages',
         ],
-        '#maxlength' => 1024,
-        '#placeholder' => '',
       ],
       '#default_value' => empty($override_languages_settings['oe_preferred_language_options']) ? $default_language_values : array_values($skos_concept_storage->loadMultiple($override_languages_settings['oe_preferred_language_options'])),
     ];
@@ -266,10 +264,9 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
           ],
           'concept_subset' => 'contact_languages',
         ],
-        '#maxlength' => 1024,
       ],
       '#states' => [
-        'enabled' => [
+        'visible' => [
           ':input[name="corporate_fields[optional_fields][oe_alternative_language]"]' => ['checked' => TRUE],
         ],
       ],

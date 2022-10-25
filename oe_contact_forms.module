@@ -478,18 +478,6 @@ function _oe_contact_forms_email_validate(array &$form, FormStateInterface $form
 }
 
 /**
- * Validate alternative contact language field if set.
- *
- * @param array $form
- *   The form.
- * @param Drupal\Core\Form\FormStateInterface $form_state
- *   The form state.
- */
-function _oe_contact_forms_alternative_contact_language_validate(array &$form, FormStateInterface $form_state): void {
-
-}
-
-/**
  * Implements hook_form_FORM_ID_alter() for contact_message_form().
  */
 function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInterface $form_state, $form_id) {

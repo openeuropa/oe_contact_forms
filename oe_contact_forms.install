@@ -15,6 +15,7 @@ function oe_contact_forms_install($is_syncing) {
   if (!$is_syncing) {
     $graphs = [
       'country' => 'http://publications.europa.eu/resource/authority/country',
+      'language' => 'http://publications.europa.eu/resource/authority/language',
     ];
     \Drupal::service('rdf_skos.skos_graph_configurator')->addGraphs($graphs);
   }

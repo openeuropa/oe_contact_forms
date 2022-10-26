@@ -48,12 +48,16 @@ class ContactMessageForm extends MessageForm {
     // Hide the optional fields the form manager has not configured to be used.
     $optional_selected = $contact_form->getThirdPartySetting('oe_contact_forms', 'optional_fields', []);
 
-    if (!in_array('oe_country_residence', $optional_selected)) {
-      $form['oe_country_residence']['#access'] = FALSE;
-    }
-
-    if (!in_array('oe_telephone', $optional_selected)) {
-      $form['oe_telephone']['#access'] = FALSE;
+    $optional_fields = [
+      'oe_country_residence',
+      'oe_preferred_language',
+      'oe_alternative_language',
+      'oe_telephone',
+    ];
+    foreach ($optional_fields as $optional_field) {
+      if (!in_array($optional_field, $optional_selected)) {
+        $form[$optional_field]['#access'] = FALSE;
+      }
     }
 
     // Alter the Topics label with the value configured by the form manager.

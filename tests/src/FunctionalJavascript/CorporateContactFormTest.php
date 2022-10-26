@@ -8,11 +8,14 @@ use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\node\Entity\Node;
+use Drupal\Tests\sparql_entity_storage\Traits\SparqlConnectionTrait;
 
 /**
  * Tests the corporate contact forms.
  */
 class CorporateContactFormTest extends WebDriverTestBase {
+
+  use SparqlConnectionTrait;
 
   /**
    * Corporate fields to test against.
@@ -29,6 +32,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // For expose_as_block default is true so we test false.
     'corporate_fields[expose_as_block]' => FALSE,
     'corporate_fields[optional_fields][oe_country_residence]' => TRUE,
+    'corporate_fields[optional_fields][oe_preferred_language]' => TRUE,
+    'corporate_fields[optional_fields][oe_alternative_language]' => TRUE,
     'corporate_fields[optional_fields][oe_telephone]' => TRUE,
   ];
 
@@ -116,6 +121,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'edit-columns-created',
       'edit-columns-uid',
       'edit-columns-oe-country-residence',
+      'edit-columns-oe-preferred-language',
+      'edit-columns-oe-alternative-language',
       'edit-columns-oe-telephone',
       'edit-columns-oe-telephone',
     ];
@@ -136,8 +143,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $absolute_path = \Drupal::service('file_system')->realpath($file->getFileUri());
     $actual = file_get_contents($absolute_path);
 
-    $headers = '"Message ID",Language,"Form ID","The sender\'s name","The sender\'s email",Subject,Message,Copy,"Recipient ID",Created,"User ID","Country of residence",Phone,Topic';
-    $values = '1,English,,example,admin@example.com,"Test subject","Test message",,,"Fri, 02/17/2017 - 19:52",0,,,';
+    $headers = '"Message ID",Language,"Form ID","The sender\'s name","The sender\'s email",Subject,Message,Copy,"Recipient ID",Created,"User ID","Country of residence","Preferred contact language","Alternative contact language",Phone,Topic';
+    $values = '1,English,,example,admin@example.com,"Test subject","Test message",,,"Fri, 02/17/2017 - 19:52",0,,,,,';
     $expected = $headers . PHP_EOL . $values;
     $this->assertEquals($expected, $actual);
   }
@@ -171,6 +178,22 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     // Assert fields are now visible.
     $this->assertFieldsVisible(TRUE);
+
+    // Assert alternative contact language is active only when preferred
+    // contact language field is active.
+    $preferred_language_element = $page->findField('corporate_fields[optional_fields][oe_preferred_language]');
+    $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
+    $this->assertFalse($preferred_language_element->isChecked());
+    $this->assertFalse($alternative_language_element->isChecked());
+    $this->assertEquals('disabled', $alternative_language_element->getAttribute('disabled'));
+    $preferred_language_element->click();
+    $this->assertEmpty($alternative_language_element->getAttribute('disabled'));
+    $alternative_language_element->click();
+    $this->assertTrue($preferred_language_element->isChecked());
+    $this->assertTrue($alternative_language_element->isChecked());
+    $preferred_language_element->click();
+    $this->assertFalse($alternative_language_element->isChecked());
+    $this->assertEquals('disabled', $alternative_language_element->getAttribute('disabled'));
 
     // Assert expose_as_block is checked by default.
     $element = $page->findField('corporate_fields[expose_as_block]');
@@ -252,6 +275,12 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     // Test with node alias.
     $element->setValue($alias);
+
+    // Uncheck alternative language to assert its state after form loading.
+    $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
+    $alternative_language_element->click();
+    $this->assertFalse($alternative_language_element->isChecked());
+
     $page->pressButton('Save');
     $assert->pageTextContains('Contact form Test form has been updated.');
 
@@ -259,6 +288,13 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $element = $page->findField($field_name);
     $this->assertNotEmpty($element);
     $this->assertEquals($alias, $element->getValue());
+
+    // Assert alternative language element is active if preferred is checked.
+    $preferred_language_element = $page->findField('corporate_fields[optional_fields][oe_preferred_language]');
+    $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
+    $this->assertTrue($preferred_language_element->isChecked());
+    $this->assertFalse($alternative_language_element->isChecked());
+    $this->assertEmpty($alternative_language_element->getAttribute('disabled'));
   }
 
   /**
@@ -560,6 +596,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'expose_as_block' => FALSE,
       'optional_fields' => [
         'oe_country_residence' => 'oe_country_residence',
+        'oe_preferred_language' => 'oe_preferred_language',
+        'oe_alternative_language' => 'oe_alternative_language',
         'oe_telephone' => 'oe_telephone',
       ],
       'topics' => [],

@@ -35,6 +35,12 @@ contact.form.*.third_party.oe_contact_forms:
         oe_country_residence:
           type: string
           label: 'Country of residence'
+        oe_preferred_language:
+          type: string
+          label: 'Preferred contact language'
+        oe_alternative_language:
+          type: string
+          label: 'Alternative contact language'
         oe_telephone:
           type: string
           label: 'Phone'

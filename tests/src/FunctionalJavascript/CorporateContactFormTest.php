@@ -71,7 +71,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
   /**
    * Test export of a corporate contact form.
    */
-  public function testCorporateContactfFormExport(): void {
+  public function testCorporateContactFormExport(): void {
     $this->drupalLogout();
 
     /** @var \Behat\Mink\WebAssert $assert */

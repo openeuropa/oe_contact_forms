@@ -1,0 +1,8 @@
+msgid ""
+msgstr ""
+
+msgid "Preferred contact language"
+msgstr "Autre langue de contact possible"
+
+msgid "Alternative contact language"
+msgstr "Teanga chumarsáide eile"

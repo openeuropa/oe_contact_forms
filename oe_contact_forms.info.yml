@@ -13,3 +13,4 @@ dependencies:
   - contact_storage_export:contact_storage_export
   - rdf_skos:rdf_skos
   - oe_corporate_countries:oe_corporate_countries
+  - multivalue_form_element:multivalue_form_element

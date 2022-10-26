@@ -63,6 +63,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     /** @var \Drupal\user\UserInterface $test_user */
     $test_user = $this->drupalCreateUser([
       'administer contact forms',
+      'view published skos concept entities',
     ]);
     $this->drupalLogin($test_user);
   }
@@ -179,21 +180,36 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Assert fields are now visible.
     $this->assertFieldsVisible(TRUE);
 
-    // Assert alternative contact language is active only when preferred
-    // contact language field is active.
+    // Assert alternative contact language and options are active only when
+    // preferred contact language field is active.
     $preferred_language_element = $page->findField('corporate_fields[optional_fields][oe_preferred_language]');
     $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
+    $override_languages_element = $page->find('css', '[data-drupal-selector="edit-corporate-fields-override-languages"]');
     $this->assertFalse($preferred_language_element->isChecked());
     $this->assertFalse($alternative_language_element->isChecked());
     $this->assertEquals('disabled', $alternative_language_element->getAttribute('disabled'));
+    $this->assertFalse($override_languages_element->isVisible());
+
     $preferred_language_element->click();
+    $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
+    $this->assertNotNull($alternative_language_element);
     $this->assertEmpty($alternative_language_element->getAttribute('disabled'));
+    $this->assertTrue($override_languages_element->isVisible());
+    $override_languages_element->click();
+    $this->assertLanguageOptions('oe_preferred_language_options');
+    $this->assertAlternativeContactOptionsVisible(FALSE);
+
     $alternative_language_element->click();
     $this->assertTrue($preferred_language_element->isChecked());
     $this->assertTrue($alternative_language_element->isChecked());
+    $this->assertAlternativeContactOptionsVisible(TRUE);
+    $this->assertLanguageOptions('oe_alternative_language_options');
+
     $preferred_language_element->click();
     $this->assertFalse($alternative_language_element->isChecked());
     $this->assertEquals('disabled', $alternative_language_element->getAttribute('disabled'));
+    $this->assertAlternativeContactOptionsVisible(FALSE);
+    $this->assertFalse($override_languages_element->isVisible());
 
     // Assert expose_as_block is checked by default.
     $element = $page->findField('corporate_fields[expose_as_block]');
@@ -222,8 +238,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertFalse($disabled_message->isVisible());
 
     // Make sure the saved values are the ones expected.
-    $this->checkCorporateFieldsOnPage();
-    $this->checkCorporateFieldsInStorage();
+    $this->checkCorporateFieldsOnPage(1, TRUE);
+    $this->checkCorporateFieldsInStorage(1, TRUE);
 
     // Add more topic values, retest ajax.
     $this->assertTopicAjax(1);
@@ -236,8 +252,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
 
     // Make sure the saved values are the ones expected.
-    $this->checkCorporateFieldsOnPage(2);
-    $this->checkCorporateFieldsInStorage(2);
+    $this->checkCorporateFieldsOnPage(2, TRUE);
+    $this->checkCorporateFieldsInStorage(2, TRUE);
 
     // Assert internal links for privacy policy.
     $field_name = 'corporate_fields[privacy_policy]';
@@ -295,6 +311,10 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertTrue($preferred_language_element->isChecked());
     $this->assertFalse($alternative_language_element->isChecked());
     $this->assertEmpty($alternative_language_element->getAttribute('disabled'));
+    $override_languages_element = $page->find('css', '[data-drupal-selector="edit-corporate-fields-override-languages"]');
+    $this->assertTrue($override_languages_element->isVisible());
+    $override_languages_element->click();
+    $this->assertAlternativeContactOptionsVisible(FALSE);
   }
 
   /**
@@ -518,6 +538,54 @@ class CorporateContactFormTest extends WebDriverTestBase {
   }
 
   /**
+   * Asserts language options fields.
+   *
+   * @param string $field_name
+   *   Field name.
+   */
+  protected function assertLanguageOptions(string $field_name): void {
+    /** @var \Behat\Mink\WebAssert $assert */
+    $assert = $this->assertSession();
+    /** @var \Behat\Mink\Element\DocumentElement $page */
+    $page = $this->getSession()->getPage();
+    $field_name_selector = str_replace('_', '-', $field_name);
+
+    // Assert there are 25 input elements with 24 languages in specific order
+    // and last empty element.
+    $input_elements = $page->findAll('css', '[data-drupal-selector="edit-corporate-fields-override-languages-' . $field_name_selector . '"] .form-autocomplete');
+    $this->assertEquals(25, count($input_elements));
+    $expected_values = [
+      0 => 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)',
+      1 => 'Spanish (http://publications.europa.eu/resource/authority/language/SPA)',
+      2 => 'Czech (http://publications.europa.eu/resource/authority/language/CES)',
+      3 => 'Danish (http://publications.europa.eu/resource/authority/language/DAN)',
+      21 => 'Slovenian (http://publications.europa.eu/resource/authority/language/SLV)',
+      22 => 'Finnish (http://publications.europa.eu/resource/authority/language/FIN)',
+      23 => 'Swedish (http://publications.europa.eu/resource/authority/language/SWE)',
+    ];
+    foreach ($expected_values as $key => $value) {
+      $this->assertEquals($value, $input_elements[$key]->getValue());
+    }
+    for ($i = 4; $i < 20; $i++) {
+      $this->assertNotEmpty($input_elements[$key]->getValue());
+    }
+    $this->assertEmpty($input_elements[24]->getValue());
+
+    // Replace last and first elements and add duplicates to ensure order of
+    // saved elements and removing of duplicates.
+    $page->fillField("corporate_fields[override_languages][$field_name][0][target]", 'Swedish (http://publications.europa.eu/resource/authority/language/SWE)');
+    $page->fillField("corporate_fields[override_languages][$field_name][23][target]", 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)');
+    $page->fillField("corporate_fields[override_languages][$field_name][24][target]", 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)');
+
+    // Assert "Add more item" button.
+    $add_another_element = $page->find('css', '[name="corporate_fields_override_languages_' . $field_name . '_add_more"]');
+    $add_another_element->click();
+    $assert->assertWaitOnAjaxRequest();
+    $input_elements = $page->findAll('css', '[data-drupal-selector="edit-corporate-fields-override-languages-' . $field_name_selector . '"] .form-autocomplete');
+    $this->assertEquals(26, count($input_elements));
+  }
+
+  /**
    * Add test values to corporate fields.
    */
   protected function fillCorporateFields(): void {
@@ -544,8 +612,10 @@ class CorporateContactFormTest extends WebDriverTestBase {
    *
    * @param int $max_delta
    *   The max topic group index.
+   * @param bool $language_options_filled
+   *   Whether language options are filled or not.
    */
-  protected function checkCorporateFieldsOnPage($max_delta = 1): void {
+  protected function checkCorporateFieldsOnPage($max_delta = 1, $language_options_filled = FALSE): void {
     /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
 
@@ -570,6 +640,29 @@ class CorporateContactFormTest extends WebDriverTestBase {
         $this->assertEquals($value, $element->getValue());
       }
     }
+
+    $expected_values = [];
+    $expected_values[1] = 'Spanish (http://publications.europa.eu/resource/authority/language/SPA)';
+    $expected_values[22] = 'Finnish (http://publications.europa.eu/resource/authority/language/FIN)';
+    if ($language_options_filled) {
+      $expected_values[0] = 'Swedish (http://publications.europa.eu/resource/authority/language/SWE)';
+      $expected_values[23] = 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)';
+    }
+    else {
+      $expected_values[0] = 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)';
+      $expected_values[23] = 'Swedish (http://publications.europa.eu/resource/authority/language/SWE)';
+    }
+    $fields = [
+      'oe-preferred-language-options',
+      'oe-alternative-language-options',
+    ];
+    foreach ($fields as $field_name) {
+      $input_elements = $page->findAll('css', '[data-drupal-selector="edit-corporate-fields-override-languages-' . $field_name . '"] .form-autocomplete');
+      $this->assertEquals(25, count($input_elements));
+      foreach ($expected_values as $key => $value) {
+        $this->assertEquals($value, $input_elements[$key]->getValue());
+      }
+    }
   }
 
   /**
@@ -577,8 +670,10 @@ class CorporateContactFormTest extends WebDriverTestBase {
    *
    * @param int $max_delta
    *   The max topic group index.
+   * @param bool $language_options_filled
+   *   Whether language options are filled or not.
    */
-  protected function checkCorporateFieldsInStorage($max_delta = 1): void {
+  protected function checkCorporateFieldsInStorage($max_delta = 1, bool $language_options_filled = FALSE): void {
     /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $entity_storage */
     $entity_storage = \Drupal::entityTypeManager()->getStorage('contact_form');
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
@@ -615,6 +710,34 @@ class CorporateContactFormTest extends WebDriverTestBase {
       $value = $contact_form->getThirdPartySetting('oe_contact_forms', $key);
       $this->assertEquals($expected, $value);
     }
+
+    // Check saved language options.
+    $value = $contact_form->getThirdPartySetting('oe_contact_forms', 'override_languages');
+    if ($language_options_filled) {
+      $expected = [
+        0 => 'http://publications.europa.eu/resource/authority/language/SWE',
+        1 => 'http://publications.europa.eu/resource/authority/language/SPA',
+        2 => 'http://publications.europa.eu/resource/authority/language/CES',
+        22 => 'http://publications.europa.eu/resource/authority/language/FIN',
+        23 => 'http://publications.europa.eu/resource/authority/language/BUL',
+      ];
+      $fields = [
+        'oe_preferred_language_options',
+        'oe_alternative_language_options',
+      ];
+      foreach ($fields as $field_name) {
+        foreach ($expected as $key => $expected_value) {
+          $this->assertEquals($expected_value, $value[$field_name][$key]);
+        }
+        $this->assertEquals(24, count($value[$field_name]));
+      }
+    }
+    else {
+      $this->assertEquals([
+        'oe_preferred_language_options' => [],
+        'oe_alternative_language_options' => [],
+      ], $value);
+    }
   }
 
   /**
@@ -638,11 +761,28 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'expose_as_block' => NULL,
       'optional_fields' => NULL,
       'topics' => NULL,
+      'override_languages' => NULL,
     ];
 
     foreach ($expected_values as $key => $expected) {
       $value = $contact_form->getThirdPartySetting('oe_contact_forms', $key);
       $this->assertEquals($expected, $value);
+    }
+  }
+
+  /**
+   * Asserts visibility of "Alternative contact language options" field.
+   *
+   * @param bool $visible
+   *   Whether field is visible or not.
+   */
+  protected function assertAlternativeContactOptionsVisible(bool $visible): void {
+    $element = $this->getSession()->getPage()->find('css', '[data-drupal-selector="edit-corporate-fields-override-languages-oe-alternative-language-options"]');
+    if ($visible) {
+      $this->assertStringNotContainsString('display: none', $element->getAttribute('style'));
+    }
+    else {
+      $this->assertStringContainsString('display: none', $element->getAttribute('style'));
     }
   }
 

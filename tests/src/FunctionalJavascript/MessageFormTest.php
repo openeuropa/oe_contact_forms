@@ -181,11 +181,11 @@ class MessageFormTest extends WebDriverTestBase {
     $assert->fieldExists('oe_alternative_language');
     $assert->fieldExists('oe_telephone[0][value]');
 
-    // Assert contact language fields contains 24 EU languages.
+    // Assert contact language fields contains 24 EU languages by default.
     $expected_languages = [
       '_none' => '- None -',
       'http://publications.europa.eu/resource/authority/language/BUL' => 'Bulgarian',
-      'http://publications.europa.eu/resource/authority/language/HRV' => 'Croatian',
+      'http://publications.europa.eu/resource/authority/language/SPA' => 'Spanish',
       'http://publications.europa.eu/resource/authority/language/CES' => 'Czech',
       'http://publications.europa.eu/resource/authority/language/DAN' => 'Danish',
     ];
@@ -209,6 +209,11 @@ class MessageFormTest extends WebDriverTestBase {
     $page->fillField('message[0][value]', 'Test message');
     $page->selectFieldOption('oe_topic', $topics['0']['topic_name']);
     $page->findField('privacy_policy')->click();
+    $page->findButton('Send message')->press();
+
+    // Assert preferred contact language field is required.
+    $assert->elementTextContains('css', 'div[aria-label="Error message"]', 'Preferred contact language field is required.');
+    $page->selectFieldOption('Preferred contact language', 'http://publications.europa.eu/resource/authority/language/CES');
     $page->findButton('Send message')->press();
 
     // Assert confirmation message.
@@ -249,6 +254,7 @@ class MessageFormTest extends WebDriverTestBase {
     $page->fillField('message[0][value]', 'Test message');
     $page->selectFieldOption('oe_topic', $topics['0']['topic_name']);
     $page->findField('privacy_policy')->click();
+    $page->selectFieldOption('Preferred contact language', 'http://publications.europa.eu/resource/authority/language/CES');
     $page->findButton('Send message')->press();
 
     // Assert that the user is being redirected to the path set.
@@ -265,9 +271,32 @@ class MessageFormTest extends WebDriverTestBase {
     ]);
     $node->save();
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', 'internal:' . $alias);
+    $override_languages = [
+      'oe_preferred_language_options' => [
+        'http://publications.europa.eu/resource/authority/language/CES',
+        'http://publications.europa.eu/resource/authority/language/DAN',
+      ],
+      'oe_alternative_language_options' => [
+        'http://publications.europa.eu/resource/authority/language/FRA',
+      ],
+    ];
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'override_languages', $override_languages);
     $contact_form->save();
     $this->drupalGet('contact/' . $contact_form_id);
     $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'href', $alias);
+    $expected_languages = [
+      '_none' => '- None -',
+      'http://publications.europa.eu/resource/authority/language/CES' => 'Czech',
+      'http://publications.europa.eu/resource/authority/language/DAN' => 'Danish',
+    ];
+    $options = $this->getOptions('oe_preferred_language');
+    $this->assertEquals($expected_languages, $options);
+    $expected_languages = [
+      '_none' => '- None -',
+      'http://publications.europa.eu/resource/authority/language/FRA' => 'French',
+    ];
+    $options = $this->getOptions('oe_alternative_language');
+    $this->assertEquals($expected_languages, $options);
   }
 
   /**

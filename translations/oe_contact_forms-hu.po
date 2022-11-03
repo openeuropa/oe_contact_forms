@@ -1,0 +1,8 @@
+msgid ""
+msgstr ""
+
+msgid "Preferred contact language"
+msgstr "A kapcsolattartás választott nyelve (első)"
+
+msgid "Alternative contact language"
+msgstr "A kapcsolattartás választott nyelve (második)"

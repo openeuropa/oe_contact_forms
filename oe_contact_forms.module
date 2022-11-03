@@ -943,3 +943,10 @@ function _oe_contact_forms_contact_language_values(): array {
     'http://publications.europa.eu/resource/authority/language/SWE',
   ];
 }
+
+/**
+ * Implements hook_locale_translation_projects_alter().
+ */
+function oe_contact_forms_locale_translation_projects_alter(&$projects) {
+  $projects['oe_contact_forms']['info']['interface translation server pattern'] = \Drupal::service('extension.path.resolver')->getPath('module', 'oe_contact_forms') . '/translations/%project-%language.po';
+}

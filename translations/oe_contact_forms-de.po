@@ -1,0 +1,8 @@
+msgid ""
+msgstr ""
+
+msgid "Preferred contact language"
+msgstr "Bevorzugte Sprache"
+
+msgid "Alternative contact language"
+msgstr "Alternative Sprache"

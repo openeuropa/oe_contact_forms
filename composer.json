@@ -6,15 +6,16 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "php": ">=7.4",
         "cweagans/composer-patches": "~1.4",
-        "drupal/core": "^9.3",
         "drupal/contact_storage": "^1.2",
         "drupal/contact_storage_export": "^1.14",
+        "drupal/core": "^9.3",
         "drupal/csv_serialization": "^2.0",
+        "drupal/multivalue_form_element": "^1.0.0-beta4",
         "drupal/token": "^1.8",
-        "openeuropa/rdf_skos": "^1.0",
         "openeuropa/oe_corporate_countries": "^2.0",
-        "php": ">=7.4"
+        "openeuropa/rdf_skos": "^1.0"
     },
     "require-dev": {
         "composer/installers": "~1.11",
@@ -69,6 +70,9 @@
             "drupal/contact_storage_export": {
                 "https://www.drupal.org/project/contact_storage_export/issues/2996037": "https://www.drupal.org/files/issues/2021-10-22/contact_storage_export-breaks-on-high-load-balancer-2996037-17.patch",
                 "https://www.drupal.org/project/contact_storage_export/issues/3049010": "https://www.drupal.org/files/issues/2020-04-14/php73-3049010-15.patch"
+            },
+            "drupal/multivalue_form_element": {
+                "latest-master": "https://github.com/openeuropa/multivalue_form_element/compare/1.0.0-beta4...1.0.x.diff"
             }
         },
         "drupal-scaffold": {

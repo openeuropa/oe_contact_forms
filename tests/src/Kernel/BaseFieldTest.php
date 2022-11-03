@@ -47,6 +47,8 @@ class BaseFieldTest extends ContactFormTestBase {
 
     // Set correct values.
     $data['oe_country_residence'] = 'http://publications.europa.eu/resource/authority/country/BEL';
+    $data['oe_preferred_language'] = 'http://publications.europa.eu/resource/authority/language/SPA';
+    $data['oe_alternative_language'] = 'http://publications.europa.eu/resource/authority/language/FRA';
     $data['oe_telephone'] = '0123456';
     $data['oe_topic'] = 'Topic name';
 
@@ -63,6 +65,8 @@ class BaseFieldTest extends ContactFormTestBase {
     $message = $entity_type_manager->load($message->id());
 
     $this->assertEquals($data['oe_country_residence'], $message->get('oe_country_residence')->getValue()['0']['target_id']);
+    $this->assertEquals($data['oe_preferred_language'], $message->get('oe_preferred_language')->getValue()['0']['target_id']);
+    $this->assertEquals($data['oe_alternative_language'], $message->get('oe_alternative_language')->getValue()['0']['target_id']);
     $this->assertEquals($data['oe_telephone'], $message->get('oe_telephone')->getValue()['0']['value']);
     $this->assertEquals($data['oe_topic'], $message->get('oe_topic')->getValue()['0']['value']);
   }
@@ -93,6 +97,8 @@ class BaseFieldTest extends ContactFormTestBase {
     $form = \Drupal::service('entity.form_builder')->getForm($message, 'default');
 
     $this->assertEquals(FALSE, $form['oe_country_residence']['#access'], 'Check that country is not available.');
+    $this->assertEquals(FALSE, $form['oe_preferred_language']['#access'], 'Check that preferred contact language is not available.');
+    $this->assertEquals(FALSE, $form['oe_alternative_language']['#access'], 'Check that alternative contact language is not available.');
     $this->assertEquals(FALSE, $form['oe_telephone']['#access'], 'Check that telephone is not available.');
     $this->assertEquals(FALSE, $form['oe_topic']['#access'], 'Check that topic is not available.');
   }

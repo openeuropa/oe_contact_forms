@@ -1,11 +1,24 @@
 # Changelog
 
-## [1.5.0](https://github.com/openeuropa/oe_contact_forms/tree/1.5.0) (2022-07-29)
+## [1.6.0](https://github.com/openeuropa/oe_contact_forms/tree/1.6.0) (2022-11-04)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.5.0...1.6.0)
+
+**Merged pull requests:**
+
+- EWPP-2700: Add multivalue form element patch. [\#63](https://github.com/openeuropa/oe_contact_forms/pull/63) ([22Alexandra](https://github.com/22Alexandra))
+- EWPP-2700: Contact form language options. [\#62](https://github.com/openeuropa/oe_contact_forms/pull/62) ([22Alexandra](https://github.com/22Alexandra))
+- EWPP-2703: Reduce cyclomatic complexity of ContactMessageForm [\#61](https://github.com/openeuropa/oe_contact_forms/pull/61) ([yenyasinn](https://github.com/yenyasinn))
+- EWPP-2702: Allow form managers to select available languages. [\#60](https://github.com/openeuropa/oe_contact_forms/pull/60) ([yenyasinn](https://github.com/yenyasinn))
+- EWPP-2701: Add new optional fields to corporate forms. [\#58](https://github.com/openeuropa/oe_contact_forms/pull/58) ([yenyasinn](https://github.com/yenyasinn))
+
+## [1.5.0](https://github.com/openeuropa/oe_contact_forms/tree/1.5.0) (2022-08-02)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.4.0...1.5.0)
 
 **Merged pull requests:**
 
+- Prepare release 1.5.0. [\#57](https://github.com/openeuropa/oe_contact_forms/pull/57) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2358: Drupal 9.4 support. [\#56](https://github.com/openeuropa/oe_contact_forms/pull/56) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.4.0](https://github.com/openeuropa/oe_contact_forms/tree/1.4.0) (2022-06-22)

@@ -1,11 +1,20 @@
 # Changelog
 
+## [1.7.0](https://github.com/openeuropa/oe_contact_forms/tree/1.7.0) (2022-11-07)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.6.0...1.7.0)
+
+**Merged pull requests:**
+
+- EWPP: Bump contact storage version and remove patch. [\#65](https://github.com/openeuropa/oe_contact_forms/pull/65) ([imanoleguskiza](https://github.com/imanoleguskiza))
+
 ## [1.6.0](https://github.com/openeuropa/oe_contact_forms/tree/1.6.0) (2022-11-04)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.5.0...1.6.0)
 
 **Merged pull requests:**
 
+- Prepare release 1.6.0. [\#64](https://github.com/openeuropa/oe_contact_forms/pull/64) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2700: Add multivalue form element patch. [\#63](https://github.com/openeuropa/oe_contact_forms/pull/63) ([22Alexandra](https://github.com/22Alexandra))
 - EWPP-2700: Contact form language options. [\#62](https://github.com/openeuropa/oe_contact_forms/pull/62) ([22Alexandra](https://github.com/22Alexandra))
 - EWPP-2703: Reduce cyclomatic complexity of ContactMessageForm [\#61](https://github.com/openeuropa/oe_contact_forms/pull/61) ([yenyasinn](https://github.com/yenyasinn))

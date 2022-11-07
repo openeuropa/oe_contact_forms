@@ -1,11 +1,20 @@
 # Changelog
 
+## [1.8.0](https://github.com/openeuropa/oe_contact_forms/tree/1.8.0) (2022-11-07)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.7.0...1.8.0)
+
+**Merged pull requests:**
+
+- EWPP-2751: Reapply permissions patch. [\#67](https://github.com/openeuropa/oe_contact_forms/pull/67) ([imanoleguskiza](https://github.com/imanoleguskiza))
+
 ## [1.7.0](https://github.com/openeuropa/oe_contact_forms/tree/1.7.0) (2022-11-07)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.6.0...1.7.0)
 
 **Merged pull requests:**
 
+- Prepare release 1.7.0. [\#66](https://github.com/openeuropa/oe_contact_forms/pull/66) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP: Bump contact storage version and remove patch. [\#65](https://github.com/openeuropa/oe_contact_forms/pull/65) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [1.6.0](https://github.com/openeuropa/oe_contact_forms/tree/1.6.0) (2022-11-04)

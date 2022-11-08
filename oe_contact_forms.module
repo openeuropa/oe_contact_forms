@@ -211,6 +211,12 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       '#description' => t("Check this box if you would like to expose this contact form as a block."),
       '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'expose_as_block', TRUE),
     ];
+    $form['corporate_fields']['alternative_name'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Use First name and Last name for the form'),
+      '#description' => t('Check this box if you would like to have separate First and Last name fields.'),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'alternative_name', FALSE),
+    ];
     $form['corporate_fields']['optional_fields'] = [
       '#type' => 'checkboxes',
       '#title' => t('Optional fields'),
@@ -484,6 +490,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $values['optional_fields']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'override_languages', $values['override_languages']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $values['topics_fieldset']['group']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'alternative_name', $values['alternative_name']);
   }
   else {
     $fields = [
@@ -497,6 +504,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
       'optional_fields',
       'override_languages',
       'topics',
+      'alternative_name',
     ];
 
     foreach ($fields as $field) {
@@ -587,6 +595,8 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
       'oe_topic',
       'oe_preferred_language',
       'oe_alternative_language',
+      'oe_first_name',
+      'oe_last_name',
     ];
 
     foreach ($fields as $field) {
@@ -651,6 +661,20 @@ function _oe_contact_forms_build_select_language_field(array &$form, string $fie
 function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_type) {
   if ($entity_type->id() == 'contact_message') {
     $fields = [];
+
+    $fields['oe_first_name'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('First name'))
+      ->setRequired(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+      ]);
+
+    $fields['oe_last_name'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Last name'))
+      ->setRequired(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+      ]);
 
     $fields['oe_country_residence'] = BaseFieldDefinition::create('skos_concept_entity_reference')
       ->setLabel(t('Country of residence'))
@@ -809,6 +833,12 @@ function oe_contact_forms_entity_form_display_alter(EntityFormDisplayInterface $
         'weight' => -1,
       ])
       ->setComponent('name', [
+        'weight' => 0,
+      ])
+      ->setComponent('oe_first_name', [
+        'weight' => 0,
+      ])
+      ->setComponent('oe_last_name', [
         'weight' => 0,
       ])
       ->setComponent('mail', [

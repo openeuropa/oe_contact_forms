@@ -81,3 +81,26 @@ function oe_contact_forms_post_update_00003(): void {
     $update_manager->updateFieldStorageDefinition($field);
   }
 }
+
+/**
+ * Add first and last name base fields.
+ */
+function oe_contact_forms_post_update_00004(): void {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+
+  $first_name = BaseFieldDefinition::create('string')
+    ->setLabel(t('First name'))
+    ->setRequired(TRUE)
+    ->setDisplayOptions('form', [
+      'type' => 'string_textfield',
+    ]);
+  $update_manager->installFieldStorageDefinition('oe_first_name', 'contact_message', 'oe_contact_forms', $first_name);
+
+  $last_name = BaseFieldDefinition::create('string')
+    ->setLabel(t('Last name'))
+    ->setRequired(TRUE)
+    ->setDisplayOptions('form', [
+      'type' => 'string_textfield',
+    ]);
+  $update_manager->installFieldStorageDefinition('oe_last_name', 'contact_message', 'oe_contact_forms', $last_name);
+}

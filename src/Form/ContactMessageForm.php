@@ -69,6 +69,16 @@ class ContactMessageForm extends MessageForm {
       $form['oe_topic']['widget']['#title'] = $topic_label;
     }
 
+    // Show/hide name fields based on setting.
+    $alternative_name = $contact_form->getThirdPartySetting('oe_contact_forms', 'alternative_name');
+    if ($alternative_name) {
+      $form['name']['#access'] = FALSE;
+    }
+    else {
+      $form['oe_first_name']['#access'] = FALSE;
+      $form['oe_last_name']['#access'] = FALSE;
+    }
+
     return $form;
   }
 

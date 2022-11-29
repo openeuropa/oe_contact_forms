@@ -62,3 +62,22 @@ function oe_contact_forms_post_update_00002(): void {
   $update_manager->installFieldStorageDefinition('oe_preferred_language', 'contact_message', 'oe_contact_forms', $preferred_language_definition);
   $update_manager->installFieldStorageDefinition('oe_alternative_language', 'contact_message', 'oe_contact_forms', $alternative_language_definition);
 }
+
+/**
+ * Allow contact language fields to use any languages.
+ */
+function oe_contact_forms_post_update_00003(): void {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $fields = \Drupal::service('entity_field.manager')->getBaseFieldDefinitions('contact_message');
+
+  foreach (['oe_preferred_language', 'oe_alternative_language'] as $field_name) {
+    $field = $fields[$field_name];
+    $setting = $field->getSetting('handler_settings');
+    unset($setting['concept_subset']);
+    $field->setSetting('handler_settings', $setting);
+    $field->setDisplayOptions('form', [
+      'type' => 'skos_concept_entity_reference_autocomplete',
+    ]);
+    $update_manager->updateFieldStorageDefinition($field);
+  }
+}

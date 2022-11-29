@@ -246,7 +246,6 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
           'concept_schemes' => [
             'http://publications.europa.eu/resource/authority/language',
           ],
-          'concept_subset' => 'contact_languages',
         ],
       ],
       '#default_value' => empty($override_languages_settings['oe_preferred_language_options']) ? $default_language_values : array_values($skos_concept_storage->loadMultiple($override_languages_settings['oe_preferred_language_options'])),
@@ -262,7 +261,6 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
           'concept_schemes' => [
             'http://publications.europa.eu/resource/authority/language',
           ],
-          'concept_subset' => 'contact_languages',
         ],
       ],
       '#states' => [
@@ -598,25 +596,30 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
       $form[$field]['#access'] = FALSE;
     }
   }
-  else {
-    // Set proper order and options for contact language fields.
+  elseif (strpos($form_id, 'corporate_default') !== FALSE) {
+    // Set proper order and options for contact language fields for the new
+    // submission of the contact form.
     $optional_selected = $contact_form->getThirdPartySetting('oe_contact_forms', 'optional_fields', []);
     $override_languages = $contact_form->getThirdPartySetting('oe_contact_forms', 'override_languages', []);
     foreach (['oe_preferred_language', 'oe_alternative_language'] as $field_name) {
       if (in_array($field_name, $optional_selected)) {
         $language_options = $override_languages[$field_name . '_options'] ?: _oe_contact_forms_contact_language_values();
-        _oe_contact_forms_set_language_options($form, $field_name, $language_options);
+        _oe_contact_forms_build_select_language_field($form, $field_name, $language_options);
       }
     }
     if (in_array('oe_preferred_language', $optional_selected)) {
       // Preferred language is required if shown.
-      $form['oe_preferred_language']['widget']['#required'] = TRUE;
+      $form['oe_preferred_language']['widget'][0]['target_id']['#required'] = TRUE;
     }
   }
 }
 
 /**
- * Sets options in language select box according to configuration.
+ * Builds select box with options from configuration.
+ *
+ * Since there are 8000+ items in language vocabulary we can't use
+ * skos_concept_entity_reference_options_select as is. So build select box
+ * using provided options.
  *
  * @param array $form
  *   Contact message form.
@@ -625,17 +628,21 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
  * @param array $settings
  *   Configuration.
  */
-function _oe_contact_forms_set_language_options(array &$form, string $field, array $settings): void {
-  $options = array_splice($form[$field]['widget']['#options'], 0, 1);
-  foreach ($settings as $id) {
-    $options[$id] = $form[$field]['widget']['#options'][$id];
+function _oe_contact_forms_build_select_language_field(array &$form, string $field, array $settings): void {
+  $options = [];
+  $entities = \Drupal::entityTypeManager()->getStorage('skos_concept')->loadMultiple($settings);
+  $entity_repository = \Drupal::service('entity.repository');
+  foreach ($entities as $id => $entity) {
+    $entity = $entity_repository->getTranslationFromContext($entity);
+    $options[$id] = $entity->label();
   }
-  if (!empty($form[$field]['widget']['#default_value'][0]) && !isset($options[$form[$field]['widget']['#default_value'][0]])) {
-    // Need to show the value on the message edit form even if such option is
-    // removed from configuration.
-    $options[$form[$field]['widget']['#default_value'][0]] = $form[$field]['widget']['#options'][$form[$field]['widget']['#default_value'][0]];
-  }
-  $form[$field]['widget']['#options'] = $options;
+  $widget = &$form[$field]['widget'][0]['target_id'];
+  $widget['#type'] = 'select';
+  $widget['#options'] = $options;
+  $widget['#empty_option'] = t('- None -');
+  $widget['#empty_value'] = '';
+  unset($widget['#selection_settings']);
+  unset($widget['#size']);
 }
 
 /**
@@ -721,13 +728,9 @@ function oe_contact_forms_create_language_base_field(MarkupInterface $title): Ba
       'concept_schemes' => [
         'http://publications.europa.eu/resource/authority/language',
       ],
-      'concept_subset' => 'contact_languages',
     ])
     ->setDisplayOptions('form', [
-      'type' => 'skos_concept_entity_reference_options_select',
-      'settings' => [
-        'sort' => 'id',
-      ],
+      'type' => 'skos_concept_entity_reference_autocomplete',
     ])
     ->setDisplayOptions('view', [
       'weight' => 0,
@@ -829,17 +832,11 @@ function oe_contact_forms_entity_form_display_alter(EntityFormDisplayInterface $
       ])
       ->setComponent('oe_preferred_language', [
         'weight' => 6,
-        'type' => 'skos_concept_entity_reference_options_select',
-        'settings' => [
-          'sort' => 'id',
-        ],
+        'type' => 'skos_concept_entity_reference_autocomplete',
       ])
       ->setComponent('oe_alternative_language', [
         'weight' => 7,
-        'type' => 'skos_concept_entity_reference_options_select',
-        'settings' => [
-          'sort' => 'id',
-        ],
+        'type' => 'skos_concept_entity_reference_autocomplete',
       ])
       ->setComponent('oe_telephone', [
         'weight' => 8,

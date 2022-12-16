@@ -571,16 +571,14 @@ class CorporateContactFormTest extends WebDriverTestBase {
     }
     $this->assertEmpty($input_elements[24]->getValue());
 
-    // Replace last and first elements and add duplicates to ensure order of
-    // saved elements and removing of duplicates.
+    // Replace last and first elements, add duplicates to ensure order of
+    // saved elements and removing of duplicates and add additional language.
     $page->fillField("corporate_fields[override_languages][$field_name][0][target]", 'Swedish (http://publications.europa.eu/resource/authority/language/SWE)');
     $page->fillField("corporate_fields[override_languages][$field_name][23][target]", 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)');
     $page->fillField("corporate_fields[override_languages][$field_name][24][target]", 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)');
-
-    // Assert "Add more item" button.
-    $add_another_element = $page->find('css', '[name="corporate_fields_override_languages_' . $field_name . '_add_more"]');
-    $add_another_element->click();
-    $assert->assertWaitOnAjaxRequest();
+    $page->pressButton("corporate_fields_override_languages_${field_name}_add_more");
+    $this->assertSession()->assertWaitOnAjaxRequest();
+    $page->fillField("corporate_fields[override_languages][$field_name][25][target]", 'Bengali (http://publications.europa.eu/resource/authority/language/BEN)');
     $input_elements = $page->findAll('css', '[data-drupal-selector="edit-corporate-fields-override-languages-' . $field_name_selector . '"] .form-autocomplete');
     $this->assertEquals(26, count($input_elements));
   }
@@ -644,9 +642,12 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $expected_values = [];
     $expected_values[1] = 'Spanish (http://publications.europa.eu/resource/authority/language/SPA)';
     $expected_values[22] = 'Finnish (http://publications.europa.eu/resource/authority/language/FIN)';
+    $expected_count = 25;
     if ($language_options_filled) {
       $expected_values[0] = 'Swedish (http://publications.europa.eu/resource/authority/language/SWE)';
       $expected_values[23] = 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)';
+      $expected_values[24] = 'Bengali (http://publications.europa.eu/resource/authority/language/BEN)';
+      $expected_count = 26;
     }
     else {
       $expected_values[0] = 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)';
@@ -658,7 +659,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     ];
     foreach ($fields as $field_name) {
       $input_elements = $page->findAll('css', '[data-drupal-selector="edit-corporate-fields-override-languages-' . $field_name . '"] .form-autocomplete');
-      $this->assertEquals(25, count($input_elements));
+      $this->assertEquals($expected_count, count($input_elements));
       foreach ($expected_values as $key => $value) {
         $this->assertEquals($value, $input_elements[$key]->getValue());
       }
@@ -715,21 +716,38 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $value = $contact_form->getThirdPartySetting('oe_contact_forms', 'override_languages');
     if ($language_options_filled) {
       $expected = [
-        0 => 'http://publications.europa.eu/resource/authority/language/SWE',
-        1 => 'http://publications.europa.eu/resource/authority/language/SPA',
-        2 => 'http://publications.europa.eu/resource/authority/language/CES',
-        22 => 'http://publications.europa.eu/resource/authority/language/FIN',
-        23 => 'http://publications.europa.eu/resource/authority/language/BUL',
+        'http://publications.europa.eu/resource/authority/language/SWE',
+        'http://publications.europa.eu/resource/authority/language/SPA',
+        'http://publications.europa.eu/resource/authority/language/CES',
+        'http://publications.europa.eu/resource/authority/language/DAN',
+        'http://publications.europa.eu/resource/authority/language/DEU',
+        'http://publications.europa.eu/resource/authority/language/EST',
+        'http://publications.europa.eu/resource/authority/language/ELL',
+        'http://publications.europa.eu/resource/authority/language/ENG',
+        'http://publications.europa.eu/resource/authority/language/FRA',
+        'http://publications.europa.eu/resource/authority/language/GLE',
+        'http://publications.europa.eu/resource/authority/language/HRV',
+        'http://publications.europa.eu/resource/authority/language/ITA',
+        'http://publications.europa.eu/resource/authority/language/LAV',
+        'http://publications.europa.eu/resource/authority/language/LIT',
+        'http://publications.europa.eu/resource/authority/language/HUN',
+        'http://publications.europa.eu/resource/authority/language/MLT',
+        'http://publications.europa.eu/resource/authority/language/NLD',
+        'http://publications.europa.eu/resource/authority/language/POL',
+        'http://publications.europa.eu/resource/authority/language/POR',
+        'http://publications.europa.eu/resource/authority/language/RON',
+        'http://publications.europa.eu/resource/authority/language/SLK',
+        'http://publications.europa.eu/resource/authority/language/SLV',
+        'http://publications.europa.eu/resource/authority/language/FIN',
+        'http://publications.europa.eu/resource/authority/language/BUL',
+        'http://publications.europa.eu/resource/authority/language/BEN',
       ];
       $fields = [
         'oe_preferred_language_options',
         'oe_alternative_language_options',
       ];
       foreach ($fields as $field_name) {
-        foreach ($expected as $key => $expected_value) {
-          $this->assertEquals($expected_value, $value[$field_name][$key]);
-        }
-        $this->assertEquals(24, count($value[$field_name]));
+        $this->assertEquals($expected, array_values($value[$field_name]));
       }
     }
     else {

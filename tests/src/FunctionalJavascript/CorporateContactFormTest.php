@@ -446,6 +446,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     $page->fillField('label', 'Test form');
     $page->fillField('recipients', 'test@example.com');
+    sleep(10);
     // Overcome machine name not being accessible.
     $this->getSession()->executeScript('jQuery("#edit-id").val("oe_corporate_form");');
   }

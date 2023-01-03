@@ -1,11 +1,21 @@
 # Changelog
 
+## [1.9.0](https://github.com/openeuropa/oe_contact_forms/tree/1.9.0) (2023-01-04)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.8.0...1.9.0)
+
+**Merged pull requests:**
+
+- EWPP-0000: Assert machine name is correctly set during tests. [\#74](https://github.com/openeuropa/oe_contact_forms/pull/74) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- EWPP-2812: Allow all languages in Preferred and Alternative Contact Language field [\#70](https://github.com/openeuropa/oe_contact_forms/pull/70) ([yenyasinn](https://github.com/yenyasinn))
+
 ## [1.8.0](https://github.com/openeuropa/oe_contact_forms/tree/1.8.0) (2022-11-07)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.7.0...1.8.0)
 
 **Merged pull requests:**
 
+- Prepare release 1.8.0. [\#68](https://github.com/openeuropa/oe_contact_forms/pull/68) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2751: Reapply permissions patch. [\#67](https://github.com/openeuropa/oe_contact_forms/pull/67) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [1.7.0](https://github.com/openeuropa/oe_contact_forms/tree/1.7.0) (2022-11-07)

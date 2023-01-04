@@ -225,7 +225,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Add remaining field values and submit form.
     $this->fillCorporateFields();
     $page->pressButton('Save');
-    $assert->pageTextContains('Contact form Test form has been added.');
+    $assert->pageTextContains('Contact form OE Corporate Form has been added.');
 
     // Assert the values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
@@ -246,7 +246,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     // Go through the edit process.
     $page->pressButton('Save');
-    $assert->pageTextContains('Contact form Test form has been updated.');
+    $assert->pageTextContains('Contact form OE Corporate Form has been updated.');
 
     // Assert the values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
@@ -261,7 +261,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $value = '<front>';
     $element->setValue($value);
     $page->pressButton('Save');
-    $assert->pageTextContains('Contact form Test form has been updated.');
+    $assert->pageTextContains('Contact form OE Corporate Form has been updated.');
 
     // Make sure the saved value is the one expected.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
@@ -282,7 +282,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $value = 'Privacy page (' . $node->id() . ')';
     $element->setValue($value);
     $page->pressButton('Save');
-    $assert->pageTextContains('Contact form Test form has been updated.');
+    $assert->pageTextContains('Contact form OE Corporate Form has been updated.');
 
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
     $element = $page->findField($field_name);
@@ -298,7 +298,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertFalse($alternative_language_element->isChecked());
 
     $page->pressButton('Save');
-    $assert->pageTextContains('Contact form Test form has been updated.');
+    $assert->pageTextContains('Contact form OE Corporate Form has been updated.');
 
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
     $element = $page->findField($field_name);
@@ -351,7 +351,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->fillCoreContactFields();
 
     $page->pressButton('Save');
-    $assert->pageTextContains('Contact form Test form has been added.');
+    $assert->pageTextContains('Contact form OE Corporate Form has been added.');
 
     // Assert the values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
@@ -388,7 +388,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     // Add remaining field values and submit form.
     $this->fillCorporateFields();
     $page->pressButton('Save');
-    $assert->pageTextContains('Contact form Test form has been added.');
+    $assert->pageTextContains('Contact form OE Corporate Form has been added.');
 
     // Assert the values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
@@ -408,7 +408,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $this->assertFieldsVisible(FALSE);
 
     $page->pressButton('Save');
-    $assert->pageTextContains('Contact form Test form has been updated.');
+    $assert->pageTextContains('Contact form OE Corporate Form has been updated.');
 
     // Assert no corporate values are saved.
     $this->drupalGet('admin/structure/contact/manage/oe_corporate_form');
@@ -444,10 +444,10 @@ class CorporateContactFormTest extends WebDriverTestBase {
     /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
 
-    $page->fillField('label', 'Test form');
-    $page->fillField('recipients', 'test@example.com');
+    $page->fillField('label', 'OE Corporate Form');
     // Overcome machine name not being accessible.
-    $this->getSession()->executeScript('jQuery("#edit-id").val("oe_corporate_form");');
+    $this->assertSession()->waitForText('Machine name: oe_corporate_form');
+    $page->fillField('recipients', 'test@example.com');
   }
 
   /**

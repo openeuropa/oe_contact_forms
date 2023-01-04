@@ -445,9 +445,9 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $page = $this->getSession()->getPage();
 
     $page->fillField('label', 'OE Corporate Form');
-    $page->fillField('recipients', 'test@example.com');
     // Overcome machine name not being accessible.
     $this->assertSession()->waitForText('Machine name: oe_corporate_form');
+    $page->fillField('recipients', 'test@example.com');
   }
 
   /**

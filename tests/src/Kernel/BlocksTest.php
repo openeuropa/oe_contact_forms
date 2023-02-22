@@ -51,7 +51,7 @@ class BlocksTest extends ContactFormTestBase {
     $header = 'this is a test header';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $header);
     $privacy_url = 'http://example.net';
-    $privacy_text = "I have read and agree with the <a href=\"{$privacy_url}\" target=\"_blank\">data protection terms</a>";
+    $privacy_text = "I have read and agree with the <a href=\"{$privacy_url}\" target=\"_blank\">personal data protection terms</a>";
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_url);
     $topics = [
       [

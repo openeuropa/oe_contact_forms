@@ -116,7 +116,7 @@ class MessageFormTest extends WebDriverTestBase {
     // Assert header printed.
     $assert->pageTextContains($header);
     // Assert privacy text.
-    $assert->pageTextContains('I have read and agree with the data protection terms');
+    $assert->pageTextContains('I have read and agree with the personal data protection terms');
     // Assert privacy text link.
     $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'target', "_blank");
     // Assert topic label.

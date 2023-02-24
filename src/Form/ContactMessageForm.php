@@ -91,6 +91,13 @@ class ContactMessageForm extends MessageForm {
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $message->getContactForm();
 
+    // Save the alternative name into name field based on the setting.
+    $alternative_name = $contact_form->getThirdPartySetting('oe_contact_forms', 'alternative_name');
+    if ($alternative_name) {
+      $name = $message->get('oe_first_name')->value . ' ' . $message->get('oe_last_name')->value;
+      $message->set('name', $name)->save();
+    }
+
     $this->setReply($message, $contact_form);
     $this->setRecepients($contact_form, $form_state);
 

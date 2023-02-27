@@ -14,7 +14,7 @@
         "drupal/csv_serialization": "^2.0",
         "drupal/multivalue_form_element": "^1.0.0-beta5",
         "openeuropa/oe_corporate_countries": "^2.0",
-        "openeuropa/rdf_skos": "1.x-dev"
+        "openeuropa/rdf_skos": "^1.0.0-alpha9"
     },
     "require-dev": {
         "behat/mink-selenium2-driver": "^1.5",

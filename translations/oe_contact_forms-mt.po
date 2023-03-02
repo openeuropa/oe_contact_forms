@@ -6,3 +6,9 @@ msgstr "Lingwa ta’ kuntatt li tippreferi"
 
 msgid "Alternative contact language"
 msgstr "Lingwa ta’ kuntatt alternattiva"
+
+msgid "First name"
+msgstr "Isem"
+
+msgid "Last name"
+msgstr "Kunjom"

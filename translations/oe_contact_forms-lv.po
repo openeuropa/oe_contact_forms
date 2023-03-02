@@ -6,3 +6,9 @@ msgstr "Vēlamā saziņas valoda"
 
 msgid "Alternative contact language"
 msgstr "Alternatīva saziņas valoda"
+
+msgid "First name"
+msgstr "Vārds"
+
+msgid "Last name"
+msgstr "Uzvārds"

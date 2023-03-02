@@ -6,3 +6,9 @@ msgstr "Pageidaujama korespondencijos kalba"
 
 msgid "Alternative contact language"
 msgstr "Alternatyvi korespondencijos kalba"
+
+msgid "First name"
+msgstr "Vardas"
+
+msgid "Last name"
+msgstr "Pavardė"

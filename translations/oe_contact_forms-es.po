@@ -6,3 +6,9 @@ msgstr "Idioma de contacto preferido"
 
 msgid "Alternative contact language"
 msgstr "Idioma de contacto alternativo"
+
+msgid "First name"
+msgstr "Nombre"
+
+msgid "Last name"
+msgstr "Apellidos"

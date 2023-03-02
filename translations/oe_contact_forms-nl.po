@@ -6,3 +6,9 @@ msgstr "Correspondentietaal"
 
 msgid "Alternative contact language"
 msgstr "Alternatieve correspondentietaal"
+
+msgid "First name"
+msgstr "Voornaam"
+
+msgid "Last name"
+msgstr "Achternaam"

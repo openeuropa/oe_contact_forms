@@ -390,6 +390,16 @@ form at http://web:8080/build/contact/oe_contact_form.
 
 
 
+      First name
+                thanos
+
+
+
+      Last name
+                tester
+
+
+
       Topic
                 Changed name
 
@@ -419,6 +429,16 @@ this is a autoreply
 
       Message
                 Test message
+
+
+
+      First name
+                thanos
+
+
+
+      Last name
+                tester
 
 
 

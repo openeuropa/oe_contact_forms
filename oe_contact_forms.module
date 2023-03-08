@@ -667,6 +667,9 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
       ->setRequired(TRUE)
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
+      ])
+      ->setDisplayOptions('view', [
+        'weight' => 0,
       ]);
 
     $fields['oe_last_name'] = BaseFieldDefinition::create('string')
@@ -674,6 +677,9 @@ function oe_contact_forms_entity_base_field_info(EntityTypeInterface $entity_typ
       ->setRequired(TRUE)
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
+      ])
+      ->setDisplayOptions('view', [
+        'weight' => 0,
       ]);
 
     $fields['oe_country_residence'] = BaseFieldDefinition::create('skos_concept_entity_reference')

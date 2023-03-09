@@ -37,7 +37,7 @@ class ContactMessageForm extends MessageForm {
 
     // Checkbox to accept privacy policy configured in the ContactForm.
     $privacy_policy = $contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy');
-    $privacy_link = Link::fromTextAndUrl($this->t('data protection terms'), Url::fromUri($privacy_policy, [
+    $privacy_link = Link::fromTextAndUrl($this->t('personal data protection terms'), Url::fromUri($privacy_policy, [
       'absolute' => TRUE,
       'attributes' => ['target' => '_blank'],
     ]));

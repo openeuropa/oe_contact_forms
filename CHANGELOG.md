@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.10.0](https://github.com/openeuropa/oe_contact_forms/tree/1.10.0) (2023-03-10)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.9.0...1.10.0)
+
+**Merged pull requests:**
+
+- Remove obsolete patch and re-roll load balancer patch. [\#77](https://github.com/openeuropa/oe_contact_forms/pull/77) ([nagyad](https://github.com/nagyad))
+- EWPP-3129: Update the privacy policy string. [\#75](https://github.com/openeuropa/oe_contact_forms/pull/75) ([22Alexandra](https://github.com/22Alexandra))
+- EWPP-2907: Update to PHP 8.1. [\#71](https://github.com/openeuropa/oe_contact_forms/pull/71) ([22Alexandra](https://github.com/22Alexandra))
+- EWPP-2759: Add first name and last name fields. [\#69](https://github.com/openeuropa/oe_contact_forms/pull/69) ([yenyasinn](https://github.com/yenyasinn))
+
 ## [1.9.0](https://github.com/openeuropa/oe_contact_forms/tree/1.9.0) (2023-01-04)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.8.0...1.9.0)
@@ -7,6 +18,7 @@
 **Merged pull requests:**
 
 - EWPP-0000: Assert machine name is correctly set during tests. [\#74](https://github.com/openeuropa/oe_contact_forms/pull/74) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- Prepare release 1.9.0. [\#72](https://github.com/openeuropa/oe_contact_forms/pull/72) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2812: Allow all languages in Preferred and Alternative Contact Language field [\#70](https://github.com/openeuropa/oe_contact_forms/pull/70) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.8.0](https://github.com/openeuropa/oe_contact_forms/tree/1.8.0) (2022-11-07)

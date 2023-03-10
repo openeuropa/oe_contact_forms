@@ -6,3 +6,9 @@ msgstr "Prvý (uprednostňovaný) jazyk"
 
 msgid "Alternative contact language"
 msgstr "Druhý (alternatívny) jazyk"
+
+msgid "First name"
+msgstr "Meno"
+
+msgid "Last name"
+msgstr "Priezvisko"

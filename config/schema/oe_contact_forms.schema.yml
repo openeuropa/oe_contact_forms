@@ -71,3 +71,6 @@ contact.form.*.third_party.oe_contact_forms:
           topic_email_address:
             type: email
             label: 'Topic email address(es)'
+    alternative_name:
+      type: boolean
+      label: 'Use First name and Last name for the form'

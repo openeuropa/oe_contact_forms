@@ -6,3 +6,9 @@ msgstr "Autre langue de contact possible"
 
 msgid "Alternative contact language"
 msgstr "Teanga chumarsáide eile"
+
+msgid "First name"
+msgstr "Céadainm"
+
+msgid "Last name"
+msgstr "Sloinne"

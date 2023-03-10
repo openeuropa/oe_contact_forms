@@ -6,3 +6,9 @@ msgstr "Vilket språk vill du helst få svar på?"
 
 msgid "Alternative contact language"
 msgstr "Vilket annat språk skulle gå bra?"
+
+msgid "First name"
+msgstr "Förnamn"
+
+msgid "Last name"
+msgstr "Efternamn"

@@ -6,3 +6,9 @@ msgstr "Foretrukket kontaktsprog"
 
 msgid "Alternative contact language"
 msgstr "Alternativt kontaktsprog"
+
+msgid "First name"
+msgstr "Fornavn"
+
+msgid "Last name"
+msgstr "Efternavn"

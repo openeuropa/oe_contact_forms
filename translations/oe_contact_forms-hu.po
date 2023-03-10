@@ -6,3 +6,9 @@ msgstr "A kapcsolattartás választott nyelve (első)"
 
 msgid "Alternative contact language"
 msgstr "A kapcsolattartás választott nyelve (második)"
+
+msgid "First name"
+msgstr "Utónév"
+
+msgid "Last name"
+msgstr "Vezetéknév"

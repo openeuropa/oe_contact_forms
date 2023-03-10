@@ -29,6 +29,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     'corporate_fields[privacy_policy]' => 'http://example.net',
     'corporate_fields[includes_fields_in_auto_reply]' => TRUE,
     'corporate_fields[allow_canonical_url]' => TRUE,
+    'corporate_fields[alternative_name]' => TRUE,
     // For expose_as_block default is true so we test false.
     'corporate_fields[expose_as_block]' => FALSE,
     'corporate_fields[optional_fields][oe_country_residence]' => TRUE,
@@ -144,8 +145,8 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $absolute_path = \Drupal::service('file_system')->realpath($file->getFileUri());
     $actual = file_get_contents($absolute_path);
 
-    $headers = '"Message ID",Language,"Form ID","The sender\'s name","The sender\'s email",Subject,Message,Copy,"Recipient ID",Created,"User ID","Country of residence","Preferred contact language","Alternative contact language",Phone,Topic';
-    $values = '1,English,,example,admin@example.com,"Test subject","Test message",,,"Fri, 02/17/2017 - 19:52",0,,,,,';
+    $headers = '"Message ID",Language,"Form ID","The sender\'s name","The sender\'s email",Subject,Message,Copy,"Recipient ID",Created,"User ID","First name","Last name","Country of residence","Preferred contact language","Alternative contact language",Phone,Topic';
+    $values = '1,English,,example,admin@example.com,"Test subject","Test message",,,"Fri, 02/17/2017 - 19:52",0,,,,,,,';
     $expected = $headers . PHP_EOL . $values;
     $this->assertEquals($expected, $actual);
   }
@@ -689,6 +690,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'privacy_policy' => 'http://example.net',
       'includes_fields_in_auto_reply' => TRUE,
       'allow_canonical_url' => TRUE,
+      'alternative_name' => TRUE,
       'expose_as_block' => FALSE,
       'optional_fields' => [
         'oe_country_residence' => 'oe_country_residence',
@@ -776,6 +778,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'privacy_policy' => NULL,
       'includes_fields_in_auto_reply' => NULL,
       'allow_canonical_url' => NULL,
+      'alternative_name' => NULL,
       'expose_as_block' => NULL,
       'optional_fields' => NULL,
       'topics' => NULL,

@@ -6,3 +6,9 @@ msgstr "Eelistatud keel ühenduse võtmiseks"
 
 msgid "Alternative contact language"
 msgstr "Alternatiivne keel ühenduse võtmiseks"
+
+msgid "First name"
+msgstr "Eesnimi"
+
+msgid "Last name"
+msgstr "Perekonnanimi"

@@ -69,6 +69,16 @@ class ContactMessageForm extends MessageForm {
       $form['oe_topic']['widget']['#title'] = $topic_label;
     }
 
+    // Show/hide name fields based on setting.
+    $alternative_name = $contact_form->getThirdPartySetting('oe_contact_forms', 'alternative_name');
+    if ($alternative_name) {
+      $form['name']['#access'] = FALSE;
+    }
+    else {
+      $form['oe_first_name']['#access'] = FALSE;
+      $form['oe_last_name']['#access'] = FALSE;
+    }
+
     return $form;
   }
 
@@ -80,6 +90,13 @@ class ContactMessageForm extends MessageForm {
     $message = $this->entity;
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $message->getContactForm();
+
+    // Save the alternative name into name field based on the setting.
+    $alternative_name = $contact_form->getThirdPartySetting('oe_contact_forms', 'alternative_name');
+    if ($alternative_name) {
+      $name = $message->get('oe_first_name')->value . ' ' . $message->get('oe_last_name')->value;
+      $message->set('name', $name)->save();
+    }
 
     $this->setReply($message, $contact_form);
     $this->setRecepients($contact_form, $form_state);

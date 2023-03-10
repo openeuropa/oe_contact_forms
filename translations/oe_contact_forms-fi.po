@@ -6,3 +6,9 @@ msgstr "Ensisijainen vastauksen kieli"
 
 msgid "Alternative contact language"
 msgstr "Vaihtoehtoinen vastauksen kieli"
+
+msgid "First name"
+msgstr "Etunimi"
+
+msgid "Last name"
+msgstr "Sukunimi"

@@ -71,6 +71,7 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->setReply('this is a autoreply');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', TRUE);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'alternative_name', TRUE);
     $topic_label = 'Topic label';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', $topic_label);
     $email_subject = 'Email Subject';
@@ -94,6 +95,9 @@ class MessageFormTest extends WebDriverTestBase {
     // Access canonical url.
     $this->drupalGet('contact/' . $contact_form_id);
 
+    // Assert first name and last name fields are visible.
+    $assert->fieldExists('First name');
+    $assert->fieldExists('Last name');
     // Assert corporate fields and optional fields handling.
     $assert->fieldExists('oe_country_residence');
     // Assert country options are ordered by label and deprecated ones
@@ -203,7 +207,8 @@ class MessageFormTest extends WebDriverTestBase {
     }
 
     // Submit the form.
-    $page->fillField('name', 'tester');
+    $page->fillField('First name', 'thanos');
+    $page->fillField('Last name', 'tester');
     $page->fillField('mail', 'tester@example.com');
     $page->fillField('subject[0][value]', 'Test subject');
     $page->fillField('message[0][value]', 'Test message');
@@ -248,7 +253,8 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->save();
 
     // Submit the form.
-    $page->fillField('name', 'tester');
+    $page->fillField('First name', 'thanos');
+    $page->fillField('Last name', 'tester');
     $page->fillField('mail', 'tester@example.com');
     $page->fillField('subject[0][value]', 'Test subject');
     $page->fillField('message[0][value]', 'Test message');
@@ -359,13 +365,13 @@ class MessageFormTest extends WebDriverTestBase {
   protected function assertTestEmailBodies(array $captured_emails): void {
     // First email is the outgoing one.
     $expected = <<<EOF
-tester (not verified) (tester@example.com) sent a message using the contact
+thanos tester (not verified) (tester@example.com) sent a message using the contact
 form at http://web:8080/build/contact/oe_contact_form.
 
 
 
       The sender's name
-                tester
+                thanos tester
 
 
 
@@ -381,6 +387,16 @@ form at http://web:8080/build/contact/oe_contact_form.
 
       Message
                 Test message
+
+
+
+      First name
+                thanos
+
+
+
+      Last name
+                tester
 
 
 
@@ -397,7 +413,7 @@ this is a autoreply
 
 
       The sender's name
-                tester
+                thanos tester
 
 
 
@@ -413,6 +429,16 @@ this is a autoreply
 
       Message
                 Test message
+
+
+
+      First name
+                thanos
+
+
+
+      Last name
+                tester
 
 
 

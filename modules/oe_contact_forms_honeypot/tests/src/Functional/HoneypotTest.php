@@ -30,7 +30,7 @@ class HoneypotTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $honeypot_config = \Drupal::configFactory()

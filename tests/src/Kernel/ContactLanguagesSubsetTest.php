@@ -60,7 +60,7 @@ class ContactLanguagesSubsetTest extends SparqlKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'contact',
     'rdf_skos',
     'oe_contact_forms',

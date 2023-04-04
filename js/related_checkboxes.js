@@ -2,7 +2,7 @@
  * @file
  * "Related checkboxes" library file.
  */
-(function (Drupal, $) {
+(function (Drupal, $, once) {
   'use strict';
 
   /**
@@ -15,23 +15,24 @@
    */
   Drupal.behaviors.oeContactFormsRelatedCheckboxes = {
     attach: function (context) {
-      let prefered_language_checkbox = $(context).find('input[name="corporate_fields[optional_fields][oe_preferred_language]"]');
-      let alternative_language_checkbox = $(context).find('input[name="corporate_fields[optional_fields][oe_alternative_language]"]');
+      once('oe-contact-forms', 'input[name="corporate_fields[optional_fields][oe_preferred_language]"]', context).forEach((preferred_language_checkbox) => {
+        let alternative_language_checkbox = context.querySelector('input[name="corporate_fields[optional_fields][oe_alternative_language]"]');
 
-      // Disable "Alternative contact language" if "Preferred contact language" is disabled after page load.
-      if (prefered_language_checkbox.prop('checked') !== true) {
-        alternative_language_checkbox.attr('disabled', true);
-      }
-
-      // Disable/enable "Alternative contact language" based on "Preferred contact language" state.
-      prefered_language_checkbox.once().click({checkbox: alternative_language_checkbox}, function(e) {
-        if (!$(this).prop('checked')) {
-          e.data.checkbox.prop('checked', false);
-          e.data.checkbox.change();
+        // Disable "Alternative contact language" if "Preferred contact language" is disabled after page load.
+        if (preferred_language_checkbox.checked !== true) {
+          alternative_language_checkbox.disabled = true;
         }
-        e.data.checkbox.attr('disabled', !$(this).prop('checked'));
+
+        preferred_language_checkbox.addEventListener('click', function () {
+          if (!this.checked) {
+            alternative_language_checkbox.checked = false;
+            // @Todo is this even needed? It seems to work without.
+            $(alternative_language_checkbox).trigger('change');
+          }
+          alternative_language_checkbox.disabled = !this.checked;
+        });
       });
     },
   };
 
-})(Drupal, jQuery);
+})(Drupal, jQuery, once);

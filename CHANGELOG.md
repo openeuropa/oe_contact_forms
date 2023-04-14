@@ -1,18 +1,28 @@
-# Changelog
+# Change Log
+
+## [1.11.0](https://github.com/openeuropa/oe_contact_forms/tree/1.11.0) (2023-04-14)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.10.0...1.11.0)
+
+**Fixed bugs:**
+
+- Patches to contact\_storage\_export don't apply [\#78](https://github.com/openeuropa/oe_contact_forms/issues/78)
+
+**Merged pull requests:**
+
+- EWPP-3011: Drupal 10 compatibility. [\#79](https://github.com/openeuropa/oe_contact_forms/pull/79) ([brummbar](https://github.com/brummbar))
 
 ## [1.10.0](https://github.com/openeuropa/oe_contact_forms/tree/1.10.0) (2023-03-10)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.9.0...1.10.0)
 
 **Merged pull requests:**
 
 - Remove obsolete patch and re-roll load balancer patch. [\#77](https://github.com/openeuropa/oe_contact_forms/pull/77) ([nagyad](https://github.com/nagyad))
+- Prepare changelog for release 1.10.0 [\#76](https://github.com/openeuropa/oe_contact_forms/pull/76) ([brummbar](https://github.com/brummbar))
 - EWPP-3129: Update the privacy policy string. [\#75](https://github.com/openeuropa/oe_contact_forms/pull/75) ([22Alexandra](https://github.com/22Alexandra))
 - EWPP-2907: Update to PHP 8.1. [\#71](https://github.com/openeuropa/oe_contact_forms/pull/71) ([22Alexandra](https://github.com/22Alexandra))
 - EWPP-2759: Add first name and last name fields. [\#69](https://github.com/openeuropa/oe_contact_forms/pull/69) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.9.0](https://github.com/openeuropa/oe_contact_forms/tree/1.9.0) (2023-01-04)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.8.0...1.9.0)
 
 **Merged pull requests:**

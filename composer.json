@@ -12,7 +12,7 @@
         "drupal/contact_storage_export": "^1.15",
         "drupal/core": "^9.4 || ^10",
         "drupal/multivalue_form_element": "^1.0.0-beta6",
-        "openeuropa/oe_corporate_countries": "dev-EWPP-3002",
+        "openeuropa/oe_corporate_countries": "^2.0.0-alpha8",
         "openeuropa/rdf_skos": "^1.0.0-alpha10"
     },
     "require-dev": {

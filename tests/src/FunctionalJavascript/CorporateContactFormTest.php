@@ -188,13 +188,13 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $override_languages_element = $page->find('css', '[data-drupal-selector="edit-corporate-fields-override-languages"]');
     $this->assertFalse($preferred_language_element->isChecked());
     $this->assertFalse($alternative_language_element->isChecked());
-    $this->assertEquals('disabled', $alternative_language_element->getAttribute('disabled'));
+    $this->assertTrue($alternative_language_element->hasAttribute('disabled'));
     $this->assertFalse($override_languages_element->isVisible());
 
     $preferred_language_element->click();
     $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
     $this->assertNotNull($alternative_language_element);
-    $this->assertEmpty($alternative_language_element->getAttribute('disabled'));
+    $this->assertFalse($alternative_language_element->hasAttribute('disabled'));
     $this->assertTrue($override_languages_element->isVisible());
     $override_languages_element->click();
     $this->assertLanguageOptions('oe_preferred_language_options');
@@ -208,7 +208,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     $preferred_language_element->click();
     $this->assertFalse($alternative_language_element->isChecked());
-    $this->assertEquals('disabled', $alternative_language_element->getAttribute('disabled'));
+    $this->assertTrue($alternative_language_element->hasAttribute('disabled'));
     $this->assertAlternativeContactOptionsVisible(FALSE);
     $this->assertFalse($override_languages_element->isVisible());
 
@@ -311,7 +311,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $alternative_language_element = $page->findField('corporate_fields[optional_fields][oe_alternative_language]');
     $this->assertTrue($preferred_language_element->isChecked());
     $this->assertFalse($alternative_language_element->isChecked());
-    $this->assertEmpty($alternative_language_element->getAttribute('disabled'));
+    $this->assertFalse($alternative_language_element->hasAttribute('disabled'));
     $override_languages_element = $page->find('css', '[data-drupal-selector="edit-corporate-fields-override-languages"]');
     $this->assertTrue($override_languages_element->isVisible());
     $override_languages_element->click();

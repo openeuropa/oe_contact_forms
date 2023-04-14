@@ -4,3 +4,4 @@ related_checkboxes:
   dependencies:
     - core/drupal
     - core/jquery
+    - core/once

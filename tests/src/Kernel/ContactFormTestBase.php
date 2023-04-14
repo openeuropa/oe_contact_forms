@@ -17,7 +17,7 @@ class ContactFormTestBase extends SparqlKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'path',
     'path_alias',
     'options',

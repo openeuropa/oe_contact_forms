@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace Drupal\oe_contact_forms\Routing;
 
-use Symfony\Component\Routing\RouteCollection;
 use Drupal\contact_storage\Routing\RouteSubscriber;
 use Drupal\oe_contact_forms\Controller\CorporateContactFormController;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Listens to the dynamic route events.

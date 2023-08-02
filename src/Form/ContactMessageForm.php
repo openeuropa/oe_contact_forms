@@ -8,8 +8,8 @@ use Drupal\contact\ContactFormInterface;
 use Drupal\contact\MessageForm;
 use Drupal\contact\MessageInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 /**
  * Form controller for contact message forms.

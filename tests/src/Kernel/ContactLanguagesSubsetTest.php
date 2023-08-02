@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace Drupal\Tests\oe_contact_forms\Kernel;
 
 use Drupal\rdf_skos\Plugin\EntityReferenceSelection\SkosConceptSelection;
-use Drupal\Tests\sparql_entity_storage\Kernel\SparqlKernelTestBase;
 use Drupal\Tests\rdf_skos\Traits\SkosImportTrait;
+use Drupal\Tests\sparql_entity_storage\Kernel\SparqlKernelTestBase;
 
 /**
  * Test "Contact languages" concept subset.

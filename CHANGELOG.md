@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.12.0](https://github.com/openeuropa/oe_contact_forms/tree/1.12.0) (2023-08-02)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.11.0...1.12.0)
+
+**Merged pull requests:**
+
+- EWPP-3512: drush.services.yml is mandatory with Drush 12. [\#81](https://github.com/openeuropa/oe_contact_forms/pull/81) ([brummbar](https://github.com/brummbar))
+
 ## [1.11.0](https://github.com/openeuropa/oe_contact_forms/tree/1.11.0) (2023-04-14)
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.10.0...1.11.0)
 

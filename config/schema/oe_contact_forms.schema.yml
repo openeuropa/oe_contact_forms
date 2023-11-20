@@ -19,9 +19,9 @@ contact.form.*.third_party.oe_contact_forms:
     privacy_policy:
       type: text
       label: 'Privacy policy'
-    includes_fields_in_auto_reply:
+    includes_fields_in_messages:
       type: boolean
-      label: 'Includes fields in auto-reply'
+      label: 'Includes fields in email message and auto-reply'
     allow_canonical_url:
       type: boolean
       label: 'Allow canonical URL'

@@ -118,12 +118,12 @@ class ContactMessageForm extends MessageForm {
    */
   protected function setReply(MessageInterface $message, ContactFormInterface $contact_form): void {
     // If the form is configured to include all the fields in the auto-reply,
-    // set the values after the auto-reply body,
-    // so they get included in the email as well.
+    // set the values after the auto-reply body, so they get included in the
+    // email as well.
     $reply = $contact_form->getReply();
-    $includes_fields_in_auto_reply = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', FALSE);
+    $includes_fields_in_messages = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_messages', FALSE);
 
-    if (!empty($reply) && $includes_fields_in_auto_reply === TRUE) {
+    if (!empty($reply) && $includes_fields_in_messages === TRUE) {
       $mail_view = $this->entityTypeManager
         ->getViewBuilder('contact_message')
         ->view($message, 'mail');

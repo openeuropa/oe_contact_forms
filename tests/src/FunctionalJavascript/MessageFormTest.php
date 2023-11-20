@@ -80,7 +80,7 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $header);
     $privacy_url = 'http://example.net';
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $privacy_url);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', TRUE);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_messages', TRUE);
     $optional_selected = ['oe_country_residence' => 'oe_country_residence'];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $optional_selected);
     $topics = [

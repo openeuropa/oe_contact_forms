@@ -193,11 +193,11 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
       '#process_default_value' => FALSE,
       '#default_value' => _oe_contact_forms_get_privacy_default($contact_form->getThirdPartySetting('oe_contact_forms', 'privacy_policy', '')),
     ];
-    $form['corporate_fields']['includes_fields_in_auto_reply'] = [
+    $form['corporate_fields']['includes_fields_in_messages'] = [
       '#type' => 'checkbox',
-      '#title' => t('Includes fields in auto-reply'),
-      '#description' => t("Check this box if you would like to include in the auto-reply also the values submitted by the user."),
-      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', FALSE),
+      '#title' => t('Includes fields in email message and auto-reply'),
+      '#description' => t('Check this box if you would like to include in the message and in the auto-reply the values submitted by the user.'),
+      '#default_value' => $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_messages', FALSE),
     ];
     $form['corporate_fields']['allow_canonical_url'] = [
       '#type' => 'checkbox',
@@ -484,7 +484,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
     $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', $values['email_subject']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'header', $values['header']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $values['privacy_policy']);
-    $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply', $values['includes_fields_in_auto_reply']);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'includes_fields_in_messages', $values['includes_fields_in_messages']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', $values['allow_canonical_url']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', $values['expose_as_block']);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'optional_fields', $values['optional_fields']);
@@ -498,7 +498,7 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
       'email_subject',
       'header',
       'privacy_policy',
-      'includes_fields_in_auto_reply',
+      'includes_fields_in_messages',
       'allow_canonical_url',
       'expose_as_block',
       'optional_fields',
@@ -890,7 +890,7 @@ function oe_contact_forms_entity_form_display_alter(EntityFormDisplayInterface $
  * Implements hook_mail_alter().
  */
 function oe_contact_forms_mail_alter(&$message) {
-  // Check if its a corporate contact form.
+  // Check if it's a corporate contact form.
   $is_corporate_form = FALSE;
   $mail_ids = [
     'contact_page_mail',
@@ -898,11 +898,13 @@ function oe_contact_forms_mail_alter(&$message) {
     'contact_page_autoreply',
   ];
 
-  if (isset($message['params']['contact_form'])) {
-    /** @var \Drupal\contact\ContactFormInterface $contact_form */
-    $contact_form = $message['params']['contact_form'];
-    $is_corporate_form = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
+  if (!isset($message['params']['contact_form'])) {
+    return;
   }
+
+  /** @var \Drupal\contact\ContactFormInterface $contact_form */
+  $contact_form = $message['params']['contact_form'];
+  $is_corporate_form = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
 
   if (!$is_corporate_form || !in_array($message['id'], $mail_ids)) {
     return;
@@ -915,6 +917,17 @@ function oe_contact_forms_mail_alter(&$message) {
   // @see contact_storage_mail_alter.
   if ($message['key'] === 'page_autoreply') {
     $message['body'] = [$contact_form->getReply()];
+  }
+
+  if ($message['key'] !== 'page_mail') {
+    return;
+  }
+
+  // Provided values are automatically included in the email message body, so
+  // we remove them when they are not set to be included.
+  $includes_fields_in_messages = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_messages', FALSE);
+  if (!$includes_fields_in_messages && count($message['body']) === 2) {
+    unset($message['body'][1]);
   }
 }
 

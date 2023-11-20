@@ -104,3 +104,21 @@ function oe_contact_forms_post_update_00004(): void {
     ]);
   $update_manager->installFieldStorageDefinition('oe_last_name', 'contact_message', 'oe_contact_forms', $last_name);
 }
+
+/**
+ * Update third party setting.
+ */
+function oe_contact_forms_post_update_00005(): void {
+  /** @var \Drupal\contact\ContactFormInterface[] $contact_forms */
+  $contact_forms = \Drupal::entityTypeManager()->getStorage('contact_form')->loadMultiple();
+  foreach ($contact_forms as $contact_form) {
+    $third_party_settings = $contact_form->get('third_party_settings');
+    if (!isset($third_party_settings['oe_contact_forms']['includes_fields_in_auto_reply'])) {
+      continue;
+    }
+    unset($third_party_settings['oe_contact_forms']['includes_fields_in_auto_reply']);
+    $third_party_settings['oe_contact_forms']['includes_fields_in_messages'] = $contact_form->getThirdPartySetting('oe_contact_forms', 'includes_fields_in_auto_reply');
+    $contact_form->set('third_party_settings', $third_party_settings);
+    $contact_form->save();
+  }
+}

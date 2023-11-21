@@ -7,6 +7,7 @@ namespace Drupal\Tests\oe_contact_forms\Functional;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 use Drupal\Tests\BrowserTestBase;
+use Drush\Drush;
 use Drush\TestTraits\DrushTestTrait;
 
 /**
@@ -96,6 +97,9 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $expected .= '* Sanitize text fields associated with users.' . PHP_EOL;
     $expected .= '* Sanitize user passwords.' . PHP_EOL;
     $expected .= '* Sanitize user emails.' . PHP_EOL;
+    if (Drush::getMajorVersion() >= 12) {
+      $expected .= '* Preserve user emails and passwords for the specified roles.' . PHP_EOL;
+    }
     $expected .= '* Sanitize contact form data.';
     $this->assertOutputEquals($expected);
 

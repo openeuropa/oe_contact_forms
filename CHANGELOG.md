@@ -1,13 +1,25 @@
-# Change Log
+# Changelog
+
+## [1.13.0](https://github.com/openeuropa/oe_contact_forms/tree/1.13.0) (2023-11-21)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.12.0...1.13.0)
+
+**Merged pull requests:**
+
+- EWPP-000: Fix ContactFormSanitizeCommandTest. [\#86](https://github.com/openeuropa/oe_contact_forms/pull/86) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- EWPP-3671: Replace includes\_fields\_in\_auto\_reply 3rd party setting with new one. [\#83](https://github.com/openeuropa/oe_contact_forms/pull/83) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.12.0](https://github.com/openeuropa/oe_contact_forms/tree/1.12.0) (2023-08-02)
+
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.11.0...1.12.0)
 
 **Merged pull requests:**
 
+- Release 1.12.0 changelog. [\#82](https://github.com/openeuropa/oe_contact_forms/pull/82) ([22Alexandra](https://github.com/22Alexandra))
 - EWPP-3512: drush.services.yml is mandatory with Drush 12. [\#81](https://github.com/openeuropa/oe_contact_forms/pull/81) ([brummbar](https://github.com/brummbar))
 
 ## [1.11.0](https://github.com/openeuropa/oe_contact_forms/tree/1.11.0) (2023-04-14)
+
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.10.0...1.11.0)
 
 **Fixed bugs:**
@@ -16,9 +28,11 @@
 
 **Merged pull requests:**
 
+- Prepare changelog for release 1.11.0. [\#80](https://github.com/openeuropa/oe_contact_forms/pull/80) ([brummbar](https://github.com/brummbar))
 - EWPP-3011: Drupal 10 compatibility. [\#79](https://github.com/openeuropa/oe_contact_forms/pull/79) ([brummbar](https://github.com/brummbar))
 
 ## [1.10.0](https://github.com/openeuropa/oe_contact_forms/tree/1.10.0) (2023-03-10)
+
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.9.0...1.10.0)
 
 **Merged pull requests:**
@@ -30,6 +44,7 @@
 - EWPP-2759: Add first name and last name fields. [\#69](https://github.com/openeuropa/oe_contact_forms/pull/69) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.9.0](https://github.com/openeuropa/oe_contact_forms/tree/1.9.0) (2023-01-04)
+
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.8.0...1.9.0)
 
 **Merged pull requests:**

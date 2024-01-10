@@ -187,7 +187,7 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Assert contact language fields contains 24 EU languages by default.
     $expected_languages = [
-      '- None -' => '- None -',
+      'Select' => 'Select',
       'http://publications.europa.eu/resource/authority/language/BUL' => 'Bulgarian',
       'http://publications.europa.eu/resource/authority/language/SPA' => 'Spanish',
       'http://publications.europa.eu/resource/authority/language/CES' => 'Czech',
@@ -293,7 +293,7 @@ class MessageFormTest extends WebDriverTestBase {
     $this->drupalGet('contact/' . $contact_form_id);
     $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'href', $alias);
     $expected_languages = [
-      '- None -' => '- None -',
+      'Select' => 'Select',
       'http://publications.europa.eu/resource/authority/language/CES' => 'Czech',
       'http://publications.europa.eu/resource/authority/language/DAN' => 'Danish',
       'http://publications.europa.eu/resource/authority/language/ZUL' => 'Zulu',
@@ -301,7 +301,7 @@ class MessageFormTest extends WebDriverTestBase {
     $options = $this->getOptions('Preferred contact language');
     $this->assertEquals($expected_languages, $options);
     $expected_languages = [
-      '- None -' => '- None -',
+      'Select' => 'Select',
       'http://publications.europa.eu/resource/authority/language/FRA' => 'French',
       'http://publications.europa.eu/resource/authority/language/QUE' => 'Quechua',
     ];

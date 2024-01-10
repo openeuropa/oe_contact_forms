@@ -649,7 +649,7 @@ function _oe_contact_forms_build_select_language_field(array &$form, string $fie
   $widget = &$form[$field]['widget'][0]['target_id'];
   $widget['#type'] = 'select';
   $widget['#options'] = $options;
-  $widget['#empty_option'] = t('- None -');
+  $widget['#empty_option'] = t('Select');
   $widget['#empty_value'] = '';
   unset($widget['#selection_settings']);
   unset($widget['#size']);

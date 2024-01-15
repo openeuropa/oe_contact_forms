@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.14.0](https://github.com/openeuropa/oe_contact_forms/tree/1.14.0) (2024-01-15)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.13.0...1.14.0)
+
+**Merged pull requests:**
+
+- EWPP-3905: Patch sparql entity storage for D10.2 support. [\#88](https://github.com/openeuropa/oe_contact_forms/pull/88) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- EWPP-2952: Change the empty option label for language selects. [\#84](https://github.com/openeuropa/oe_contact_forms/pull/84) ([22Alexandra](https://github.com/22Alexandra))
+
 ## [1.13.0](https://github.com/openeuropa/oe_contact_forms/tree/1.13.0) (2023-11-21)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.12.0...1.13.0)
@@ -7,6 +16,7 @@
 **Merged pull requests:**
 
 - EWPP-000: Fix ContactFormSanitizeCommandTest. [\#86](https://github.com/openeuropa/oe_contact_forms/pull/86) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- Prepare release 1.13.0 [\#85](https://github.com/openeuropa/oe_contact_forms/pull/85) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-3671: Replace includes\_fields\_in\_auto\_reply 3rd party setting with new one. [\#83](https://github.com/openeuropa/oe_contact_forms/pull/83) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.12.0](https://github.com/openeuropa/oe_contact_forms/tree/1.12.0) (2023-08-02)

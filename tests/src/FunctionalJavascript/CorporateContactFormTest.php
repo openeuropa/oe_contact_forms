@@ -134,8 +134,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     }
 
     $page->pressButton('Export');
-    $this->assertSession()->assertWaitOnAjaxRequest();
-
+    $this->assertSession()->waitForText(' Your export is ready for download.');
     // Assert CSV output with selected columns.
     /** @var \Drupal\file\FileInterface[] $files */
     $files = \Drupal::entityTypeManager()

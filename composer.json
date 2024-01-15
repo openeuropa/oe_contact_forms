@@ -61,6 +61,9 @@
             },
             "drupal/contact_storage_export": {
                 "https://www.drupal.org/project/contact_storage_export/issues/2996037": "https://www.drupal.org/files/issues/2023-03-10/contact_storage_export-breaks-on-high-load-balancer-2996037-20.patch"
+            },
+            "drupal/sparql_entity_storage": {
+                "https://www.drupal.org/project/sparql_entity_storage/issues/3409679": "https://www.drupal.org/files/issues/2024-01-15/3409679.patch"
             }
         },
         "drupal-scaffold": {
@@ -82,7 +85,8 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "drupal/core-composer-scaffold": true,
             "phpro/grumphp": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "php-http/discovery": false
         }
     }
 }

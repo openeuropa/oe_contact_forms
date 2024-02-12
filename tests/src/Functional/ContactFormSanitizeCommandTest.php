@@ -7,7 +7,6 @@ namespace Drupal\Tests\oe_contact_forms\Functional;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 use Drupal\Tests\BrowserTestBase;
-use Drush\Drush;
 use Drush\TestTraits\DrushTestTrait;
 
 /**
@@ -90,16 +89,11 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $this->drush('sql:sanitize');
     \Drupal::configFactory()->clearStaticCache();
     $expected = 'The following operations will be performed:' . PHP_EOL;
-    // An extra newline is added when the command is executed with Drupal 9.x.
-    // @todo Remove when support for Drupal 9.x is dropped.
-    $expected .= version_compare(\Drupal::VERSION, '10.0.0', '<') ? PHP_EOL : '';
     $expected .= '* Truncate sessions table.' . PHP_EOL;
     $expected .= '* Sanitize text fields associated with users.' . PHP_EOL;
     $expected .= '* Sanitize user passwords.' . PHP_EOL;
     $expected .= '* Sanitize user emails.' . PHP_EOL;
-    if (Drush::getMajorVersion() >= 12) {
-      $expected .= '* Preserve user emails and passwords for the specified roles.' . PHP_EOL;
-    }
+    $expected .= '* Preserve user emails and passwords for the specified roles.' . PHP_EOL;
     $expected .= '* Sanitize contact form data.';
     $this->assertOutputEquals($expected);
 

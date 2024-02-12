@@ -576,7 +576,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $page->fillField("corporate_fields[override_languages][$field_name][0][target]", 'Swedish (http://publications.europa.eu/resource/authority/language/SWE)');
     $page->fillField("corporate_fields[override_languages][$field_name][23][target]", 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)');
     $page->fillField("corporate_fields[override_languages][$field_name][24][target]", 'Bulgarian (http://publications.europa.eu/resource/authority/language/BUL)');
-    $page->pressButton("corporate_fields_override_languages_${field_name}_add_more");
+    $page->pressButton("corporate_fields_override_languages_{$field_name}_add_more");
     $this->assertSession()->assertWaitOnAjaxRequest();
     $page->fillField("corporate_fields[override_languages][$field_name][25][target]", 'Bengali (http://publications.europa.eu/resource/authority/language/BEN)');
     $input_elements = $page->findAll('css', '[data-drupal-selector="edit-corporate-fields-override-languages-' . $field_name_selector . '"] .form-autocomplete');

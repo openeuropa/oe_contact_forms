@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.0](https://github.com/openeuropa/oe_contact_forms/tree/1.15.0) (2024-02-15)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.14.0...1.15.0)
+
+**Merged pull requests:**
+
+- EWPP-3949: Add Drupal 10.2.x and PHP 8.2 to matrix. [\#89](https://github.com/openeuropa/oe_contact_forms/pull/89) ([brummbar](https://github.com/brummbar))
+
 ## [1.14.0](https://github.com/openeuropa/oe_contact_forms/tree/1.14.0) (2024-01-15)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.13.0...1.14.0)
@@ -7,6 +15,7 @@
 **Merged pull requests:**
 
 - EWPP-3905: Patch sparql entity storage for D10.2 support. [\#88](https://github.com/openeuropa/oe_contact_forms/pull/88) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- Prepare release 1.14.0. [\#87](https://github.com/openeuropa/oe_contact_forms/pull/87) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2952: Change the empty option label for language selects. [\#84](https://github.com/openeuropa/oe_contact_forms/pull/84) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.13.0](https://github.com/openeuropa/oe_contact_forms/tree/1.13.0) (2023-11-21)

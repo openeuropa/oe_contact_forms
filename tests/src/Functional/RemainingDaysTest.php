@@ -44,6 +44,14 @@ class RemainingDaysTest extends ViewTestBase {
   public static $testViews = ['contact_messages_test'];
 
   /**
+   * {@inheritdoc}
+   * // phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod.Found
+   */
+  protected function setUp($import_test_views = TRUE, $modules = ['oe_contact_forms_test_views']): void {
+    parent::setUp($import_test_views, $modules);
+  }
+
+  /**
    * Tests Remaining days column.
    */
   public function testRemainingDaysColumn() {

@@ -1,0 +1,3 @@
+# Schema for the views plugins of the OE Contact forms module.
+views.field.remaining_days:
+  type: views_field

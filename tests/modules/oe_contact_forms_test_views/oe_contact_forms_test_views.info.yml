@@ -1,0 +1,10 @@
+name: 'OpenEuropa Contact forms test views'
+type: module
+description: 'Provides default views for OE contact form views.'
+package: Testing
+
+core_version_requirement: ^10
+dependencies:
+  - drupal:contact
+  - drupal:views
+  - oe_contact_forms:oe_contact_forms

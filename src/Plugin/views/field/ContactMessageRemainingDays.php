@@ -25,6 +25,9 @@ class ContactMessageRemainingDays extends FieldPluginBase {
    */
   protected $configFactory;
 
+  /**
+   * {@inheritdoc}
+   */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->configFactory = $config_factory;
@@ -56,9 +59,12 @@ class ContactMessageRemainingDays extends FieldPluginBase {
     else {
       $remaining_days = $auto_delete_days - floor((time() - $created_date) / (60 * 60 * 24));
     }
+
+    $remaining_days = (int) $remaining_days < 0 ? 0 : (int) $remaining_days;
+    $remaining_days = $remaining_days === 1 ? $remaining_days . ' day' : $remaining_days . ' days';
     $build = [];
     $build['remaining_days'] = [
-      '#markup' => (int) $remaining_days > 0 ? (string) $remaining_days : 0,
+      '#markup' => $remaining_days,
     ];
     return $build;
   }

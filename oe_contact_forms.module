@@ -996,3 +996,73 @@ function _oe_contact_forms_contact_language_values(): array {
 function oe_contact_forms_locale_translation_projects_alter(&$projects) {
   $projects['oe_contact_forms']['info']['interface translation server pattern'] = \Drupal::service('extension.path.resolver')->getPath('module', 'oe_contact_forms') . '/translations/%project-%language.po';
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function oe_contact_forms_form_contact_storage_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form['auto_delete'] = [
+    '#type' => 'number',
+    '#title' => t('Auto delete'),
+    '#description' => t('Set the number of days after which the contact messages will be automatically deleted. Set to 0 to disable.'),
+    '#min' => 0,
+    '#default_value' => \Drupal::config('contact.settings')->get('auto_delete') ?? 0,
+  ];
+  $form['#submit'][] = '_oe_contact_forms_contact_storage_settings_submit';
+}
+
+/**
+ * Submit handler for contact_storage_settings_form().
+ *
+ * @param array $form
+ *   The form.
+ * @param Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ */
+function _oe_contact_forms_contact_storage_settings_submit($form, FormStateInterface $form_state) {
+  $auto_delete = $form_state->getValue('auto_delete');
+  \Drupal::configFactory()->getEditable('contact.settings')->set('auto_delete', $auto_delete)->save();
+}
+
+/**
+ * Implements hook_cron().
+ */
+function oe_contact_forms_cron() {
+  $auto_delete = \Drupal::config('contact.settings')->get('auto_delete') ?? 0;
+  if ($auto_delete > 0) {
+    $date = \Drupal::time()->getRequestTime() - ($auto_delete * 86400);
+    $storage = \Drupal::entityTypeManager()->getStorage('contact_message');
+    $query = $storage->getQuery()
+      ->condition('created', $date, '<')
+      ->accessCheck()
+      ->range(0, 100)
+      ->execute();
+    if ($query) {
+      $storage->delete($storage->loadMultiple($query));
+    }
+  }
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function oe_contact_forms_views_data_alter(array &$data) {
+  $data['contact_message']['remaining_days'] = [
+    'title' => t('Remaining days'),
+    'help' => t('The number of days remaining before the contact message is automatically deleted.'),
+    'field' => [
+      'id' => 'contact_message_remaining_days',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_config_schema_info_alter().
+ */
+function oe_contact_forms_config_schema_info_alter(&$definitions) {
+  $definitions['contact.settings']['mapping']['auto_delete'] = [
+    'type' => 'integer',
+    'label' => 'Auto delete',
+    'description' => 'Set the number of days after which the contact messages will be automatically deleted. Set to 0 to disable.',
+  ];
+}

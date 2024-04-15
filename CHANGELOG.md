@@ -1,11 +1,20 @@
 # Changelog
 
+## [1.16.0](https://github.com/openeuropa/oe_contact_forms/tree/1.16.0) (2024-04-15)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.15.0...1.16.0)
+
+**Merged pull requests:**
+
+- EWPP-4157: Add cron function to delete old contact messages. [\#91](https://github.com/openeuropa/oe_contact_forms/pull/91) ([sergepavle](https://github.com/sergepavle))
+
 ## [1.15.0](https://github.com/openeuropa/oe_contact_forms/tree/1.15.0) (2024-02-15)
 
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.14.0...1.15.0)
 
 **Merged pull requests:**
 
+- Release-1.15.0: Update changlog. [\#90](https://github.com/openeuropa/oe_contact_forms/pull/90) ([nagyad](https://github.com/nagyad))
 - EWPP-3949: Add Drupal 10.2.x and PHP 8.2 to matrix. [\#89](https://github.com/openeuropa/oe_contact_forms/pull/89) ([brummbar](https://github.com/brummbar))
 
 ## [1.14.0](https://github.com/openeuropa/oe_contact_forms/tree/1.14.0) (2024-01-15)

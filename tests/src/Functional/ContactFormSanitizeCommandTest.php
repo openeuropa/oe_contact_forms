@@ -86,6 +86,8 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $plain_message->save();
     $plain_message_id = $plain_message->id();
 
+    // We need to write in session table to trigger the table creation.
+    \Drupal::service('session_handler.storage')->write('some-id', 'serialized-session-data');
     $this->drush('sql:sanitize');
     \Drupal::configFactory()->clearStaticCache();
     $expected = 'The following operations will be performed:' . PHP_EOL;

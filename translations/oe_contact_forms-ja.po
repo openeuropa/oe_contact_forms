@@ -1,0 +1,14 @@
+msgid ""
+msgstr ""
+
+msgid "Preferred contact language"
+msgstr "希望使用言語"
+
+msgid "Alternative contact language"
+msgstr "別の使用言語"
+
+msgid "First name"
+msgstr "名"
+
+msgid "Last name"
+msgstr "氏（姓）"

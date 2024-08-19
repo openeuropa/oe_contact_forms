@@ -1,4 +1,13 @@
-# Changelog
+# Change Log
+
+## [1.17.0](https://github.com/openeuropa/oe_contact_forms/tree/1.17.0) (2024-08-19)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.16.0...1.17.0)
+
+**Merged pull requests:**
+
+- Removing contact storage patch. [\#95](https://github.com/openeuropa/oe_contact_forms/pull/95) ([upchuk](https://github.com/upchuk))
+- EWPP-4526: Add Japanese translations. [\#94](https://github.com/openeuropa/oe_contact_forms/pull/94) ([22Alexandra](https://github.com/22Alexandra))
+- OEL-3042: Update to Drupal 10.3 [\#93](https://github.com/openeuropa/oe_contact_forms/pull/93) ([AaronGilMartinez](https://github.com/AaronGilMartinez))
 
 ## [1.16.0](https://github.com/openeuropa/oe_contact_forms/tree/1.16.0) (2024-04-15)
 

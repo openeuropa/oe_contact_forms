@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\oe_contact_forms\Kernel;
 
-use Drupal\contact\Entity\ContactForm;
 use Drupal\Core\Url;
+use Drupal\contact\Entity\ContactForm;
 use Drupal\user\Entity\User;
 
 /**

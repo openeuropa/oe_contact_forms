@@ -2,7 +2,13 @@ msgid ""
 msgstr ""
 
 msgid "Preferred contact language"
-msgstr "Предпочтительный язык"
+msgstr "Предпочтительный язык общения"
 
 msgid "Alternative contact language"
-msgstr "Альтернативный язык"
+msgstr "Альтернативный язык общения"
+
+msgid "First name"
+msgstr "Имя"
+
+msgid "Last name"
+msgstr "Фамилия"

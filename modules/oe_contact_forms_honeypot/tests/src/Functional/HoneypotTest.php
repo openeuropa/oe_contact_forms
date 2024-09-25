@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\oe_contact_forms_honeypot\Functional;
 
-use Drupal\contact\Entity\ContactForm;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\sparql_entity_storage\Traits\SparqlConnectionTrait;
+use Drupal\contact\Entity\ContactForm;
 
 /**
  * Contact form honeypot test.

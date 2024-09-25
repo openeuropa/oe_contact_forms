@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Drupal\oe_contact_forms\Form;
 
-use Drupal\contact\ContactFormInterface;
-use Drupal\contact\MessageForm;
-use Drupal\contact\MessageInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\contact\ContactFormInterface;
+use Drupal\contact\MessageForm;
+use Drupal\contact\MessageInterface;
 
 /**
  * Form controller for contact message forms.

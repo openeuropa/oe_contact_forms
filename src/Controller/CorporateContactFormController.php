@@ -15,7 +15,7 @@ class CorporateContactFormController extends ContactStorageController {
   /**
    * {@inheritdoc}
    */
-  public function contactSitePage(ContactFormInterface $contact_form = NULL): array {
+  public function contactSitePage(?ContactFormInterface $contact_form = NULL): array {
     // Check contact form and it's not corporate, return the parent call.
     if (empty($contact_form) || !$contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE)) {
       return parent::contactSitePage($contact_form);

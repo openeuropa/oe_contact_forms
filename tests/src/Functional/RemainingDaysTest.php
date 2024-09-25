@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\oe_contact_forms\Functional;
 
-use Drupal\contact\Entity\ContactForm;
-use Drupal\contact\Entity\Message;
 use Drupal\Tests\Traits\Core\CronRunTrait;
 use Drupal\Tests\views\Functional\ViewTestBase;
+use Drupal\contact\Entity\ContactForm;
+use Drupal\contact\Entity\Message;
 
 /**
  * Tests removal of contact messages.

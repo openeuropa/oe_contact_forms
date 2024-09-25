@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\oe_contact_forms\Plugin\Block;
 
-use Drupal\contact\ContactFormInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Cache\CacheableMetadata;
@@ -12,6 +11,7 @@ use Drupal\Core\Entity\EntityFormBuilderInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\contact\ContactFormInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

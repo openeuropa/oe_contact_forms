@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 
+use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
+use Drupal\Tests\sparql_entity_storage\Traits\SparqlConnectionTrait;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
-use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\node\Entity\Node;
-use Drupal\Tests\sparql_entity_storage\Traits\SparqlConnectionTrait;
 
 /**
  * Tests the corporate contact forms.

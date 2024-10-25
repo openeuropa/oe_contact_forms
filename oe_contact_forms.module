@@ -8,9 +8,6 @@
 declare(strict_types=1);
 
 use Drupal\Component\Render\MarkupInterface;
-use Drupal\contact\ContactFormInterface;
-use Drupal\contact\Entity\ContactForm;
-use Drupal\contact\Entity\Message;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
@@ -20,6 +17,9 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\contact\ContactFormInterface;
+use Drupal\contact\Entity\ContactForm;
+use Drupal\contact\Entity\Message;
 
 /**
  * Implements hook_form_FORM_ID_alter() for contact_storage_export().
@@ -785,7 +785,7 @@ function oe_contact_forms_create_language_base_field(MarkupInterface $title): Ba
  *
  * @see options_allowed_values()
  */
-function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, Message $entity = NULL, &$cacheable = TRUE): array {
+function _oe_contact_forms_topic_values(BaseFieldDefinition $definition, ?Message $entity = NULL, &$cacheable = TRUE): array {
   /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $entity->getContactForm();
   $topics = $contact_form->getThirdPartySetting('oe_contact_forms', 'topics', []);

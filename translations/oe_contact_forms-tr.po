@@ -2,13 +2,13 @@ msgid ""
 msgstr ""
 
 msgid "Preferred contact language"
-msgstr "優先連絡言語"
+msgstr "Tercih edilen iletişim dili"
 
 msgid "Alternative contact language"
-msgstr "代替の連絡言語"
+msgstr "Alternatif iletişim dili"
 
 msgid "First name"
-msgstr "名"
+msgstr "Ad"
 
 msgid "Last name"
-msgstr "姓"
+msgstr "Soyadı"

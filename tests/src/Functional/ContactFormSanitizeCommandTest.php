@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\oe_contact_forms\Functional;
 
+use Drupal\Tests\BrowserTestBase;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
-use Drupal\Tests\BrowserTestBase;
 use Drush\TestTraits\DrushTestTrait;
 
 /**

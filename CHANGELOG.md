@@ -1,10 +1,20 @@
-# Change Log
+# Changelog
+
+## [1.18.0](https://github.com/openeuropa/oe_contact_forms/tree/1.18.0) (2024-10-28)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.17.0...1.18.0)
+
+**Merged pull requests:**
+
+- EWPP-4782: Add non-eu languages translations. [\#97](https://github.com/openeuropa/oe_contact_forms/pull/97) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.17.0](https://github.com/openeuropa/oe_contact_forms/tree/1.17.0) (2024-08-19)
+
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.16.0...1.17.0)
 
 **Merged pull requests:**
 
+- Release 1.17.0 changelog. [\#96](https://github.com/openeuropa/oe_contact_forms/pull/96) ([22Alexandra](https://github.com/22Alexandra))
 - Removing contact storage patch. [\#95](https://github.com/openeuropa/oe_contact_forms/pull/95) ([upchuk](https://github.com/upchuk))
 - EWPP-4526: Add Japanese translations. [\#94](https://github.com/openeuropa/oe_contact_forms/pull/94) ([22Alexandra](https://github.com/22Alexandra))
 - OEL-3042: Update to Drupal 10.3 [\#93](https://github.com/openeuropa/oe_contact_forms/pull/93) ([AaronGilMartinez](https://github.com/AaronGilMartinez))
@@ -15,6 +25,7 @@
 
 **Merged pull requests:**
 
+- Release-1.16.0: Update changelog. [\#92](https://github.com/openeuropa/oe_contact_forms/pull/92) ([nagyad](https://github.com/nagyad))
 - EWPP-4157: Add cron function to delete old contact messages. [\#91](https://github.com/openeuropa/oe_contact_forms/pull/91) ([sergepavle](https://github.com/sergepavle))
 
 ## [1.15.0](https://github.com/openeuropa/oe_contact_forms/tree/1.15.0) (2024-02-15)

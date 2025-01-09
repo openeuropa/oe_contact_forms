@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Drupal\oe_contact_forms\Drush\Commands\sql;
 
-use CLI\Hook;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\Commands\sql\SanitizeCommands;
 use Drush\Drupal\Commands\sql\SanitizePluginInterface;
@@ -65,9 +65,12 @@ final class ContactFormSanitizeCommand extends DrushCommands implements Sanitize
 
   /**
    * {@inheritdoc}
+   *
+   * phpcs:disable
    */
-  #[Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]
+  #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]
   public function sanitize($result, CommandData $commandData) {
+    // phpcs:enable
     /** @var \Drupal\contact\ContactFormInterface[] $contact_forms */
     $contact_forms = $this->entityTypeManager->getStorage('contact_form')->loadMultiple();
 
@@ -129,9 +132,12 @@ final class ContactFormSanitizeCommand extends DrushCommands implements Sanitize
 
   /**
    * {@inheritdoc}
+   *
+   * phpcs:disable
    */
-  #[Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]
+  #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]
   public function messages(&$messages, InputInterface $input) {
+    // phpcs:enable
     $messages[] = dt('Sanitize contact form data.');
   }
 

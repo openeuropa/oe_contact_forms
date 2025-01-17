@@ -65,12 +65,9 @@ final class ContactFormSanitizeCommand extends DrushCommands implements Sanitize
 
   /**
    * {@inheritdoc}
-   *
-   * phpcs:disable
    */
   #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]
   public function sanitize($result, CommandData $commandData) {
-    // phpcs:enable
     /** @var \Drupal\contact\ContactFormInterface[] $contact_forms */
     $contact_forms = $this->entityTypeManager->getStorage('contact_form')->loadMultiple();
 
@@ -132,13 +129,10 @@ final class ContactFormSanitizeCommand extends DrushCommands implements Sanitize
 
   /**
    * {@inheritdoc}
-   *
-   * phpcs:disable
    */
   #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]
   public function messages(&$messages, InputInterface $input) {
-    // phpcs:enable
-    $messages[] = dt('Sanitize contact form data.');
+    return $messages[] = dt('Sanitize contact form data.');
   }
 
 }

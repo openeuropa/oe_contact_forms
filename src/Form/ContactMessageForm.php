@@ -127,7 +127,7 @@ class ContactMessageForm extends MessageForm {
       $mail_view = $this->entityTypeManager
         ->getViewBuilder('contact_message')
         ->view($message, 'mail');
-      $reply .= "\n" . \Drupal::service('renderer')->renderPlain($mail_view);
+      $reply .= "\n" . \Drupal::service('renderer')->renderInIsolation($mail_view);
       $contact_form->setReply($reply);
     }
   }

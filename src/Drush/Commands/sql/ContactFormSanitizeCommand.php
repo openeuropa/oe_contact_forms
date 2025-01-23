@@ -132,7 +132,7 @@ final class ContactFormSanitizeCommand extends DrushCommands implements Sanitize
    */
   #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]
   public function messages(&$messages, InputInterface $input) {
-    $messages[] = dt('Sanitize contact form data.');
+    return $messages[] = dt('Sanitize contact form data.');
   }
 
 }

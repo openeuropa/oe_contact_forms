@@ -1,15 +1,21 @@
-# Changelog
+# Change Log
+
+## [1.19.0](https://github.com/openeuropa/oe_contact_forms/tree/1.19.0) (2025-01-29)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.18.0...1.19.0)
+
+**Merged pull requests:**
+
+- EWPP-4991: Update to PHP8.3. [\#99](https://github.com/openeuropa/oe_contact_forms/pull/99) ([nagyad](https://github.com/nagyad))
 
 ## [1.18.0](https://github.com/openeuropa/oe_contact_forms/tree/1.18.0) (2024-10-28)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.17.0...1.18.0)
 
 **Merged pull requests:**
 
+- Release-1.18.0: Update changelog. [\#98](https://github.com/openeuropa/oe_contact_forms/pull/98) ([nagyad](https://github.com/nagyad))
 - EWPP-4782: Add non-eu languages translations. [\#97](https://github.com/openeuropa/oe_contact_forms/pull/97) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.17.0](https://github.com/openeuropa/oe_contact_forms/tree/1.17.0) (2024-08-19)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.16.0...1.17.0)
 
 **Merged pull requests:**
@@ -20,7 +26,6 @@
 - OEL-3042: Update to Drupal 10.3 [\#93](https://github.com/openeuropa/oe_contact_forms/pull/93) ([AaronGilMartinez](https://github.com/AaronGilMartinez))
 
 ## [1.16.0](https://github.com/openeuropa/oe_contact_forms/tree/1.16.0) (2024-04-15)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.15.0...1.16.0)
 
 **Merged pull requests:**
@@ -29,7 +34,6 @@
 - EWPP-4157: Add cron function to delete old contact messages. [\#91](https://github.com/openeuropa/oe_contact_forms/pull/91) ([sergepavle](https://github.com/sergepavle))
 
 ## [1.15.0](https://github.com/openeuropa/oe_contact_forms/tree/1.15.0) (2024-02-15)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.14.0...1.15.0)
 
 **Merged pull requests:**
@@ -38,7 +42,6 @@
 - EWPP-3949: Add Drupal 10.2.x and PHP 8.2 to matrix. [\#89](https://github.com/openeuropa/oe_contact_forms/pull/89) ([brummbar](https://github.com/brummbar))
 
 ## [1.14.0](https://github.com/openeuropa/oe_contact_forms/tree/1.14.0) (2024-01-15)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.13.0...1.14.0)
 
 **Merged pull requests:**
@@ -48,7 +51,6 @@
 - EWPP-2952: Change the empty option label for language selects. [\#84](https://github.com/openeuropa/oe_contact_forms/pull/84) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.13.0](https://github.com/openeuropa/oe_contact_forms/tree/1.13.0) (2023-11-21)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.12.0...1.13.0)
 
 **Merged pull requests:**
@@ -58,7 +60,6 @@
 - EWPP-3671: Replace includes\_fields\_in\_auto\_reply 3rd party setting with new one. [\#83](https://github.com/openeuropa/oe_contact_forms/pull/83) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.12.0](https://github.com/openeuropa/oe_contact_forms/tree/1.12.0) (2023-08-02)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.11.0...1.12.0)
 
 **Merged pull requests:**
@@ -67,7 +68,6 @@
 - EWPP-3512: drush.services.yml is mandatory with Drush 12. [\#81](https://github.com/openeuropa/oe_contact_forms/pull/81) ([brummbar](https://github.com/brummbar))
 
 ## [1.11.0](https://github.com/openeuropa/oe_contact_forms/tree/1.11.0) (2023-04-14)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.10.0...1.11.0)
 
 **Fixed bugs:**
@@ -80,7 +80,6 @@
 - EWPP-3011: Drupal 10 compatibility. [\#79](https://github.com/openeuropa/oe_contact_forms/pull/79) ([brummbar](https://github.com/brummbar))
 
 ## [1.10.0](https://github.com/openeuropa/oe_contact_forms/tree/1.10.0) (2023-03-10)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.9.0...1.10.0)
 
 **Merged pull requests:**
@@ -92,7 +91,6 @@
 - EWPP-2759: Add first name and last name fields. [\#69](https://github.com/openeuropa/oe_contact_forms/pull/69) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.9.0](https://github.com/openeuropa/oe_contact_forms/tree/1.9.0) (2023-01-04)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.8.0...1.9.0)
 
 **Merged pull requests:**
@@ -102,7 +100,6 @@
 - EWPP-2812: Allow all languages in Preferred and Alternative Contact Language field [\#70](https://github.com/openeuropa/oe_contact_forms/pull/70) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.8.0](https://github.com/openeuropa/oe_contact_forms/tree/1.8.0) (2022-11-07)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.7.0...1.8.0)
 
 **Merged pull requests:**
@@ -111,7 +108,6 @@
 - EWPP-2751: Reapply permissions patch. [\#67](https://github.com/openeuropa/oe_contact_forms/pull/67) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [1.7.0](https://github.com/openeuropa/oe_contact_forms/tree/1.7.0) (2022-11-07)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.6.0...1.7.0)
 
 **Merged pull requests:**
@@ -120,7 +116,6 @@
 - EWPP: Bump contact storage version and remove patch. [\#65](https://github.com/openeuropa/oe_contact_forms/pull/65) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [1.6.0](https://github.com/openeuropa/oe_contact_forms/tree/1.6.0) (2022-11-04)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.5.0...1.6.0)
 
 **Merged pull requests:**
@@ -133,7 +128,6 @@
 - EWPP-2701: Add new optional fields to corporate forms. [\#58](https://github.com/openeuropa/oe_contact_forms/pull/58) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.5.0](https://github.com/openeuropa/oe_contact_forms/tree/1.5.0) (2022-08-02)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.4.0...1.5.0)
 
 **Merged pull requests:**
@@ -142,7 +136,6 @@
 - EWPP-2358: Drupal 9.4 support. [\#56](https://github.com/openeuropa/oe_contact_forms/pull/56) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.4.0](https://github.com/openeuropa/oe_contact_forms/tree/1.4.0) (2022-06-22)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.3.0...1.4.0)
 
 **Merged pull requests:**
@@ -154,7 +147,6 @@
 - EWPP-2201: Fix dependency from composer patches. [\#51](https://github.com/openeuropa/oe_contact_forms/pull/51) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.3.0](https://github.com/openeuropa/oe_contact_forms/tree/1.3.0) (2022-03-07)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.2.0...1.3.0)
 
 **Merged pull requests:**
@@ -166,7 +158,6 @@
 - OEL-1134: Contact form Honeypot submodule. [\#45](https://github.com/openeuropa/oe_contact_forms/pull/45) ([Maxfire](https://github.com/Maxfire))
 
 ## [1.2.0](https://github.com/openeuropa/oe_contact_forms/tree/1.2.0) (2022-02-17)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.1.1...1.2.0)
 
 **Merged pull requests:**
@@ -175,7 +166,6 @@
 - EWPP-1845: Update PHP8 [\#44](https://github.com/openeuropa/oe_contact_forms/pull/44) ([hernani](https://github.com/hernani))
 
 ## [1.1.1](https://github.com/openeuropa/oe_contact_forms/tree/1.1.1) (2021-10-25)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.1.0...1.1.1)
 
 **Merged pull requests:**
@@ -184,7 +174,6 @@
 - EWPP-1636: Replace patch for contact\_storage\_export in composer.json. [\#42](https://github.com/openeuropa/oe_contact_forms/pull/42) ([sergepavle](https://github.com/sergepavle))
 
 ## [1.1.0](https://github.com/openeuropa/oe_contact_forms/tree/1.1.0) (2021-09-27)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.0.0...1.1.0)
 
 **Merged pull requests:**
@@ -195,7 +184,6 @@
 - EWPP-721: Update xdebug configuration. [\#34](https://github.com/openeuropa/oe_contact_forms/pull/34) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.0.0](https://github.com/openeuropa/oe_contact_forms/tree/1.0.0) (2021-03-22)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.6.0...1.0.0)
 
 **Merged pull requests:**
@@ -204,7 +192,6 @@
 - EWPP-109: Use dev branches for the rdf\_skos update. [\#24](https://github.com/openeuropa/oe_contact_forms/pull/24) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [0.6.0](https://github.com/openeuropa/oe_contact_forms/tree/0.6.0) (2021-03-11)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.5.0...0.6.0)
 
 **Merged pull requests:**
@@ -214,7 +201,6 @@
 - EWPP-529: Update scaffold library. [\#32](https://github.com/openeuropa/oe_contact_forms/pull/32) ([sergepavle](https://github.com/sergepavle))
 
 ## [0.5.0](https://github.com/openeuropa/oe_contact_forms/tree/0.5.0) (2020-12-03)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.4.0...0.5.0)
 
 **Merged pull requests:**
@@ -224,7 +210,6 @@
 - EWPP-376: Add Contact Messages sanitization. [\#29](https://github.com/openeuropa/oe_contact_forms/pull/29) ([georgebaev](https://github.com/georgebaev))
 
 ## [0.4.0](https://github.com/openeuropa/oe_contact_forms/tree/0.4.0) (2020-10-07)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.3.0...0.4.0)
 
 **Merged pull requests:**
@@ -233,7 +218,6 @@
 - EWPP-320: Remove ip\_address field from contact\_storage\_export form. [\#27](https://github.com/openeuropa/oe_contact_forms/pull/27) ([enriquelacoma](https://github.com/enriquelacoma))
 
 ## [0.3.0](https://github.com/openeuropa/oe_contact_forms/tree/0.3.0) (2020-10-01)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.2.0...0.3.0)
 
 **Merged pull requests:**
@@ -243,7 +227,6 @@
 - EWPP-177: Disable caching of topic options\_allowed\_values. [\#21](https://github.com/openeuropa/oe_contact_forms/pull/21) ([drishu](https://github.com/drishu))
 
 ## [0.2.0](https://github.com/openeuropa/oe_contact_forms/tree/0.2.0) (2020-08-19)
-
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/0.1.0...0.2.0)
 
 **Merged pull requests:**
@@ -254,9 +237,6 @@
 - EWPP-152: Remove disable message, add check for disabled contact form [\#19](https://github.com/openeuropa/oe_contact_forms/pull/19) ([drishu](https://github.com/drishu))
 
 ## [0.1.0](https://github.com/openeuropa/oe_contact_forms/tree/0.1.0) (2020-08-06)
-
-[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/8705c09d3f4c4a976e3be4c3aa3ad58c833a435c...0.1.0)
-
 **Merged pull requests:**
 
 - Release-0.1.0: Update changelog. [\#18](https://github.com/openeuropa/oe_contact_forms/pull/18) ([nagyad](https://github.com/nagyad))
@@ -278,4 +258,4 @@
 
 
 
-\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*

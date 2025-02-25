@@ -72,7 +72,7 @@ class BlocksTest extends ContactFormTestBase {
 
     // Assert we have the correct build.
     $this->assertEquals($header, $build['header']['#markup']);
-    $this->assertEquals($privacy_text, $build['privacy_policy']['#title']);
+    $this->assertEquals($privacy_text, (string) $build['privacy_policy']['#title']);
     $this->assertEquals($topic_label, $build['oe_topic']['widget']['#title']);
     $this->assertContains('Topic name', $build['oe_topic']['widget']['#options']);
 

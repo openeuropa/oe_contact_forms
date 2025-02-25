@@ -8,19 +8,19 @@
     "require": {
         "php": ">=8.1",
         "cweagans/composer-patches": "^1.4 || ^2",
-        "drupal/contact_storage": "^1.3",
-        "drupal/contact_storage_export": "^1.15",
-        "drupal/core": "^10",
-        "drupal/multivalue_form_element": "^1.0.0-beta6",
-        "openeuropa/oe_corporate_countries": "^2.0.0-alpha8",
-        "openeuropa/rdf_skos": "^1.0.0-alpha10"
+        "drupal/contact_storage": "^1.4",
+        "drupal/contact_storage_export": "^1.16",
+        "drupal/core": "^10 || ^11",
+        "drupal/multivalue_form_element": "^1.0.0-beta7",
+        "openeuropa/oe_corporate_countries": "dev-EWPP-4634",
+        "openeuropa/rdf_skos": "dev-EWPP-4616"
     },
     "require-dev": {
         "composer/installers": "^1.11",
-        "drupal/core-composer-scaffold": "^10",
-        "drupal/core-dev": "^10",
-        "drupal/honeypot": "^2.1",
-        "drush/drush": "^12",
+        "drupal/core-composer-scaffold": "^10 || ^11",
+        "drupal/core-dev": "^10 || ^11",
+        "drupal/honeypot": "^2.2",
+        "drush/drush": "^12 || ^13",
         "openeuropa/code-review-drupal": "^1.0.0-alpha",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0",
         "phpspec/prophecy-phpunit": "^2"

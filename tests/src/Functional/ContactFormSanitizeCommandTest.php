@@ -91,13 +91,15 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $this->drush('sql:sanitize');
     \Drupal::configFactory()->clearStaticCache();
     $expected = 'The following operations will be performed:' . PHP_EOL;
-    $expected .= '* Sanitize text fields associated with users.' . PHP_EOL;
-    $expected .= '* Sanitize user passwords.' . PHP_EOL;
-    $expected .= '* Sanitize user emails.' . PHP_EOL;
-    $expected .= '* Preserve user emails and passwords for the specified roles.' . PHP_EOL;
-    $expected .= '* Truncate sessions table.' . PHP_EOL;
-    $expected .= '* Sanitize contact form data.';
-    $this->assertOutputEquals($expected);
+    $expected .= ' * Sanitize user passwords.' . PHP_EOL;
+    $expected .= ' * Sanitize user emails.' . PHP_EOL;
+    $expected .= ' * Preserve user emails and passwords for the specified roles.' . PHP_EOL;
+    $expected .= ' * Sanitize text fields associated with users.' . PHP_EOL;
+    $expected .= ' * Truncate sessions table.' . PHP_EOL;
+    $expected .= ' * Sanitize contact form data.';
+    // Assert the output equals the expected result, but ignore the order of the
+    // items.
+    $this->assertEqualsCanonicalizing($this->getOutputAsList(), explode(PHP_EOL, $expected));
 
     $contact_form_sanitized = ContactForm::load($contact_form_id);
     $topics = $contact_form_sanitized->getThirdPartySetting('oe_contact_forms', 'topics', []);

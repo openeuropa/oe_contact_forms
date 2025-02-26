@@ -67,7 +67,10 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Prepare a corporate contact form.
     $contact_form_id = 'oe_contact_form';
-    $contact_form = ContactForm::create(['id' => $contact_form_id]);
+    $contact_form = ContactForm::create([
+      'id' => $contact_form_id,
+      'label' => 'Contact Form',
+    ]);
     $contact_form->setReply('this is a autoreply');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', TRUE);
@@ -320,7 +323,10 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Prepare a default contact form.
     $contact_form_id = 'default_form';
-    $contact_form = ContactForm::create(['id' => $contact_form_id]);
+    $contact_form = ContactForm::create([
+      'id' => $contact_form_id,
+      'label' => 'Default Contact Form',
+    ]);
     $contact_form->setRecipients(['test@test.com']);
     $contact_form->setReply('this is a autoreply');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);

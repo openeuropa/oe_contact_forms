@@ -1,2 +1,5 @@
 includes:
   - ./vendor/openeuropa/code-review-drupal/dist/phpstan.drupal.neon
+parameters:
+  # @todo Remove when removing '@phpstan-ignore' from Drupal\oe_contact_forms\Drush\Commands\sql\ContactFormSanitizeCommand class.
+  reportUnmatchedIgnoredErrors: false

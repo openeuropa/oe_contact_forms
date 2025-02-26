@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 
+use Drupal\Core\Datetime\Entity\DateFormat;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\Tests\sparql_entity_storage\Traits\SparqlConnectionTrait;
 use Drupal\contact\Entity\ContactForm;
@@ -80,6 +81,11 @@ class CorporateContactFormTest extends WebDriverTestBase {
     /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
 
+    // Make sure medium date format has 'D, j M Y - H:i' pattern.
+    DateFormat::load('medium')
+      ->setPattern('D, j M Y - H:i')
+      ->save();
+
     // Prepare a corporate contact form.
     $contact_form_id = 'oe_contact_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
@@ -145,7 +151,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
     $actual = file_get_contents($absolute_path);
 
     $headers = '"Message ID",Language,"Form ID","The sender\'s name","The sender\'s email",Subject,Message,Copy,"Recipient ID",Created,"User ID","First name","Last name","Country of residence","Preferred contact language","Alternative contact language",Phone,Topic';
-    $values = '1,English,,example,admin@example.com,"Test subject","Test message",,,"Fri, 02/17/2017 - 19:52",0,,,,,,,';
+    $values = '1,English,,example,admin@example.com,"Test subject","Test message",,,"Fri, 17 Feb 2017 - 19:52",0,,,,,,,';
     $expected = $headers . PHP_EOL . $values;
     $this->assertEquals($expected, $actual);
   }

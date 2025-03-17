@@ -3,7 +3,7 @@ type: module
 description: 'Provides default views for OE contact form views.'
 package: Testing
 
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 dependencies:
   - drupal:contact
   - drupal:views

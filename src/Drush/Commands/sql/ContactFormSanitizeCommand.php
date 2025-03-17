@@ -10,13 +10,14 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
-use Drush\Drupal\Commands\sql\SanitizeCommands;
 use Drush\Drupal\Commands\sql\SanitizePluginInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Sanitizes the contact forms related data.
+ *
+ * @phpstan-ignore class.implementsDeprecatedInterface
  */
 final class ContactFormSanitizeCommand extends DrushCommands implements SanitizePluginInterface {
 
@@ -65,8 +66,11 @@ final class ContactFormSanitizeCommand extends DrushCommands implements Sanitize
 
   /**
    * {@inheritdoc}
+   *
+   * @todo when dropping drush 12 support, replace 'sql:sanitize' with
+   *   Drush\Commands\sql\sanitize\SanitizeCommands::SANITIZE.
    */
-  #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]
+  #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: 'sql:sanitize')]
   public function sanitize($result, CommandData $commandData) {
     /** @var \Drupal\contact\ContactFormInterface[] $contact_forms */
     $contact_forms = $this->entityTypeManager->getStorage('contact_form')->loadMultiple();
@@ -129,8 +133,11 @@ final class ContactFormSanitizeCommand extends DrushCommands implements Sanitize
 
   /**
    * {@inheritdoc}
+   *
+   * @todo when dropping drush 12 support, replace 'sql:sanitize' with
+   *   Drush\Commands\sql\sanitize\SanitizeCommands::CONFIRMS.
    */
-  #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]
+  #[CLI\Hook(type: HookManager::ON_EVENT, target: 'sql-sanitize-confirms')]
   public function messages(&$messages, InputInterface $input) {
     return $messages[] = dt('Sanitize contact form data.');
   }

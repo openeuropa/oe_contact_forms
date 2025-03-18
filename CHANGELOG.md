@@ -1,10 +1,18 @@
 # Change Log
 
+## [1.20.0](https://github.com/openeuropa/oe_contact_forms/tree/1.20.0) (2025-03-17)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.19.0...1.20.0)
+
+**Merged pull requests:**
+
+- EWPP-4639: Support D11 [\#101](https://github.com/openeuropa/oe_contact_forms/pull/101) ([msnassar](https://github.com/msnassar))
+
 ## [1.19.0](https://github.com/openeuropa/oe_contact_forms/tree/1.19.0) (2025-01-29)
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.18.0...1.19.0)
 
 **Merged pull requests:**
 
+- Release-1.19.0: Update changelog. [\#100](https://github.com/openeuropa/oe_contact_forms/pull/100) ([nagyad](https://github.com/nagyad))
 - EWPP-4991: Update to PHP8.3. [\#99](https://github.com/openeuropa/oe_contact_forms/pull/99) ([nagyad](https://github.com/nagyad))
 
 ## [1.18.0](https://github.com/openeuropa/oe_contact_forms/tree/1.18.0) (2024-10-28)

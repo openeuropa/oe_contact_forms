@@ -101,6 +101,12 @@ final class ContactFormSanitizeCommand extends DrushCommands implements Sanitize
           ->expression('oe_topic', 'CONCAT(:topic_dummy_string, id)', [
             ':topic_dummy_string' => 'topic-',
           ])
+          ->expression('oe_first_name', 'CONCAT(:first_name_dummy_string, id)', [
+            ':first_name_dummy_string' => 'first-name-',
+          ])
+          ->expression('oe_last_name', 'CONCAT(:last_name_dummy_string, id)', [
+            ':last_name_dummy_string' => 'last-name-',
+          ])
           ->fields(['ip_address' => '127.0.0.1'])
           ->condition('contact_form', $contact_form->id())
           ->execute();

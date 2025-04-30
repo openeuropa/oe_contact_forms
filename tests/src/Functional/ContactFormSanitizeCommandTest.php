@@ -35,6 +35,7 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $contact_form_id = 'oe_contact_form';
     $contact_form = ContactForm::create(['id' => $contact_form_id]);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'alternative_name', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', [
       [
         'topic_name' => 'Topic name1',
@@ -62,6 +63,8 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
       'oe_country_residence' => 'http://publications.europa.eu/resource/authority/country/BEL',
       'oe_telephone' => '0123456',
       'oe_topic' => 'Topic name',
+      'oe_first_name' => 'John',
+      'oe_last_name' => 'Doe',
     ];
 
     $message = Message::create($data);
@@ -121,6 +124,8 @@ class ContactFormSanitizeCommandTest extends BrowserTestBase {
     $this->assertEquals('residence-in-' . $message_id, $sanitized_message->get('oe_country_residence')->target_id);
     $this->assertEquals('+000-' . $message_id, $sanitized_message->get('oe_telephone')->value);
     $this->assertEquals('topic-' . $message_id, $sanitized_message->get('oe_topic')->value);
+    $this->assertEquals('first-name-' . $message_id, $sanitized_message->get('oe_first_name')->value);
+    $this->assertEquals('last-name-' . $message_id, $sanitized_message->get('oe_last_name')->value);
 
     $plain_contact_form_sanitized = ContactForm::load($plain_contact_form_id);
     $topics = $plain_contact_form_sanitized->getThirdPartySetting('oe_contact_forms', 'topics', []);

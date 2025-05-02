@@ -1,10 +1,19 @@
 # Change Log
 
-## [1.20.0](https://github.com/openeuropa/oe_contact_forms/tree/1.20.0) (2025-03-17)
+## [1.20.1](https://github.com/openeuropa/oe_contact_forms/tree/1.20.1) (2025-05-02)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.20.0...1.20.1)
+
+**Merged pull requests:**
+
+- EWPP-5489: Sanitize first name and last name fields. [\#107](https://github.com/openeuropa/oe_contact_forms/pull/107) ([nagyad](https://github.com/nagyad))
+- EWPP-5461: Update sparql image in docker-compose.yml and for drone.yml. [\#104](https://github.com/openeuropa/oe_contact_forms/pull/104) ([sergepavle](https://github.com/sergepavle))
+
+## [1.20.0](https://github.com/openeuropa/oe_contact_forms/tree/1.20.0) (2025-03-18)
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.19.0...1.20.0)
 
 **Merged pull requests:**
 
+- Release-1.20.0: Update changelog. [\#103](https://github.com/openeuropa/oe_contact_forms/pull/103) ([nagyad](https://github.com/nagyad))
 - EWPP-4639: Support D11 [\#101](https://github.com/openeuropa/oe_contact_forms/pull/101) ([msnassar](https://github.com/msnassar))
 
 ## [1.19.0](https://github.com/openeuropa/oe_contact_forms/tree/1.19.0) (2025-01-29)

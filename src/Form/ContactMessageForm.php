@@ -10,6 +10,8 @@ use Drupal\Core\Url;
 use Drupal\contact\ContactFormInterface;
 use Drupal\contact\MessageForm;
 use Drupal\contact\MessageInterface;
+use Drupal\Core\Render\RendererInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Form controller for contact message forms.
@@ -17,6 +19,55 @@ use Drupal\contact\MessageInterface;
  * @internal
  */
 class ContactMessageForm extends MessageForm {
+
+  /**
+   * Constructs a MessageForm object.
+   *
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
+   *   The entity repository.
+   * @param \Drupal\Core\Flood\FloodInterface $flood
+   *   The flood control mechanism.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager service.
+   * @param \Drupal\contact\MailHandlerInterface $mail_handler
+   *   The contact mail handler service.
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date service.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer service.
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
+   *   The entity type bundle service.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
+   */
+  public function __construct(
+    protected $entity_repository,
+    protected $flood,
+    protected $language_manager,
+    protected $mail_handler,
+    protected $date_formatter,
+    protected RendererInterface $renderer,
+    protected $entity_type_bundle_info = NULL,
+    protected $time = NULL,
+  ) {
+    parent::__construct($entity_repository, $flood, $language_manager, $mail_handler, $date_formatter, $entity_type_bundle_info, $time);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity.repository'),
+      $container->get('flood'),
+      $container->get('language_manager'),
+      $container->get('contact.mail_handler'),
+      $container->get('date.formatter'),
+      $container->get('renderer'),
+      $container->get('entity_type.bundle.info'),
+      $container->get('datetime.time')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -165,8 +216,11 @@ class ContactMessageForm extends MessageForm {
   protected function addStatusMessage(MessageInterface $message): void {
     // Apart from the confirmation message also include the following.
     // The values of the submitted fields.
-    $full_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'full');
-    $this->messenger()->addMessage($full_view);
+    $message = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'full');
+    $full_view = $this->renderer->renderRoot($message);
+    $this->messenger()->addStatus($this->t('Submitted message: <br> @message', [
+      '@message' => $full_view,
+    ]));
   }
 
   /**

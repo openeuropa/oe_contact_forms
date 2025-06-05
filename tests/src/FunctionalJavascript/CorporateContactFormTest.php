@@ -324,6 +324,74 @@ class CorporateContactFormTest extends WebDriverTestBase {
   }
 
   /**
+   * Test corporate form submission.
+   */
+  public function testCorporateContactFormSubmission(): void {
+    /** @var \Behat\Mink\WebAssert $assert */
+    $assert = $this->assertSession();
+
+    // Corporate forms require a privacy node.
+    $alias = '/privacy-page';
+    $node = Node::create([
+      'title' => 'Privacy page',
+      'type' => 'page',
+      'path' => ['alias' => $alias],
+      'status' => TRUE,
+      'uid' => 0,
+    ]);
+    $node->save();
+
+    // Create a contact form.
+    $contact_form = ContactForm::create([
+      'id' => 'test_corporate_contact_form',
+      'label' => 'Test Corporate Contact Form',
+      'recipients' => ['dummy@example.com'],
+    ]);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topic_label', 'Test corporate form');
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', [
+      ['topic_name' => 'Topic 1', 'topic_email_address' => 'topic1@example.com'],
+      ['topic_name' => 'Topic 2', 'topic_email_address' => 'topic2@example.com'],
+    ]);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'email_subject', 'dummy@example.com');
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', $node->toUrl()->toUriString());
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', TRUE);
+    $contact_form->save();
+
+    $alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+    $alias_storage->create([
+      'path' => '/' . $contact_form->toUrl('canonical')->getInternalPath(),
+      'alias' => '/test-corporate-form',
+    ])->save();
+
+    $this->drupalGet('/test-corporate-form');
+    $assert->pageTextContains('Access denied');
+
+    $account = $this->drupalCreateUser([
+      'access site-wide contact form',
+      'access corporate contact form',
+    ]);
+    $this->drupalLogin($account);
+    $this->drupalGet('/test-corporate-form');
+
+    $this->submitForm([
+      'subject[0][value]' => 'Test form submission',
+      'message[0][value]' => 'Message for form submission test',
+      'oe_topic' => 'Topic 1',
+      'privacy_policy' => TRUE,
+    ], 'Send message');
+
+    $assert->pageTextContains('Submitted message:');
+    $assert->pageTextContains("The sender's name");
+    $assert->pageTextContains("The sender's email");
+    $assert->pageTextContains('Subject');
+    $assert->pageTextContains('Test form submission');
+    $assert->pageTextContains('Message');
+    $assert->pageTextContains('Message for form submission test');
+    $assert->pageTextContains('Topic 1');
+  }
+
+  /**
    * Test corporate values are not set on default form.
    */
   public function testNoCorporateValues(): void {

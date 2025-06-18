@@ -1,10 +1,18 @@
 # Change Log
 
-## [1.20.1](https://github.com/openeuropa/oe_contact_forms/tree/1.20.1) (2025-05-02)
+## [1.20.2](https://github.com/openeuropa/oe_contact_forms/tree/1.20.2) (2025-06-18)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.20.1...1.20.2)
+
+**Merged pull requests:**
+
+- EWPP-5553: Update triple-store with new image. [\#109](https://github.com/openeuropa/oe_contact_forms/pull/109) ([sergepavle](https://github.com/sergepavle))
+
+## [1.20.1](https://github.com/openeuropa/oe_contact_forms/tree/1.20.1) (2025-05-05)
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.20.0...1.20.1)
 
 **Merged pull requests:**
 
+- Release-1.20.1: Update changelog. [\#108](https://github.com/openeuropa/oe_contact_forms/pull/108) ([nagyad](https://github.com/nagyad))
 - EWPP-5489: Sanitize first name and last name fields. [\#107](https://github.com/openeuropa/oe_contact_forms/pull/107) ([nagyad](https://github.com/nagyad))
 - EWPP-5461: Update sparql image in docker-compose.yml and for drone.yml. [\#104](https://github.com/openeuropa/oe_contact_forms/pull/104) ([sergepavle](https://github.com/sergepavle))
 

@@ -30,7 +30,7 @@ function oe_contact_forms_form_contact_storage_export_alter(&$form, FormStateInt
 }
 
 /**
- * Implements hook_form_FORM_alter()
+ * Implements hook_form_FORM_alter().
  */
 function oe_contact_forms_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
   if (str_starts_with($form_id, 'contact_message_')) {

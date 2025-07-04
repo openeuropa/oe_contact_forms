@@ -9,7 +9,7 @@
         "php": ">=8.1",
         "cweagans/composer-patches": "^1.4 || ^2",
         "drupal/contact_storage": "^1.4",
-        "drupal/contact_storage_export": "^1.16",
+        "drupal/contact_storage_export": "^2.0",
         "drupal/core": "^10 || ^11",
         "drupal/multivalue_form_element": "^1.0.0-beta7",
         "openeuropa/oe_corporate_countries": "^2.3.0",

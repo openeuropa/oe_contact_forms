@@ -1,10 +1,18 @@
 # Change Log
 
+## [1.21.0](https://github.com/openeuropa/oe_contact_forms/tree/1.21.0) (2025-07-04)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.20.2...1.21.0)
+
+**Merged pull requests:**
+
+- EWPP-5653: Update contact\_storage\_export and Drupal 10.5. [\#112](https://github.com/openeuropa/oe_contact_forms/pull/112) ([nagyad](https://github.com/nagyad))
+
 ## [1.20.2](https://github.com/openeuropa/oe_contact_forms/tree/1.20.2) (2025-06-18)
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.20.1...1.20.2)
 
 **Merged pull requests:**
 
+- Release-1.20.2: Update changelog and docker PHP images. [\#110](https://github.com/openeuropa/oe_contact_forms/pull/110) ([nagyad](https://github.com/nagyad))
 - EWPP-5553: Update triple-store with new image. [\#109](https://github.com/openeuropa/oe_contact_forms/pull/109) ([sergepavle](https://github.com/sergepavle))
 
 ## [1.20.1](https://github.com/openeuropa/oe_contact_forms/tree/1.20.1) (2025-05-05)

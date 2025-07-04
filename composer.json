@@ -9,7 +9,7 @@
         "php": ">=8.1",
         "cweagans/composer-patches": "^1.4 || ^2",
         "drupal/contact_storage": "^1.4",
-        "drupal/contact_storage_export": "^1.16",
+        "drupal/contact_storage_export": "^2.0",
         "drupal/core": "^10 || ^11",
         "drupal/multivalue_form_element": "^1.0.0-beta7",
         "openeuropa/oe_corporate_countries": "^2.3.0",
@@ -56,9 +56,6 @@
         "patches": {
             "drupal/contact_storage": {
                 "https://www.drupal.org/project/contact_storage/issues/2708809": "https://www.drupal.org/files/issues/2022-11-07/revisit_permissions-2708809-60.patch"
-            },
-            "drupal/contact_storage_export": {
-                "https://www.drupal.org/project/contact_storage_export/issues/2996037": "https://www.drupal.org/files/issues/2023-03-10/contact_storage_export-breaks-on-high-load-balancer-2996037-20.patch"
             },
             "drupal/sparql_entity_storage": {
                 "https://www.drupal.org/project/sparql_entity_storage/issues/3409679": "https://www.drupal.org/files/issues/2024-01-15/3409679.patch"

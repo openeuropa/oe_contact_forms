@@ -6,6 +6,7 @@ namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
+use Drupal\node\Entity\NodeType;
 use Drupal\Tests\sparql_entity_storage\Traits\SparqlConnectionTrait;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\node\Entity\Node;
@@ -32,6 +33,7 @@ class MessageFormTest extends WebDriverTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'block',
     'user',
     'system',
     'path',
@@ -48,6 +50,21 @@ class MessageFormTest extends WebDriverTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
+
+    // Create an empty home page.
+    $type = NodeType::create([
+      'type' => 'page',
+      'name' => 'Page',
+    ]);
+    $type->save();
+    $node = Node::create([
+      'title' => 'Home',
+      'type' => 'page',
+      'status' => TRUE,
+    ]);
+    $node->save();
+    // Set the node as the front page.
+    \Drupal::configFactory()->getEditable('system.site')->set('page.front', '/node/' . $node->id())->save();
 
     // Allow anonymous users to use corporate contact forms.
     $this->grantPermissions(Role::load(RoleInterface::ANONYMOUS_ID), [
@@ -93,10 +110,20 @@ class MessageFormTest extends WebDriverTestBase {
       ],
     ];
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'expose_as_block', TRUE);
     $contact_form->save();
 
-    // Access canonical url.
-    $this->drupalGet('contact/' . $contact_form_id);
+    // Place the corporate block with the contact form.
+    $contact_form_uuid = $contact_form->uuid();
+    $block_id = 'oe_contact_forms_corporate_block:' . $contact_form_uuid;
+    $this->drupalPlaceBlock($block_id, [
+      'id' => 'test_corporate_block',
+      'region' => 'content',
+      'theme' => $this->defaultTheme,
+    ]);
+
+    // Now visit the front page.
+    $this->drupalGet('<front>');
 
     // Assert first name and last name fields are visible.
     $assert->fieldExists('First name');
@@ -176,6 +203,10 @@ class MessageFormTest extends WebDriverTestBase {
     $contact_form->setThirdPartySetting('oe_contact_forms', 'topics', $topics);
     $contact_form->save();
 
+    // Load captured emails to check we have none.
+    $captured_emails = $this->drupalGetMails();
+    $this->assertCount(0, $captured_emails);
+
     // Access canonical url.
     $this->drupalGet('contact/' . $contact_form_id);
 
@@ -229,7 +260,7 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Load captured emails to check.
     $captured_emails = $this->drupalGetMails();
-    $this->assertTrue(count($captured_emails) === 2);
+    $this->assertCount(2, $captured_emails);
 
     // Assert email subject.
     $this->assertTrue($captured_emails[0]['subject'] === $email_subject);
@@ -242,6 +273,25 @@ class MessageFormTest extends WebDriverTestBase {
     // Assert that instead of the user being redirected to the homepage,
     // they are redirected to the same, contact form page.
     $assert->addressEquals('/contact/' . $contact_form_id);
+
+    // Try to submit the form again, assuming it is cached already.
+    $this->drupalGet('<front>');
+    $page->fillField('First name', 'another');
+    $page->fillField('Last name', 'user');
+    $page->fillField('mail', 'user@example.com');
+    $page->fillField('subject[0][value]', 'Test subject user');
+    $page->fillField('message[0][value]', 'Test message from user');
+    $page->selectFieldOption('oe_topic', $topics['0']['topic_name']);
+    $page->findField('privacy_policy')->click();
+    $page->selectFieldOption('Preferred contact language', 'http://publications.europa.eu/resource/authority/language/CES');
+    $page->findButton('Send message')->press();
+
+    // Assert confirmation message.
+    $assert->elementTextContains('css', 'div[aria-label="Status message"]', $topics['0']['topic_name']);
+
+    // Load captured emails to check.
+    $captured_emails = $this->drupalGetMails();
+    $this->assertCount(4, $captured_emails);
 
     // Set redirect to an existing path, other then the current one.
     $node = Node::create([

@@ -217,10 +217,8 @@ class ContactMessageForm extends MessageForm {
     // Apart from the confirmation message also include the following.
     // The values of the submitted fields.
     $message = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'full');
-    $full_view = $this->renderer->renderRoot($message);
-    $this->messenger()->addStatus($this->t('Submitted message: <br> @message', [
-      '@message' => $full_view,
-    ]));
+    $full_view = $this->renderer->renderInIsolation($message);
+    $this->messenger()->addStatus($full_view);
   }
 
   /**

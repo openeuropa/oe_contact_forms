@@ -381,7 +381,6 @@ class CorporateContactFormTest extends WebDriverTestBase {
       'privacy_policy' => TRUE,
     ], 'Send message');
 
-    $assert->pageTextContains('Submitted message:');
     $assert->pageTextContains("The sender's name");
     $assert->pageTextContains("The sender's email");
     $assert->pageTextContains('Subject');

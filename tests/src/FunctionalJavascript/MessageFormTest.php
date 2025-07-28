@@ -339,6 +339,17 @@ class MessageFormTest extends WebDriverTestBase {
     $page->fillField('name', 'tester');
     $page->fillField('mail', 'tester@example.com');
     $page->fillField('subject[0][value]', 'Test subject');
+
+    // Ensure the message field has maxlength=2000 and remove it before filling.
+    $textarea = $page->find('css', 'textarea[name="message[0][value]"]');
+    $this->assertEquals('2000', $textarea->getAttribute('maxlength'), 'Textarea has maxlength 2000');
+
+    // Remove maxlength via JS to allow submitting more than 2000 characters.
+    $this->getSession()->executeScript('document.querySelector("textarea[name=\'message[0][value]\']").removeAttribute("maxlength");');
+    $page->fillField('message[0][value]', str_repeat('X', 5000));
+    $page->findButton('Send message')->press();
+    $this->assertSession()->pageTextContains('Message cannot be longer than 2000 characters but is currently 5000 characters long.');
+
     $page->fillField('message[0][value]', 'Test message');
     $page->findButton('Send message')->press();
 

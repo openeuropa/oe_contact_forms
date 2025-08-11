@@ -21,6 +21,8 @@ use Drupal\contact\ContactFormInterface;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
 
+const OE_CONTACT_FORMS_MESSAGE_MAX_LENGTH = 2000;
+
 /**
  * Implements hook_form_FORM_ID_alter() for contact_storage_export().
  */
@@ -36,14 +38,49 @@ function oe_contact_forms_form_alter(&$form, FormStateInterface $form_state, $fo
   if (str_starts_with($form_id, 'contact_message_')) {
     // Set the maximum length for the message field to 2000 characters.
     if (isset($form['message']['widget'][0]['value'])) {
-      $limit = 2000;
-      $form['message']['widget'][0]['value']['#maxlength'] = $limit;
+      $form['#validate'][] = 'oe_contact_forms_max_length_validate';
+      $form['message']['widget'][0]['value']['#attributes']['maxlength'] = OE_CONTACT_FORMS_MESSAGE_MAX_LENGTH;
       if (Drupal::service('module_handler')->moduleExists('maxlength')) {
         $form['message']['widget'][0]['value']['#attributes']['class'][] = 'maxlength';
-        $form['message']['widget'][0]['value']['#attributes']['data-maxlength'] = $limit;
+        $form['message']['widget'][0]['value']['#attributes']['data-maxlength'] = OE_CONTACT_FORMS_MESSAGE_MAX_LENGTH;
         $form['#attached']['library'][] = 'maxlength/maxlength';
       }
     }
+  }
+}
+
+/**
+ * Validates the maximum length of the contact message.
+ *
+ * This function checks if the message exceeds the defined maximum length
+ * and sets an error if it does.
+ *
+ * @param array $element
+ *   The form element being validated.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current form state.
+ */
+function oe_contact_forms_max_length_validate(array &$element, FormStateInterface $form_state): void {
+  if (!isset($element['message']['widget'][0]['value'])) {
+    return;
+  }
+
+  $target =& $element['message']['widget'][0]['value'];
+  $value = (string) ($target['#value'] ?? '');
+  // Normalize newlines to match how HTML maxlength counts characters.
+  $value = preg_replace("/\r\n?/", "\n", $value);
+  $len = mb_strlen($value);
+
+  if ($len > OE_CONTACT_FORMS_MESSAGE_MAX_LENGTH) {
+    $name = empty($target['#title']) ? ($target['#parents'][0] ?? 'This field') : $target['#title'];
+    $form_state->setError(
+      $target,
+      t('@name cannot be longer than %max characters but is currently %length characters long.', [
+        '@name' => $name,
+        '%max' => OE_CONTACT_FORMS_MESSAGE_MAX_LENGTH,
+        '%length' => $len,
+      ])
+    );
   }
 }
 

@@ -152,7 +152,7 @@ class CorporateContactFormTest extends WebDriverTestBase {
 
     $headers = '"Message ID",Language,"Form ID","The sender\'s name","The sender\'s email",Subject,Message,Copy,"Recipient ID",Created,"User ID","First name","Last name","Country of residence","Preferred contact language","Alternative contact language",Phone,Topic';
     $values = '1,English,,example,admin@example.com,"Test subject","Test message",,,"Fri, 17 Feb 2017 - 19:52",0,,,,,,,';
-    $expected = $headers . PHP_EOL . $values;
+    $expected = $headers . PHP_EOL . $values . PHP_EOL;
     $this->assertEquals($expected, $actual);
   }
 

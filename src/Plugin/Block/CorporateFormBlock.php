@@ -10,6 +10,7 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityFormBuilderInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\contact\ContactFormInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -24,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   deriver = "Drupal\oe_contact_forms\Plugin\Derivative\CorporateFormBlock",
  * )
  */
-class CorporateFormBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class CorporateFormBlock extends BlockBase implements ContainerFactoryPluginInterface, TrustedCallbackInterface {
 
   /**
    * The EntityFormBuilder.
@@ -76,6 +77,13 @@ class CorporateFormBlock extends BlockBase implements ContainerFactoryPluginInte
   /**
    * {@inheritdoc}
    */
+  public static function trustedCallbacks() {
+    return ['lazyBuildForm'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function blockAccess(AccountInterface $account) {
     /** @var \Drupal\contact\ContactFormInterface $contact_form */
     $contact_form = $this->getContactForm();
@@ -102,17 +110,40 @@ class CorporateFormBlock extends BlockBase implements ContainerFactoryPluginInte
       return [];
     }
 
-    /** @var \Drupal\contact\MessageInterface $contact_message */
-    $message = $this->entityTypeManager->getStorage('contact_message')->create([
+    $build = [
+      '#lazy_builder' => [
+        // @phpstan-ignore-next-line
+        get_class($this) . '::lazyBuildForm',
+        [$contact_form->id()],
+      ],
+      '#create_placeholder' => TRUE,
+    ];
+
+    // Add cacheable dependency for the contact form.
+    $cache = new CacheableMetadata();
+    $cache->addCacheableDependency($contact_form);
+    $cache->applyTo($build);
+
+    return $build;
+  }
+
+  /**
+   * Lazy builder callback for the contact form.
+   */
+  public static function lazyBuildForm($contact_form_id): array {
+    $entity_type_manager = \Drupal::entityTypeManager();
+    $entity_form_builder = \Drupal::service('entity.form_builder');
+    $contact_form = $entity_type_manager->getStorage('contact_form')->load($contact_form_id);
+
+    if (!$contact_form) {
+      return [];
+    }
+
+    $message = $entity_type_manager->getStorage('contact_message')->create([
       'contact_form' => $contact_form->id(),
     ]);
 
-    $form = $this->entityFormBuilder->getForm($message, 'corporate_default');
-    $cache = new CacheableMetadata();
-    $cache->addCacheableDependency($contact_form);
-    $cache->applyTo($form);
-
-    return $form;
+    return $entity_form_builder->getForm($message, 'corporate_default');
   }
 
   /**

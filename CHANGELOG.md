@@ -1,10 +1,21 @@
 # Change Log
 
+## [1.22.0](https://github.com/openeuropa/oe_contact_forms/tree/1.22.0) (2025-09-09)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.21.0...1.22.0)
+
+**Merged pull requests:**
+
+- EWPP-5820: Move rdf\_skos to drupal gitlab. [\#116](https://github.com/openeuropa/oe_contact_forms/pull/116) ([nagyad](https://github.com/nagyad))
+- EWPP-5802: Contact form - Counter bug. [\#115](https://github.com/openeuropa/oe_contact_forms/pull/115) ([gorsky87](https://github.com/gorsky87))
+- EWPP-5775: Lazy build contact forms within the corporate block. [\#114](https://github.com/openeuropa/oe_contact_forms/pull/114) ([nagyad](https://github.com/nagyad))
+- EWPP-5639: Contact form - Limit messages to 2000 chars. [\#111](https://github.com/openeuropa/oe_contact_forms/pull/111) ([gorsky87](https://github.com/gorsky87))
+
 ## [1.21.0](https://github.com/openeuropa/oe_contact_forms/tree/1.21.0) (2025-07-04)
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.20.2...1.21.0)
 
 **Merged pull requests:**
 
+- Release-1.21.0: Update changelog. [\#113](https://github.com/openeuropa/oe_contact_forms/pull/113) ([nagyad](https://github.com/nagyad))
 - EWPP-5653: Update contact\_storage\_export and Drupal 10.5. [\#112](https://github.com/openeuropa/oe_contact_forms/pull/112) ([nagyad](https://github.com/nagyad))
 
 ## [1.20.2](https://github.com/openeuropa/oe_contact_forms/tree/1.20.2) (2025-06-18)

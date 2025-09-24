@@ -42,12 +42,12 @@ class ContactMessageForm extends MessageForm {
    *   The contact mail handler service.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $dateFormatter
    *   The date service.
-   * @param \Drupal\Core\Render\RendererInterface $renderer
-   *   The renderer service.
    * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entityTypeBundleInfo
    *   The entity type bundle service.
    * @param \Drupal\Component\Datetime\TimeInterface $time
    *   The time service.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer service.
    */
   public function __construct(
     EntityRepositoryInterface $entityRepository,
@@ -55,9 +55,9 @@ class ContactMessageForm extends MessageForm {
     LanguageManagerInterface $languageManager,
     MailHandlerInterface $mailHandler,
     DateFormatterInterface $dateFormatter,
+    EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+    TimeInterface $time,
     protected RendererInterface $renderer,
-    ?EntityTypeBundleInfoInterface $entityTypeBundleInfo = NULL,
-    ?TimeInterface $time = NULL,
   ) {
     parent::__construct($entityRepository, $flood, $languageManager, $mailHandler, $dateFormatter, $entityTypeBundleInfo, $time);
   }

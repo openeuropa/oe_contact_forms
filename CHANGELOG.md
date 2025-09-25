@@ -1,10 +1,19 @@
 # Change Log
 
+## [1.22.1](https://github.com/openeuropa/oe_contact_forms/tree/1.22.1) (2025-09-25)
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.22.0...1.22.1)
+
+**Merged pull requests:**
+
+- EWPP-6003: Move CI to github actions. [\#119](https://github.com/openeuropa/oe_contact_forms/pull/119) ([hernani](https://github.com/hernani))
+- EWPP-5805: Remove unnecessary patch. [\#117](https://github.com/openeuropa/oe_contact_forms/pull/117) ([nagyad](https://github.com/nagyad))
+
 ## [1.22.0](https://github.com/openeuropa/oe_contact_forms/tree/1.22.0) (2025-09-09)
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.21.0...1.22.0)
 
 **Merged pull requests:**
 
+- Release-1.22.0: Update changelog. [\#118](https://github.com/openeuropa/oe_contact_forms/pull/118) ([nagyad](https://github.com/nagyad))
 - EWPP-5820: Move rdf\_skos to drupal gitlab. [\#116](https://github.com/openeuropa/oe_contact_forms/pull/116) ([nagyad](https://github.com/nagyad))
 - EWPP-5802: Contact form - Counter bug. [\#115](https://github.com/openeuropa/oe_contact_forms/pull/115) ([gorsky87](https://github.com/gorsky87))
 - EWPP-5775: Lazy build contact forms within the corporate block. [\#114](https://github.com/openeuropa/oe_contact_forms/pull/114) ([nagyad](https://github.com/nagyad))

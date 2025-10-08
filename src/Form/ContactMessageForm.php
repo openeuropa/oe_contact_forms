@@ -30,7 +30,7 @@ class ContactMessageForm extends MessageForm {
   use AutowireTrait;
 
   /**
-   * Constructs a MessageForm object.
+   * Constructs a ContactMessageForm object.
    *
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entityRepository
    *   The entity repository.

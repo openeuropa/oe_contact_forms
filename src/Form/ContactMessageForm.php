@@ -4,12 +4,21 @@ declare(strict_types=1);
 
 namespace Drupal\oe_contact_forms\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\contact\ContactFormInterface;
+use Drupal\contact\MailHandlerInterface;
 use Drupal\contact\MessageForm;
 use Drupal\contact\MessageInterface;
+use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\DependencyInjection\AutowireTrait;
+use Drupal\Core\Entity\EntityRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Flood\FloodInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Render\RendererInterface;
 
 /**
  * Form controller for contact message forms.
@@ -17,6 +26,41 @@ use Drupal\contact\MessageInterface;
  * @internal
  */
 class ContactMessageForm extends MessageForm {
+
+  use AutowireTrait;
+
+  /**
+   * Constructs a ContactMessageForm object.
+   *
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entityRepository
+   *   The entity repository.
+   * @param \Drupal\Core\Flood\FloodInterface $flood
+   *   The flood control mechanism.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $languageManager
+   *   The language manager service.
+   * @param \Drupal\contact\MailHandlerInterface $mailHandler
+   *   The contact mail handler service.
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $dateFormatter
+   *   The date service.
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entityTypeBundleInfo
+   *   The entity type bundle service.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer service.
+   */
+  public function __construct(
+    EntityRepositoryInterface $entityRepository,
+    FloodInterface $flood,
+    LanguageManagerInterface $languageManager,
+    MailHandlerInterface $mailHandler,
+    DateFormatterInterface $dateFormatter,
+    EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+    TimeInterface $time,
+    protected RendererInterface $renderer,
+  ) {
+    parent::__construct($entityRepository, $flood, $languageManager, $mailHandler, $dateFormatter, $entityTypeBundleInfo, $time);
+  }
 
   /**
    * {@inheritdoc}
@@ -165,8 +209,9 @@ class ContactMessageForm extends MessageForm {
   protected function addStatusMessage(MessageInterface $message): void {
     // Apart from the confirmation message also include the following.
     // The values of the submitted fields.
-    $full_view = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'full');
-    $this->messenger()->addMessage($full_view);
+    $message = $this->entityTypeManager->getViewBuilder('contact_message')->view($message, 'full');
+    $full_view = $this->renderer->renderInIsolation($message);
+    $this->messenger()->addStatus($full_view);
   }
 
   /**

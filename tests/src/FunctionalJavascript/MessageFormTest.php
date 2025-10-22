@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\oe_contact_forms\FunctionalJavascript;
 
+use Behat\Mink\Element\Element;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\node\Entity\NodeType;
@@ -132,7 +133,7 @@ class MessageFormTest extends WebDriverTestBase {
     $assert->fieldExists('oe_country_residence');
     // Assert country options are ordered by label and deprecated ones
     // have been filtered out.
-    $options = $this->getOptions('oe_country_residence');
+    $options = $this->getSelectOptions('oe_country_residence');
     $actual_countries = array_slice($options, 0, 5);
     $expected_countries = [
       '_none' => '- None -',
@@ -227,11 +228,11 @@ class MessageFormTest extends WebDriverTestBase {
       'http://publications.europa.eu/resource/authority/language/CES' => 'Czech',
       'http://publications.europa.eu/resource/authority/language/DAN' => 'Danish',
     ];
-    $options = $this->getOptions('Preferred contact language');
+    $options = $this->getSelectOptions('Preferred contact language');
     $this->assertEquals(25, count($options));
     $actual_preferred_language = array_slice($options, 0, 5);
     $this->assertEquals($expected_languages, $actual_preferred_language);
-    $options = $this->getOptions('Alternative contact language');
+    $options = $this->getSelectOptions('Alternative contact language');
     $this->assertEquals(25, count($options));
     $actual_alternative_language = array_slice($options, 0, 5);
     $this->assertEquals($expected_languages, $actual_alternative_language);
@@ -351,14 +352,14 @@ class MessageFormTest extends WebDriverTestBase {
       'http://publications.europa.eu/resource/authority/language/DAN' => 'Danish',
       'http://publications.europa.eu/resource/authority/language/ZUL' => 'Zulu',
     ];
-    $options = $this->getOptions('Preferred contact language');
+    $options = $this->getSelectOptions('Preferred contact language');
     $this->assertEquals($expected_languages, $options);
     $expected_languages = [
       'Select' => 'Select',
       'http://publications.europa.eu/resource/authority/language/FRA' => 'French',
       'http://publications.europa.eu/resource/authority/language/QUE' => 'Quechua',
     ];
-    $options = $this->getOptions('Alternative contact language');
+    $options = $this->getSelectOptions('Alternative contact language');
     $this->assertEquals($expected_languages, $options);
   }
 
@@ -515,6 +516,33 @@ this is a autoreply
 EOF;
 
     $this->assertEquals(preg_replace('/\s+/', ' ', $expected), preg_replace('/\s+/', ' ', $captured_emails[1]['body']));
+  }
+
+  /**
+   * Helper function to get the options of select field.
+   *
+   * Copied from Drupal Core < 11.2
+   *
+   * @param \Behat\Mink\Element\NodeElement|string $select
+   *   Name, ID, or Label of select field to assert.
+   * @param \Behat\Mink\Element\Element $container
+   *   (optional) Container element to check against. Defaults to current page.
+   *
+   * @return array
+   *   Associative array of option keys and values.
+   */
+  protected function getSelectOptions($select, ?Element $container = NULL) {
+    if (is_string($select)) {
+      $select = $this->assertSession()->selectExists($select, $container);
+    }
+    $options = [];
+    /** @var \Behat\Mink\Element\NodeElement $option */
+    foreach ($select->findAll('xpath', '//option') as $option) {
+      $label = $option->getText();
+      $value = $option->getAttribute('value') ?: $label;
+      $options[$value] = $label;
+    }
+    return $options;
   }
 
 }

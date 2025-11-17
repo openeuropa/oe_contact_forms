@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.23.0](https://github.com/openeuropa/oe_contact_forms/tree/1.23.0) (2025-11-17)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.22.1...1.23.0)
+
+**Merged pull requests:**
+
+- EWPP-6073: Support Drupal Core 11.2. [\#121](https://github.com/openeuropa/oe_contact_forms/pull/121) ([hernani](https://github.com/hernani))
+- ELA-1251: Fix corporate form confirmation message. [\#106](https://github.com/openeuropa/oe_contact_forms/pull/106) ([Aporie](https://github.com/Aporie))
+
 ## [1.22.1](https://github.com/openeuropa/oe_contact_forms/tree/1.22.1) (2025-09-25)
 [Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.22.0...1.22.1)
 

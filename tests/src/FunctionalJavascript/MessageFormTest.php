@@ -89,7 +89,6 @@ class MessageFormTest extends WebDriverTestBase {
       'id' => $contact_form_id,
       'label' => 'Contact Form',
     ]);
-    $contact_form->setReply('this is a autoreply');
     $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'allow_canonical_url', TRUE);
     $contact_form->setThirdPartySetting('oe_contact_forms', 'alternative_name', TRUE);
@@ -261,15 +260,15 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Load captured emails to check.
     $captured_emails = $this->drupalGetMails();
-    $this->assertCount(2, $captured_emails);
+    $this->assertCount(1, $captured_emails);
 
     // Assert email subject.
     $this->assertTrue($captured_emails[0]['subject'] === $email_subject);
     // Assert email recipients.
     $this->assertTrue($captured_emails[0]['to'] === $topics['0']['topic_email_address']);
-    // Make sure we have an autoreply.
-    $this->assertTrue($captured_emails[1]['id'] === 'contact_page_autoreply');
-    $this->assertTestEmailBodies($captured_emails);
+
+    $contact_form->setReply('this is a autoreply');
+    $contact_form->save();
 
     // Assert that instead of the user being redirected to the homepage,
     // they are redirected to the same, contact form page.
@@ -292,7 +291,9 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Load captured emails to check.
     $captured_emails = $this->drupalGetMails();
-    $this->assertCount(4, $captured_emails);
+    // Make sure we have an autoreply.
+    $this->assertTrue($captured_emails[2]['id'] === 'contact_page_autoreply');
+    $this->assertCount(3, $captured_emails);
 
     // Set redirect to an existing path, other then the current one.
     $node = Node::create([
@@ -304,9 +305,11 @@ class MessageFormTest extends WebDriverTestBase {
     ]);
     $node->save();
     $contact_form->setRedirectPath('/destination');
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'auto_reply_subject', '');
     $contact_form->save();
 
     // Submit the form.
+    $this->drupalGet('<front>');
     $page->fillField('First name', 'thanos');
     $page->fillField('Last name', 'tester');
     $page->fillField('mail', 'tester@example.com');
@@ -319,6 +322,10 @@ class MessageFormTest extends WebDriverTestBase {
 
     // Assert that the user is being redirected to the path set.
     $assert->addressEquals('/destination');
+
+    // Load captured emails to check.
+    $captured_emails = $this->drupalGetMails();
+    $this->assertCount(4, $captured_emails);
 
     // Assert internal value for privacy policy.
     $alias = '/privacy-page';
@@ -361,6 +368,27 @@ class MessageFormTest extends WebDriverTestBase {
     ];
     $options = $this->getSelectOptions('Alternative contact language');
     $this->assertEquals($expected_languages, $options);
+
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'auto_reply_subject', 'Test auto reply subject');
+    $contact_form->save();
+
+    // Try to submit the form again, assuming it is cached already.
+    $this->drupalGet('<front>');
+    $page->fillField('First name', 'another');
+    $page->fillField('Last name', 'user');
+    $page->fillField('mail', 'user@example.com');
+    $page->fillField('subject[0][value]', 'Test subject user');
+    $page->fillField('message[0][value]', 'Test message from user');
+    $page->selectFieldOption('oe_topic', $topics['0']['topic_name']);
+    $page->findField('privacy_policy')->click();
+    $page->selectFieldOption('Preferred contact language', 'http://publications.europa.eu/resource/authority/language/CES');
+    $page->findButton('Send message')->press();
+
+    // Load captured emails to check.
+    $captured_emails = $this->drupalGetMails();
+    $this->assertTrue($captured_emails[5]['id'] === 'contact_page_autoreply');
+    $this->assertTrue($captured_emails[5]['subject'] === 'Test auto reply subject');
+    $this->assertCount(6, $captured_emails);
   }
 
   /**

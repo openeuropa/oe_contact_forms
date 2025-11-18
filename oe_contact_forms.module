@@ -96,6 +96,24 @@ function oe_contact_forms_form_contact_form_form_alter(&$form, FormStateInterfac
     return;
   }
 
+  $form['auto_reply_subject'] = [
+    '#type' => 'textfield',
+    '#title' => t('Auto-reply subject'),
+    '#description' => t('The field must be populated for an auto-reply to be sent. If it is empty, the system will not send an auto-reply email.'),
+    '#default_value' => $form_object->getEntity()->getThirdPartySetting('oe_contact_forms', 'auto_reply_subject', ''),
+    '#weight' => -1,
+  ];
+
+  // Insert new element after 'redirect' field and before 'reply' field.
+  foreach ($form as $key => &$value) {
+    if (is_array($value) && !str_starts_with($key, '#')) {
+      $value['#weight'] = -2;
+      if ($key == 'redirect') {
+        break;
+      }
+    }
+  }
+
   /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $form_object->getEntity();
   $is_corporate_form = (boolean) ($form_state->getValue('is_corporate_form') ?? $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE));
@@ -524,6 +542,8 @@ function _oe_contact_forms_contact_form_builder($entity_type, ContactFormInterfa
   if (!empty($triggered_element['#parents'][3]) && $triggered_element['#parents'][3] === 'remove_topic') {
     return;
   }
+
+  $contact_form->setThirdPartySetting('oe_contact_forms', 'auto_reply_subject', $form_state->getValue('auto_reply_subject'));
 
   $contact_form->setThirdPartySetting('oe_contact_forms', 'is_corporate_form', $is_corporate_form);
 
@@ -959,6 +979,20 @@ function oe_contact_forms_mail_alter(&$message) {
 
   /** @var \Drupal\contact\ContactFormInterface $contact_form */
   $contact_form = $message['params']['contact_form'];
+
+  if ($message['id'] === 'contact_page_autoreply') {
+    // Abort field sending if "Auto-reply" text is not filled in or if
+    // "Auto-reply subject" is set by with empty string.
+    if ($contact_form->getReply() === '' || $contact_form->getThirdPartySetting('oe_contact_forms', 'auto_reply_subject') === '') {
+      $message['send'] = FALSE;
+    }
+
+    // Set subject from "Auto-reply subject" field if present.
+    if ($contact_form->getThirdPartySetting('oe_contact_forms', 'auto_reply_subject') !== '') {
+      $message['subject'] = $contact_form->getThirdPartySetting('oe_contact_forms', 'auto_reply_subject');
+    }
+  }
+
   $is_corporate_form = (boolean) $contact_form->getThirdPartySetting('oe_contact_forms', 'is_corporate_form', FALSE);
 
   if (!$is_corporate_form || !in_array($message['id'], $mail_ids)) {
@@ -971,6 +1005,9 @@ function oe_contact_forms_mail_alter(&$message) {
   // Set back the auto-reply in case contact_storage re-rendered it.
   // @see contact_storage_mail_alter.
   if ($message['key'] === 'page_autoreply') {
+    if ($contact_form->getThirdPartySetting('oe_contact_forms', 'auto_reply_subject', FALSE)) {
+      $message['subject'] = $contact_form->getThirdPartySetting('oe_contact_forms', 'auto_reply_subject');
+    }
     $message['body'] = [$contact_form->getReply()];
   }
 

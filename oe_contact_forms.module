@@ -688,7 +688,7 @@ function oe_contact_forms_form_contact_message_form_alter(&$form, FormStateInter
     $override_languages = $contact_form->getThirdPartySetting('oe_contact_forms', 'override_languages', []);
     foreach (['oe_preferred_language', 'oe_alternative_language'] as $field_name) {
       if (in_array($field_name, $optional_selected)) {
-        $language_options = $override_languages[$field_name . '_options'] ?? _oe_contact_forms_contact_language_values();
+        $language_options = !empty($override_languages[$field_name . '_options']) ? $override_languages[$field_name . '_options'] : _oe_contact_forms_contact_language_values();
         _oe_contact_forms_build_select_language_field($form, $field_name, $language_options);
       }
     }

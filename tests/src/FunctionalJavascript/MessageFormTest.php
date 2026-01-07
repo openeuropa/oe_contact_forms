@@ -47,6 +47,39 @@ class MessageFormTest extends WebDriverTestBase {
   ];
 
   /**
+   * Default language options.
+   *
+   * @var array
+   */
+  protected $defaultLanguageOptions = [
+    'Select' => 'Select',
+    'http://publications.europa.eu/resource/authority/language/BUL' => 'Bulgarian',
+    'http://publications.europa.eu/resource/authority/language/SPA' => 'Spanish',
+    'http://publications.europa.eu/resource/authority/language/CES' => 'Czech',
+    'http://publications.europa.eu/resource/authority/language/DAN' => 'Danish',
+    'http://publications.europa.eu/resource/authority/language/DEU' => 'German',
+    'http://publications.europa.eu/resource/authority/language/EST' => 'Estonian',
+    'http://publications.europa.eu/resource/authority/language/ELL' => 'Greek',
+    'http://publications.europa.eu/resource/authority/language/ENG' => 'English',
+    'http://publications.europa.eu/resource/authority/language/FRA' => 'French',
+    'http://publications.europa.eu/resource/authority/language/GLE' => 'Irish',
+    'http://publications.europa.eu/resource/authority/language/HRV' => 'Croatian',
+    'http://publications.europa.eu/resource/authority/language/ITA' => 'Italian',
+    'http://publications.europa.eu/resource/authority/language/LAV' => 'Latvian',
+    'http://publications.europa.eu/resource/authority/language/LIT' => 'Lithuanian',
+    'http://publications.europa.eu/resource/authority/language/HUN' => 'Hungarian',
+    'http://publications.europa.eu/resource/authority/language/MLT' => 'Maltese',
+    'http://publications.europa.eu/resource/authority/language/NLD' => 'Dutch',
+    'http://publications.europa.eu/resource/authority/language/POL' => 'Polish',
+    'http://publications.europa.eu/resource/authority/language/POR' => 'Portuguese',
+    'http://publications.europa.eu/resource/authority/language/RON' => 'Romanian',
+    'http://publications.europa.eu/resource/authority/language/SLK' => 'Slovak',
+    'http://publications.europa.eu/resource/authority/language/SLV' => 'Slovenian',
+    'http://publications.europa.eu/resource/authority/language/FIN' => 'Finnish',
+    'http://publications.europa.eu/resource/authority/language/SWE' => 'Swedish',
+  ];
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
@@ -338,6 +371,21 @@ class MessageFormTest extends WebDriverTestBase {
     ]);
     $node->save();
     $contact_form->setThirdPartySetting('oe_contact_forms', 'privacy_policy', 'internal:' . $alias);
+
+    // Enable preferred languages but without override languages.
+    $contact_form->setThirdPartySetting('oe_contact_forms', 'override_languages', [
+      'oe_preferred_language_options' => [],
+      'oe_alternative_language_options' => [],
+    ]);
+    $contact_form->save();
+    $this->drupalGet('contact/' . $contact_form_id);
+    $assert->elementAttributeContains('xpath', "//div[contains(@class, 'form-item-privacy-policy')]//a", 'href', $alias);
+    $options = $this->getSelectOptions('Preferred contact language');
+    $this->assertEquals($this->defaultLanguageOptions, $options);
+    $options = $this->getSelectOptions('Alternative contact language');
+    $this->assertEquals($this->defaultLanguageOptions, $options);
+
+    // Override preferred and alternative languages.
     $override_languages = [
       'oe_preferred_language_options' => [
         'http://publications.europa.eu/resource/authority/language/CES',

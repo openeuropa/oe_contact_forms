@@ -1,4 +1,15 @@
-# Change Log
+# Changelog
+
+## [1.24.0](https://github.com/openeuropa/oe_contact_forms/tree/1.24.0) (2026-01-09)
+
+[Full Changelog](https://github.com/openeuropa/oe_contact_forms/compare/1.23.0...1.24.0)
+
+**Merged pull requests:**
+
+- EWPP-5871: Fix issue with preferred languages without override. [\#126](https://github.com/openeuropa/oe_contact_forms/pull/126) ([sergepavle](https://github.com/sergepavle))
+- EWPP-6339: Cache docker images for GitHub actions. [\#125](https://github.com/openeuropa/oe_contact_forms/pull/125) ([nagyad](https://github.com/nagyad))
+- EWPP-6261: Bump composer/installers to 2.x. [\#124](https://github.com/openeuropa/oe_contact_forms/pull/124) ([nagyad](https://github.com/nagyad))
+- EWPP-5871: Add auto-reply subject field for contact form configuration page. [\#122](https://github.com/openeuropa/oe_contact_forms/pull/122) ([sergepavle](https://github.com/sergepavle))
 
 ## [1.23.0](https://github.com/openeuropa/oe_contact_forms/tree/1.23.0) (2025-11-17)
 
@@ -6,6 +17,7 @@
 
 **Merged pull requests:**
 
+- Release-1.23.0: Update changelog. [\#123](https://github.com/openeuropa/oe_contact_forms/pull/123) ([hernani](https://github.com/hernani))
 - EWPP-6073: Support Drupal Core 11.2. [\#121](https://github.com/openeuropa/oe_contact_forms/pull/121) ([hernani](https://github.com/hernani))
 - ELA-1251: Fix corporate form confirmation message. [\#106](https://github.com/openeuropa/oe_contact_forms/pull/106) ([Aporie](https://github.com/Aporie))
 
@@ -14,6 +26,7 @@
 
 **Merged pull requests:**
 
+- Release-1.22.1: Update changelog. [\#120](https://github.com/openeuropa/oe_contact_forms/pull/120) ([nagyad](https://github.com/nagyad))
 - EWPP-6003: Move CI to github actions. [\#119](https://github.com/openeuropa/oe_contact_forms/pull/119) ([hernani](https://github.com/hernani))
 - EWPP-5805: Remove unnecessary patch. [\#117](https://github.com/openeuropa/oe_contact_forms/pull/117) ([nagyad](https://github.com/nagyad))
 

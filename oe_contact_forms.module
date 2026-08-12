@@ -13,6 +13,7 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Element\EntityAutocomplete;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\ContentEntityFormInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Form\FormStateInterface;
@@ -20,6 +21,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\contact\ContactFormInterface;
 use Drupal\contact\Entity\ContactForm;
 use Drupal\contact\Entity\Message;
+use Drupal\oe_contact_forms\Plugin\Validation\Constraint\NoHtmlMarkupConstraint;
 
 const OE_CONTACT_FORMS_MESSAGE_MAX_LENGTH = 2000;
 
@@ -46,6 +48,90 @@ function oe_contact_forms_form_alter(&$form, FormStateInterface $form_state, $fo
         $form['#attached']['library'][] = 'maxlength/maxlength';
       }
     }
+
+    // Core contact builds the sender name outside the entity form display,
+    // so its field constraint violation needs an explicit Form API bridge.
+    if (
+      isset($form['name']) &&
+      is_array($form['name']) &&
+      ($form['name']['#type'] ?? NULL) !== 'item' &&
+      ($form['name']['#access'] ?? TRUE)
+    ) {
+      $form['name']['#element_validate'][] = 'oe_contact_forms_name_no_html_markup_validate';
+    }
+  }
+}
+
+/**
+ * Maps the sender-name field constraint to its manually built form element.
+ */
+function oe_contact_forms_name_no_html_markup_validate(array &$element, FormStateInterface $form_state, array &$complete_form): void {
+  $form_object = $form_state->getFormObject();
+
+  if (!$form_object instanceof ContentEntityFormInterface) {
+    return;
+  }
+
+  $message = clone $form_object->getEntity();
+
+  if ($message->getEntityTypeId() !== 'contact_message' || !$message->hasField('name')) {
+    return;
+  }
+
+  $message->set('name', (string) ($element['#value'] ?? ''));
+
+  foreach ($message->get('name')->validate() as $violation) {
+    if (!($violation->getConstraint() instanceof NoHtmlMarkupConstraint)) {
+      continue;
+    }
+
+    $form_state->setError($element, $violation->getMessage());
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ */
+function oe_contact_forms_entity_base_field_info_alter(array &$fields, EntityTypeInterface $entity_type): void {
+  if ($entity_type->id() !== 'contact_message') {
+    return;
+  }
+
+  _oe_contact_forms_add_no_html_markup_constraint($fields);
+}
+
+/**
+ * Implements hook_entity_bundle_field_info_alter().
+ */
+function oe_contact_forms_entity_bundle_field_info_alter(array &$fields, EntityTypeInterface $entity_type, $bundle): void {
+  if ($entity_type->id() !== 'contact_message') {
+    return;
+  }
+
+  _oe_contact_forms_add_no_html_markup_constraint($fields);
+}
+
+/**
+ * Adds markup validation to contact-message plain-text fields.
+ *
+ * Formatted text, structured values, references and list fields are excluded.
+ *
+ * @param \Drupal\Core\Field\FieldDefinitionInterface[] $fields
+ *   Field definitions.
+ */
+function _oe_contact_forms_add_no_html_markup_constraint(array &$fields): void {
+  $plain_text_types = [
+    'string',
+    'string_long',
+    'telephone',
+  ];
+
+  foreach ($fields as $field_definition) {
+    if (!in_array($field_definition->getType(), $plain_text_types, TRUE)) {
+      continue;
+    }
+
+    $field_definition->addConstraint('OeContactFormsNoHtmlMarkup');
   }
 }
 

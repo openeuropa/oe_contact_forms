@@ -1158,3 +1158,13 @@ function oe_contact_forms_config_schema_info_alter(&$definitions) {
     'description' => 'Set the number of days after which the contact messages will be automatically deleted. Set to 0 to disable.',
   ];
 }
+
+/**
+ * Implments oe_contact_forms_module_implements_alter().
+ */
+function oe_contact_forms_module_implements_alter(&$implementations, $hook) {
+  if ($hook === 'requirements') {
+    // We have our own version.
+    unset($implementations['sparql_entity_storage']);
+  }
+}

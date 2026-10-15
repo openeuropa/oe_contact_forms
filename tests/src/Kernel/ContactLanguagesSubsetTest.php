@@ -91,7 +91,9 @@ class ContactLanguagesSubsetTest extends SparqlKernelTestBase {
     $selection = SkosConceptSelection::create($this->container, $configuration, 'default:skos_concept', []);
     $ids = array_merge(self::EU_LANGUAGES, self::NON_EU_LANGUAGES);
     $result = array_values($selection->validateReferenceableEntities($ids));
-    $this->assertEquals(self::EU_LANGUAGES, $result);
+    // The query does not guarantee a particular order, only that the result
+    // contains exactly the EU languages.
+    $this->assertEqualsCanonicalizing(self::EU_LANGUAGES, $result);
   }
 
 }

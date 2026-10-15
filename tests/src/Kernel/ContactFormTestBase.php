@@ -10,7 +10,7 @@ use Drupal\Tests\user\Traits\UserCreationTrait;
 /**
  * Base test class for contact form kernel tests.
  */
-class ContactFormTestBase extends SparqlKernelTestBase {
+abstract class ContactFormTestBase extends SparqlKernelTestBase {
 
   use UserCreationTrait;
 
